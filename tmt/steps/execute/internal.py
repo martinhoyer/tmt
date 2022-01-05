@@ -12,7 +12,7 @@ import tmt.utils
 from tmt.steps.execute import TEST_OUTPUT_FILENAME
 from tmt.steps.provision.local import GuestLocal
 
-REBOOT_VARIABLE = "REBOOT_COUNT"
+REBOOT_VARIABLE = "REBOOTCOUNT"
 REBOOT_TYPE = "reboot"
 REBOOT_SCRIPT_PATHS = (
     "/usr/local/bin/rstrnt-reboot",
@@ -256,7 +256,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin):
 
         Check the previously fetched test log for signs of reboot request
         and orchestrate the reboot if it was requested. Also increment
-        REBOOT_COUNT variable, reset it to 0 if no reboot was requested
+        REBOOTCOUNT variable, reset it to 0 if no reboot was requested
         (going forward to the next test). Return whether reboot was done.
         """
         output = self.read(

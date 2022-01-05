@@ -8,7 +8,7 @@ description: |
 
     The functionality is compatible with how restraint
     works, hence ``rhts-reboot``, ``rstrnt-reboot`` or ``tmt-reboot``
-    can be used to start the reboot. The ``REBOOT_COUNT`` environment
+    can be used to start the reboot. The ``REBOOTCOUNT`` environment
     variable is used to pass the test information about the number
     of reboots done.
 
@@ -20,10 +20,10 @@ description: |
     available.
 
 example: |
-    if [ -z "$REBOOT_COUNT" ] || [ "$REBOOT_COUNT" -eq 0 ]; then
+    if [ -z "$REBOOTCOUNT" ] || [ "$REBOOTCOUNT" -eq 0 ]; then
         rlRun "echo 'Before the reboot'"
         rlRun "rhts-reboot" 0 "Reboot the machine"
-    elif [ "$REBOOT_COUNT" -eq 1 ]; then
+    elif [ "$REBOOTCOUNT" -eq 1 ]; then
         rlRun "echo 'After the reboot'"
     fi
 link:
