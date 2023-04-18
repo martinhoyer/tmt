@@ -10,8 +10,7 @@ import string
 import subprocess
 import tempfile
 from shlex import quote
-from typing import (TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type,
-                    Union, cast, overload)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type, Union, cast, overload
 
 import click
 import fmf

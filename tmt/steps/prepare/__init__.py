@@ -1,8 +1,7 @@
 import collections
 import copy
 import dataclasses
-from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, List, Optional,
-                    Type, cast)
+from typing import TYPE_CHECKING, Any, DefaultDict, Dict, List, Optional, Type, cast
 
 import click
 import fmf

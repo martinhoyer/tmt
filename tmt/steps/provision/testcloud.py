@@ -18,8 +18,7 @@ import tmt
 import tmt.steps
 import tmt.steps.provision
 import tmt.utils
-from tmt.utils import (WORKDIR_ROOT, Command, Path, ProvisionError,
-                       ShellScript, retry_session)
+from tmt.utils import WORKDIR_ROOT, Command, Path, ProvisionError, ShellScript, retry_session
 
 if TYPE_CHECKING:
     import tmt.base

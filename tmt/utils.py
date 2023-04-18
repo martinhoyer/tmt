@@ -24,9 +24,27 @@ import urllib.parse
 from collections import OrderedDict
 from functools import lru_cache
 from threading import Thread
-from typing import (IO, TYPE_CHECKING, Any, Callable, Dict, Generator, Generic,
-                    Iterable, List, NamedTuple, Optional, Pattern, Sequence,
-                    Tuple, Type, TypeVar, Union, cast, overload)
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    Generic,
+    Iterable,
+    List,
+    NamedTuple,
+    Optional,
+    Pattern,
+    Sequence,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+    overload,
+    )
 
 import click
 import fmf

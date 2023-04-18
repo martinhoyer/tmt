@@ -8,8 +8,8 @@ import tmt
 
 if TYPE_CHECKING:
     import tmt.cli
-    import tmt.steps
     import tmt.options
+    import tmt.steps
 
 import tmt.base
 import tmt.steps

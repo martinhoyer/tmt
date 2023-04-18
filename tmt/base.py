@@ -9,9 +9,23 @@ import re
 import shutil
 import sys
 import time
-from typing import (TYPE_CHECKING, Any, Callable, ClassVar, Dict, Generator,
-                    Iterable, Iterator, List, Optional, Sequence, Tuple,
-                    TypeVar, Union, cast)
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Generator,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+    )
 
 import fmf
 import fmf.base
@@ -33,8 +47,15 @@ import tmt.steps.report
 import tmt.templates
 import tmt.utils
 from tmt.result import Result, ResultOutcome
-from tmt.utils import (Command, EnvironmentType, FmfContextType, Path,
-                       ShellScript, WorkdirArgumentType, verdict)
+from tmt.utils import (
+    Command,
+    EnvironmentType,
+    FmfContextType,
+    Path,
+    ShellScript,
+    WorkdirArgumentType,
+    verdict,
+    )
 
 if sys.version_info >= (3, 8):
     from typing import Literal, TypedDict

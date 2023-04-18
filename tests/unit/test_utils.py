@@ -18,11 +18,23 @@ import tmt.log
 import tmt.plugins
 import tmt.steps.discover
 import tmt.utils
-from tmt.utils import (Command, Common, GeneralError, Path, ShellScript,
-                       StructuredField, StructuredFieldError,
-                       WaitingIncomplete, WaitingTimedOutError, _CommonBase,
-                       duration_to_seconds, listify, public_git_url,
-                       validate_git_status, wait)
+from tmt.utils import (
+    Command,
+    Common,
+    GeneralError,
+    Path,
+    ShellScript,
+    StructuredField,
+    StructuredFieldError,
+    WaitingIncomplete,
+    WaitingTimedOutError,
+    _CommonBase,
+    duration_to_seconds,
+    listify,
+    public_git_url,
+    validate_git_status,
+    wait,
+    )
 
 run = Common(logger=tmt.log.Logger.create(verbose=0, debug=0, quiet=False)).run
 
