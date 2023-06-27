@@ -112,3 +112,13 @@ known-first-party = ["tmt"]
 markers = [
     "web: tests which need to access the web"
 ]
+
+[tool.yamlfix]
+explicit_start = "false"
+line_length = 62
+preserve_quotes = "true"
+indent_offset = 2
+indent_mapping = 4
+indent_sequence = 4
+whitelines = 1
+sequence_style = "keep_style"  # "block_style" to force idented lists

@@ -12,6 +12,11 @@ repos:
       - id: end-of-file-fixer
       - id: mixed-line-ending
       - id: trailing-whitespace
+      - id: check-yaml
+        types:
+          - text
+          - yaml
+        files: \.(fmf|yaml|yml)$
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: "v1.3.0"
@@ -39,12 +44,6 @@ repos:
         name: "Check JSON schemas validity"
         files: ^tmt/schemas/.*\.yaml
 
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.32.0
-    hooks:
-      - id: yamllint
-        files: ^tmt/schemas/.*\.yaml
-
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.0.275
     hooks:
@@ -53,7 +52,23 @@ repos:
           - '--fix'
           - '--show-fixes'
 
+  - repo: https://github.com/lyz-code/yamlfix/
+    rev: 1.11.0
+    hooks:
+      - id: yamlfix
+        types:
+          - text
+        files: \.fmf$
+        # Exclude empty .fmf files
+        exclude: |
+            (?x)^(
+                tests/integration/data/nitrate/validation/main.fmf|
+                tests/test/select/data/sub/first.fmf|
+                tests/test/select/data/sub/second.fmf|
+                tests/lint/data/tests/empty/foo/main.fmf
+            )$
+
   - repo: https://github.com/teemtee/tmt.git
     rev: 1.24.1
     hooks:
-    - id: tmt-lint
+      - id: tmt-lint
