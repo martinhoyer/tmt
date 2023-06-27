@@ -98,7 +98,6 @@ ignore = [
     "PIE790",  # Unnecessary `pass` statement
     "PLE1205",  # Too many arguments for `logging` format string
     "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
-    "RUF013",  # PEP 484 prohibits implicit `Optional`
     "UP021",  # `universal_newlines` has been renamed to `text` in Python 3.7
     "Q000",  # Double quotes found but single quotes preferred
 ]

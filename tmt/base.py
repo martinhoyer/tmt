@@ -3185,7 +3185,7 @@ class Clean(tmt.utils.Common):
                  *,
                  parent: Optional[tmt.utils.Common] = None,
                  name: Optional[str] = None,
-                 workdir: tmt.utils.WorkdirArgumentType = None,
+                 workdir: Optional[tmt.utils.WorkdirArgumentType] = None,
                  cli_context: Optional['tmt.cli.Context'] = None,
                  logger: tmt.log.Logger) -> None:
         """

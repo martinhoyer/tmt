@@ -237,7 +237,7 @@ class Step(tmt.utils.Common):
             plan: 'Plan',
             data: Optional[RawStepDataArgument] = None,
             name: Optional[str] = None,
-            workdir: tmt.utils.WorkdirArgumentType = None,
+            workdir: Optional[tmt.utils.WorkdirArgumentType] = None,
             logger: tmt.log.Logger) -> None:
         """ Initialize and check the step data """
         logger.apply_verbosity_options(**self.__class__._cli_options)
@@ -714,7 +714,7 @@ class BasePlugin(Phase):
             *,
             step: Step,
             data: StepData,
-            workdir: tmt.utils.WorkdirArgumentType = None,
+            workdir: Optional[tmt.utils.WorkdirArgumentType] = None,
             logger: tmt.log.Logger) -> None:
         """ Store plugin name, data and parent step """
         logger.apply_verbosity_options(**self.__class__._cli_options)

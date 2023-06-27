@@ -108,7 +108,7 @@ def dependencies(
         original_require: List[Dependency],
         original_recommend: Optional[List[Dependency]] = None,
         parent: Optional[tmt.utils.Common] = None,
-        imported_lib_ids: ImportedIdentifiersType = None,
+        imported_lib_ids: Optional[ImportedIdentifiersType] = None,
         logger: tmt.log.Logger,
         source_location: Optional[Path] = None,
         target_location: Optional[Path] = None) -> LibraryDependenciesType:
