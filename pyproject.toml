@@ -53,7 +53,7 @@ select = [
 #    "C90",  # mccabe
     "I",  # isort
     "N",  # pep8-naming
-#    "UP",  # pyupgrade
+    "UP",  # pyupgrade
     "B",  # flake8-bugbear
     "C4",  # flake8-comprehensions
     "YTT",  # flake8-2020
@@ -99,6 +99,7 @@ ignore = [
     "PLE1205",  # Too many arguments for `logging` format string
     "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
     "RUF013",  # PEP 484 prohibits implicit `Optional`
+    "UP021",  # `universal_newlines` has been renamed to `text` in Python 3.7
 ]
 
 [tool.ruff.flake8-bugbear]
