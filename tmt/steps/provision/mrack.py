@@ -38,13 +38,11 @@ DEFAULT_PROVISION_TICK = 60  # poll job each minute
 
 # Type annotation for "data" package describing a guest instance. Passed
 # between load() and save() calls
-GuestInspectType = TypedDict(
-    'GuestInspectType', {
-        "status": str,
-        "system": str,
-        'address': Optional[str]
-        }
-    )
+class GuestInspectType(TypedDict):
+    status: str
+    system: str
+    address: Optional[str]
+
 
 size_translation = {
     "TB": 1000000,
