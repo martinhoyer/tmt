@@ -75,7 +75,7 @@ select = [
 #    "G",  # flake8-logging-format
     "PIE",  # flake8-pie
 #    "T20",  # flake8-print
-#    "Q",  # flake8-quotes
+    "Q",  # flake8-quotes
     "RSE",  # flake8-raise
 #    "SLF",  # flake8-self
 #    "TCH",  # flake8-type-checking
@@ -100,6 +100,7 @@ ignore = [
     "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
     "RUF013",  # PEP 484 prohibits implicit `Optional`
     "UP021",  # `universal_newlines` has been renamed to `text` in Python 3.7
+    "Q000",  # Double quotes found but single quotes preferred
 ]
 
 [tool.ruff.flake8-bugbear]
