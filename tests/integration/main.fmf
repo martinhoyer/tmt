@@ -41,7 +41,7 @@ framework: shell
 require:
   - python3-pytest
 tag: [integration]
-tier: null
+tier:
 link: https://github.com/packit/requre
 
 /coverage_bugzilla:

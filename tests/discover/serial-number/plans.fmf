@@ -9,9 +9,9 @@ provision:
 
 /multiple-discover:
     discover:
-        - how: fmf
-        - how: fmf
-        - how: fmf
+      - how: fmf
+      - how: fmf
+      - how: fmf
 
 /multiple-plans:
     /plan1:
@@ -21,7 +21,7 @@ provision:
 
     /plan2:
         discover:
-          how: fmf
+            how: fmf
 
     /plan3:
         discover:

@@ -9,8 +9,8 @@ test: /bin/true
     summary: Discover two
     tier: 2
     link:
-    - note: Some text
-      verifies: https://github.com/teemtee/tmt/issues/870
+      - note: Some text
+        verifies: https://github.com/teemtee/tmt/issues/870
 
 /discover3:
     summary: Discover three

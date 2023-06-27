@@ -1,7 +1,5 @@
-summary:
-    Story example
-story:
-    As a user I want to store relevant links.
+summary: Story example
+story: As a user I want to store relevant links.
 
 /idea:
     summary: Nothing done yet.

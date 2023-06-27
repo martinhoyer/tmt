@@ -1,10 +1,10 @@
 summary: Verify TTY behavior in test environment
 
 discover:
-  how: fmf
+    how: fmf
 
 environment:
-  STEP: execute
+    STEP: execute
 
 # Exercise prepare and finish as well. We use the very same commands,
 # just in different steps.
@@ -23,7 +23,7 @@ finish:
     script: STEP=finish ./python.py
 
 provision:
-  how: container
+    how: container
 
 execute:
-  how: tmt
+    how: tmt

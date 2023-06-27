@@ -1,5 +1,4 @@
-summary:
-    Install debuginfo packages
+summary: Install debuginfo packages
 prepare:
   - name: debuginfo
     how: install

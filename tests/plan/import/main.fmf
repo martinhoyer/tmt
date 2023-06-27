@@ -1,12 +1,13 @@
 /basic:
-  summary: Check importing a plan into a plan
-  test: ./basic.sh
+    summary: Check importing a plan into a plan
+    test: ./basic.sh
 
 /errors:
-  summary: Check correct error handling in invalid situations
-  test: ./errors.sh
+    summary: Check correct error handling in invalid situations
+    test: ./errors.sh
 
 /modify:
-  summary: Check importing a plan into a plan and modify it with environment variable
-  contact: Martin Zelený <mzeleny@redhat.com>
-  test: ./modify.sh
+    summary: Check importing a plan into a plan and modify it with
+        environment variable
+    contact: Martin Zelený <mzeleny@redhat.com>
+    test: ./modify.sh

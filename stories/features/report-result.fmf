@@ -1,6 +1,5 @@
 title: Report test result
-story:
-    As a tester I want to report test results using the restraint
+story: As a tester I want to report test results using the restraint
     command during test execution.
 
 description: |

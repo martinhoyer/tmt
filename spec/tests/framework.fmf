@@ -1,7 +1,6 @@
 summary: Test framework defining how tests should be executed
 
-story:
-    As a tester I want to include tests using different test
+story: As a tester I want to include tests using different test
     execution framework in a single plan.
 
 description: |

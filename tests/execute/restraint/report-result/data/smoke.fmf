@@ -1,6 +1,5 @@
 summary: Verify that test results are correctly mapped
-description:
-    Test to generate a rstrnt-report-result file to check
+description: Test to generate a rstrnt-report-result file to check
     whether tmt can read the result.
 
 /good:

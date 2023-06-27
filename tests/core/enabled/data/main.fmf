@@ -1,4 +1,3 @@
-
 /tests:
     summary: Example test
     test: ./test.sh

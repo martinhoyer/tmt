@@ -19,6 +19,6 @@ execute:
     discover:
         how: fmf
         test:
-        - /tier/two
-        - /tier/one
-        - /tier/two
+          - /tier/two
+          - /tier/one
+          - /tier/two

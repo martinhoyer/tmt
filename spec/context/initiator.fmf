@@ -1,7 +1,6 @@
 summary: Definition of the initiator dimension
 
-story:
-    As a user I want to run a custom set of tests based on the
+story: As a user I want to run a custom set of tests based on the
     service, pipeline or tool which initiated the testing.
 
 description: |

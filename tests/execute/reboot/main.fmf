@@ -8,7 +8,8 @@ duration: 20m
 # Disabled until the testing environment 'hardware specification' can be set.
 # https://tmt.readthedocs.io/en/stable/spec/plans.html#hardware
 /efi:
-    summary: Verify that reboot during test with and without efi option works
+    summary: Verify that reboot during test with and without efi
+        option works
     test: ./efi.sh
     enabled: false
 

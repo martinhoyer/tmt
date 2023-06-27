@@ -1,12 +1,10 @@
 summary: Finishing tasks
 
-description:
-    Additional actions to be performed after the test execution
-    has been completed.  Counterpart of the ``prepare`` step
-    useful for various cleanup actions. Use the
-    :ref:`/spec/core/order` attribute to select in which order
-    finishing tasks should happen if there are multiple configs.
-    Default order is ``50``.
+description: Additional actions to be performed after the test execution
+    has been completed.  Counterpart of the ``prepare`` step useful
+    for various cleanup actions. Use the :ref:`/spec/core/order`
+    attribute to select in which order finishing tasks should happen
+    if there are multiple configs. Default order is ``50``.
 
 example: |
     finish:
@@ -14,14 +12,11 @@ example: |
         script: upload-logs.sh
 
 /shell:
-    summary:
-        Perform finishing tasks using shell (bash) scripts
-    description:
-        Execute arbitrary shell commands to finish the testing.
-
-        Default shell options are applied to the script, see the
-        :ref:`/spec/tests/test` key specification for more
-        details.
+    summary: Perform finishing tasks using shell (bash) scripts
+    description: "Execute arbitrary shell commands to finish the\
+        \ testing.\nDefault shell options are applied to the script,\
+        \ see the :ref:`/spec/tests/test` key specification for\
+        \ more details."
 
     example: |
         finish:
@@ -33,8 +28,7 @@ example: |
       - implemented-by: /tmt/steps/finish/shell.py
 
 /ansible:
-    summary:
-        Perform finishing tasks using ansible
+    summary: Perform finishing tasks using ansible
     description: |
         One or more playbooks can be provided as a list under the
         ``playbook`` attribute.  Each of them will be applied

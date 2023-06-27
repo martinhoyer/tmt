@@ -1,6 +1,5 @@
 summary: Verify test framework selection
-description:
-    Check test framework selection in the L1 metadata.
+description: Check test framework selection in the L1 metadata.
     Combining different frameworks under a single plan.
 duration: 30m
 tier: 3

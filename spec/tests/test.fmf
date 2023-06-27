@@ -1,8 +1,7 @@
 summary: Shell command which executes the test
 
-story:
-    As a test writer I want to run a single test script in
-    multiple ways (e.g. by providing different parameters).
+story: As a test writer I want to run a single test script in multiple
+    ways (e.g. by providing different parameters).
 
 description: |
     This attribute defines how the test is to be executed.

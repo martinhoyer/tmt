@@ -1,6 +1,5 @@
-story:
-    As a developer I want to define application features and track
-    which have been already implemented, verified and documented.
+story: As a developer I want to define application features and
+    track which have been already implemented, verified and documented.
 
 description: |
     Stories, which implement the L3 metadata, can be used to track

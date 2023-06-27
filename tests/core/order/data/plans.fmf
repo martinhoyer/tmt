@@ -25,9 +25,9 @@ discover:
     discover:
         how: fmf
         test:
-        - third
-        - fourth
-        - third
+          - third
+          - fourth
+          - third
 
 /fourth:
     summary: plan with order 4

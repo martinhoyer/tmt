@@ -14,9 +14,9 @@
     discover:
         how: fmf
     provision:
-        - name: guest-1
-          how: container
-        - name: guest-2
-          how: container
+      - name: guest-1
+        how: container
+      - name: guest-2
+        how: container
     execute:
         how: tmt

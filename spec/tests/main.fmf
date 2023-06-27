@@ -1,5 +1,4 @@
-story:
-    As a tester I want to store test metadata close to the test
+story: As a tester I want to store test metadata close to the test
     source code.
 
 description: |

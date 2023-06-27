@@ -24,8 +24,7 @@ description: |
 
 /upgrade:
     summary: Perform system upgrades during testing
-    story:
-        As a tester I want to verify that a configured application
+    story: As a tester I want to verify that a configured application
         or service still correctly works after the system upgrade.
     description: |
         In order to enable developing tests for upgrade testing, we
@@ -130,9 +129,8 @@ description: |
 
 /isolate:
     summary: Run tests in an isolated environment
-    description:
-        Optional boolean attribute `isolate` can be used to
-        request a clean test environment for each test.
+    description: Optional boolean attribute `isolate` can be used
+        to request a clean test environment for each test.
     example: |
         execute:
             how: tmt
@@ -140,12 +138,10 @@ description: |
 
 /exit-first:
     summary: Stop execution after a test fails
-    story:
-        As a user I want to avoid waiting for all discovered
+    story: As a user I want to avoid waiting for all discovered
         tests to finish if one of them fails.
-    description:
-        Optional boolean attribute `exit-first` can be used to
-        make the executor stop executing tests once a test
+    description: Optional boolean attribute `exit-first` can be
+        used to make the executor stop executing tests once a test
         failure is encountered.
     example: |
         execute:
@@ -251,10 +247,9 @@ description: |
     /several:
         summary: Multiple shell commands
         title: Multiple commands
-        description:
-            You can also include several commands as a list.
-            Executor will run commands one-by-one and check exit
-            code of each.
+        description: You can also include several commands as a
+            list. Executor will run commands one-by-one and check
+            exit code of each.
         example: |
             execute:
                 script:
@@ -266,12 +261,10 @@ description: |
     /multi:
         summary: Multi-line shell script
         title: Multi-line script
-        description:
-            Providing a multi-line shell script is also supported.
-            Note that the first command with non-zero exit code
-            will finish the execution. See the
-            :ref:`/spec/tests/test` key for details about default
-            shell options.
+        description: Providing a multi-line shell script is also
+            supported. Note that the first command with non-zero
+            exit code will finish the execution. See the :ref:`/spec/tests/test`
+            key for details about default shell options.
         example: |
             execute:
                 script: |

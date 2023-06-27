@@ -1,9 +1,8 @@
 summary: Adjust metadata based on the given context
 
-story:
-    As a user I want to adjust test, plan or story metadata
-    based on the given context such as product, distribution,
-    architecture or trigger.
+story: As a user I want to adjust test, plan or story metadata based
+    on the given context such as product, distribution, architecture
+    or trigger.
 
 description: |
     The ``adjust`` attribute allows to modify arbitrary object

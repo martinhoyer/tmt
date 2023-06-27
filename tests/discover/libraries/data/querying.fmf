@@ -1,6 +1,6 @@
 test: echo
 require:
-- "library(FOOBAR/foobar)"
+  - "library(FOOBAR/foobar)"
 
 /1:
 /2:

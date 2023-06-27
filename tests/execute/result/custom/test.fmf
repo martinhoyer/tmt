@@ -7,7 +7,8 @@ result: custom
     summary: Test provides custom results.json
     test: cp results.json ${TMT_TEST_DATA}; touch ${TMT_TEST_DATA}/{pass,fail,another}_log
 /missing-custom-results:
-    summary: Test provides custom results but results.yaml or results.json are not present
+    summary: Test provides custom results but results.yaml or results.json
+        are not present
     test: 'true'
 /empty-custom-results-file:
     summary: results.yaml is empty

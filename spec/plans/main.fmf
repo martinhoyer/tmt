@@ -1,6 +1,5 @@
-story:
-    As a tester I want to easily execute selected tests or
-    selected test steps in given environment.
+story: As a tester I want to easily execute selected tests or selected
+    test steps in given environment.
 
 description: |
     **Plans**, also called L2 metadata, are used to group relevant

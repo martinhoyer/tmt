@@ -1,6 +1,5 @@
 summary: Python unit tests
-description:
-    Run all available python unit tests using pytest.
+description: Run all available python unit tests using pytest.
 discover:
     tests:
       - name: /unit

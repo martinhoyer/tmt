@@ -1,8 +1,6 @@
-summary:
-    Require the `Trusted Platform Module` features
-description:
-    Use the ``version`` key to select the desired ``tpm`` version,
-    its value must be a ``string``.
+summary: Require the `Trusted Platform Module` features
+description: Use the ``version`` key to select the desired ``tpm``
+    version, its value must be a ``string``.
 example:
   - |
     tpm:

@@ -1,5 +1,5 @@
 # Do not inherit from parents
 /:
-  inherit: false
+    inherit: false
 
 test: ls

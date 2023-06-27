@@ -10,29 +10,29 @@ description: |
     ``list of strings``.
 
 example:
-    - |
-        # Short one-line example
-        example: tmt run discover
-    - |
-        # Preserve line breaks using the '|' modifier
-        example: |
-            tmt run --until execute
-            tmt run --last report
-    - |
-        # Use a list to define multiple examples
-        example:
-          - tmt run --until execute
-          - tmt run --last report
+  - |
+    # Short one-line example
+    example: tmt run discover
+  - |
+    # Preserve line breaks using the '|' modifier
+    example: |
+        tmt run --until execute
+        tmt run --last report
+  - |
+    # Use a list to define multiple examples
+    example:
+      - tmt run --until execute
+      - tmt run --last report
 
-    - |
-        # Several multiline examples
-        example:
-            - |
-                # Check validity of the plans
-                tmt plan lint
-            - |
-                # Check which tests would be run
-                tmt run discover
+  - |
+    # Several multiline examples
+    example:
+        - |
+            # Check validity of the plans
+            tmt plan lint
+        - |
+            # Check which tests would be run
+            tmt run discover
 
 link:
   - implemented-by: /tmt/base.py

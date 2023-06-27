@@ -1,9 +1,8 @@
 summary: Specify how test result should be interpreted
 
-story:
-    As a tester I want to regularly execute the test but
-    temporarily ignore test result until more investigation is
-    done and the test can be fixed properly.
+story: As a tester I want to regularly execute the test but temporarily
+    ignore test result until more investigation is done and the
+    test can be fixed properly.
 
 description: |
     Even if a test fails it might makes sense to execute it to be

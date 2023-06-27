@@ -1,4 +1,5 @@
-summary: Define format of on-disk description of provisioned guest topology
+summary: Define format of on-disk description of provisioned guest
+    topology
 title: Guest Topology Format
 order: 95
 

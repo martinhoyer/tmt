@@ -1,6 +1,5 @@
-story:
-    As a tester I want to specify detailed installation of a guest
-    using the kickstart script.
+story: As a tester I want to specify detailed installation of a
+    guest using the kickstart script.
 
 description: |
     As part of the :ref:`/spec/plans/provision` step it is possible to

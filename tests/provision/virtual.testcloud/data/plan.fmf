@@ -3,8 +3,8 @@ execute:
 discover:
     how: shell
     tests:
-    - name: smoke
-      test: echo
+      - name: smoke
+        test: echo
 provision:
     how: virtual.testcloud
     image: fedora

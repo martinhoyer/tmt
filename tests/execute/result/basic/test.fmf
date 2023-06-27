@@ -48,7 +48,8 @@
 
 /xfail-with-reboot:
     summary: Do reboot in the test
-    test: "if [ $TMT_REBOOT_COUNT -eq 0 ]; then tmt-reboot; fi; false"
+    test: "if [ $TMT_REBOOT_COUNT -eq 0 ]; then tmt-reboot; fi;\
+        \ false"
     result: xfail
     tag: [cherry_pick]
 /abort:

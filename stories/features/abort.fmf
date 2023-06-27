@@ -1,8 +1,6 @@
 title: Abort test execution
-story:
-    As a tester I want to abort current, and all subsequent,
-    test executions using a shell command during test
-    execution.
+story: As a tester I want to abort current, and all subsequent,
+    test executions using a shell command during test execution.
 
 description: |
     The ``tmt-abort`` command can be used to abort the current
@@ -15,7 +13,7 @@ description: |
     __ https://restraint.readthedocs.io/en/latest/commands.html#rstrnt-abort
 
 example: |
-        tmt-abort
+    tmt-abort
 
 link:
   - implemented-by: /tmt/steps/execute/internal.py

@@ -1,5 +1,4 @@
-summary:
-    Basic functionality
+summary: Basic functionality
 execute:
     how: tmt
 link:

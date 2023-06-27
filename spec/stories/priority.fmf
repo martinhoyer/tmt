@@ -1,10 +1,8 @@
-summary:
-    User story priority
+summary: User story priority
 
-story:
-    As a stakeholder I want to define priority for each user story
-    so that it's clear which user stories are essential and must
-    be implemented, which are important and which are desirable
+story: As a stakeholder I want to define priority for each user
+    story so that it's clear which user stories are essential and
+    must be implemented, which are important and which are desirable
     but not necessary.
 
 description: |

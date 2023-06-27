@@ -1,7 +1,6 @@
 summary: Ensure the docs can be installed successfully
-description:
-    Make sure installing docs to the readthedocs.org site works
-    well and there is no warning displayed during the build.
+description: Make sure installing docs to the readthedocs.org site
+    works well and there is no warning displayed during the build.
 prepare:
     how: install
     package: python3-pip

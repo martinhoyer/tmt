@@ -1,5 +1,4 @@
-summary:
-    Basic smoke test
+summary: Basic smoke test
 provision:
     how: local
 execute:

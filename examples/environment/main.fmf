@@ -1,8 +1,7 @@
 /plan:
-    summary:
-        Environment variable.
-    description:
-        Tests can be provided with a list of environment variables.
+    summary: Environment variable.
+    description: Tests can be provided with a list of environment
+        variables.
     execute:
         how: shell
 

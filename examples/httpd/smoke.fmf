@@ -1,5 +1,4 @@
-summary:
-    Basic smoke test for the httpd web server
+summary: Basic smoke test for the httpd web server
 provision:
     how: virtual
     memory: 4096

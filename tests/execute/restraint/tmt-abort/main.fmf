@@ -1,6 +1,5 @@
 summary: Verify tmt-abort functionality.
-description:
-    Verify that the tmt-abort functionality
-    can be executed successfully.
+description: Verify that the tmt-abort functionality can be executed
+    successfully.
 contact: Philip Daly <pdaly@redhat.com>
 tier: 2

@@ -8,9 +8,9 @@ duration: 10m
     # requires nested virtualization (runs in VM)
     enabled: false
     adjust:
-    - enabled: true
-      when: how == full
-      tag+: [additional_coverage]
+      - enabled: true
+        when: how == full
+        tag+: [additional_coverage]
     tier: 3
 
 /simple:

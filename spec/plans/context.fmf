@@ -1,7 +1,6 @@
 summary: Definition of the test execution context
 
-story:
-    As a user I want to define the default context in which tests
+story: As a user I want to define the default context in which tests
     included in given plan should be executed.
 
 description: |

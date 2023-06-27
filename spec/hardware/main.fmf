@@ -1,5 +1,4 @@
-story:
-    As a tester I want to specify detailed hardware requirements
+story: As a tester I want to specify detailed hardware requirements
     for the guest on which the tests will be executed.
 
 description: |

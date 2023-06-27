@@ -1,7 +1,6 @@
 title: Reboot during test
-story:
-    As a tester I need to reboot the guest during a test and then
-    resume the test execution.
+story: As a tester I need to reboot the guest during a test and
+    then resume the test execution.
 description: |
     Some tests may require a reboot as a part of them, e.g.
     upgrading the system, rebooting and then running some checks.
@@ -48,5 +47,5 @@ example: |
         rlRun "echo 'After the reboot'"
     fi
 link:
-    - implemented-by: /tmt/steps/execute/internal.py
-    - verified-by: /tests/execute/reboot
+  - implemented-by: /tmt/steps/execute/internal.py
+  - verified-by: /tests/execute/reboot

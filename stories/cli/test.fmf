@@ -17,10 +17,9 @@ story: 'As a user I want to comfortably work with tests'
 
 /lint:
     story: 'Check test against the L1 metadata specification'
-    description:
-        Verify that test metadata are aligned with the
-        specification, e.g. that all required attributes are
-        present and that all attributes have correct type.
+    description: Verify that test metadata are aligned with the
+        specification, e.g. that all required attributes are present
+        and that all attributes have correct type.
     example: tmt test lint
     link:
       - implemented-by: /tmt/cli.py
@@ -28,17 +27,15 @@ story: 'As a user I want to comfortably work with tests'
 
 /create:
     story: 'Create a new test skeleton'
-    description:
-        Provide an easy way how to create a new test. Ideally
-        with support for multiple test skeletons. Similarly as
-        beaker-wizard (which should be obsoleted by this) the
-        tool should prompt for required values if not provided
-        on the command line.
+    description: Provide an easy way how to create a new test. Ideally
+        with support for multiple test skeletons. Similarly as beaker-wizard
+        (which should be obsoleted by this) the tool should prompt
+        for required values if not provided on the command line.
     example:
-        - tmt test create
-        - tmt test create /tests/area/feature
-        - tmt test create /tests/area/feature --skeleton beakerlib
-        - tmt test create /tests/area/feature --duration=1h
+      - tmt test create
+      - tmt test create /tests/area/feature
+      - tmt test create /tests/area/feature --skeleton beakerlib
+      - tmt test create /tests/area/feature --duration=1h
     link:
       - implemented-by: /tmt/cli.py
       - documented-by: /docs/examples.rst#create-tests
@@ -109,15 +106,14 @@ story: 'As a user I want to comfortably work with tests'
 
 /filter:
     story: 'Filter available tests'
-    description:
-        Search tests using a regular expression or a filter.
+    description: Search tests using a regular expression or a filter.
         Use ``.`` to select tests under the current directory.
     example:
-        - tmt test ls .
-        - tmt test ls REGEXP
-        - tmt test show --filter tier:1
-        - tmt test show --condition 'int(tier) < 2'
-        - tmt test show --condition '"gcc" in require'
+      - tmt test ls .
+      - tmt test ls REGEXP
+      - tmt test show --filter tier:1
+      - tmt test show --condition 'int(tier) < 2'
+      - tmt test show --condition '"gcc" in require'
     link:
       - implemented-by: /tmt/base.py
       - documented-by: /docs/examples.rst#filter-tests

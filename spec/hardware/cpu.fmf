@@ -1,5 +1,4 @@
-summary:
-    Choose system according to the processor features
+summary: Choose system according to the processor features
 example:
   - |
     # Processor-related stuff grouped together

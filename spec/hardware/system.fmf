@@ -1,8 +1,6 @@
-summary:
-    Select machine with given system attributes
-description:
-    Use the ``vendor`` key to choose system by specific vendor,
-    ``model`` to provide system's model name, ``numa-nodes``
+summary: Select machine with given system attributes
+description: Use the ``vendor`` key to choose system by specific
+    vendor, ``model`` to provide system's model name, ``numa-nodes``
     to select systems with a given number of NUMA nodes.
 example:
   - |

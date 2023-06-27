@@ -1,19 +1,15 @@
 summary: Report test results
-story:
-    As a tester I want to have a nice overview of results once
+story: As a tester I want to have a nice overview of results once
     the testing if finished.
-description:
-    Report test results according to user preferences.
+description: Report test results according to user preferences.
 
 /display:
     summary: Show results in the terminal window
-    story:
-        As a tester I want to see test results in the plain text
+    story: As a tester I want to see test results in the plain text
         form in my shell session.
-    description:
-        Test results will be displayed as part of the command line
-        tool output directly in the terminal. Allows to select the
-        desired level of verbosity
+    description: Test results will be displayed as part of the command
+        line tool output directly in the terminal. Allows to select
+        the desired level of verbosity
     example: |
         tmt run -l report        # overall summary only
         tmt run -l report -v     # individual test results
@@ -24,12 +20,11 @@ description:
 
 /html:
     summary: Generate a web page with test results
-    story:
-        As a tester I want to review results in a nicely arranged
+    story: As a tester I want to review results in a nicely arranged
         web page with links to detailed test output.
-    description:
-        Create a local ``html`` file with test results arranged in
-        a table. Optionally open the page in the default browser.
+    description: Create a local ``html`` file with test results
+        arranged in a table. Optionally open the page in the default
+        browser.
     example: |
         # Enable html report from the command line
         tmt run --all report --how html
@@ -45,10 +40,8 @@ description:
 
 /junit:
     summary: Generate a JUnit report file
-    story:
-        As a tester I want to review results in a JUnit xml file.
-    description:
-        Create a JUnit file ``junit.xml`` with test results.
+    story: As a tester I want to review results in a JUnit xml file.
+    description: Create a JUnit file ``junit.xml`` with test results.
     example: |
         # Enable junit report from the command line
         tmt run --all report --how junit
@@ -59,17 +52,15 @@ description:
             how: junit
             file: test.xml
     link:
-        - implemented-by: /tmt/steps/report/junit.py
+      - implemented-by: /tmt/steps/report/junit.py
 
 /polarion:
     summary: Generate a xUnit file and export it into Polarion
-    story:
-        As a tester I want to review tests in Polarion
-        and have all results linked to existing test cases there.
-    description:
-        Create a xUnit file ``xunit.xml`` with test results
-        and Polarion properties so the xUnit can then be
-        exported into Polarion.
+    story: As a tester I want to review tests in Polarion and have
+        all results linked to existing test cases there.
+    description: Create a xUnit file ``xunit.xml`` with test results
+        and Polarion properties so the xUnit can then be exported
+        into Polarion.
     example: |
         # Enable polarion report from the command line
         tmt run --all report --how polarion --project-id TMT
@@ -84,16 +75,14 @@ description:
             planned-in: RHEL-9.1.0
             pool-team: sst_tmt
     link:
-        - implemented-by: /tmt/steps/report/polarion.py
+      - implemented-by: /tmt/steps/report/polarion.py
 
 /reportportal:
     summary: Report test results to a ReportPortal instance
-    story:
-        As a tester I want to review results in a nicely arranged
+    story: As a tester I want to review results in a nicely arranged
         web page with links to detailed test output.
-    description:
-        Prepare a JUnit report with test results, zip it and send
-        it to a ReportPortal instance.
+    description: Prepare a JUnit report with test results, zip it
+        and send it to a ReportPortal instance.
     example:
       - |
         # Set environment variables with the server url and token
@@ -109,10 +98,10 @@ description:
             project: baseosqe
             launch-name: maven
     link:
-        - implemented-by: /tmt/steps/report/reportportal.py
+      - implemented-by: /tmt/steps/report/reportportal.py
 
 /file:
-    description: |
+    description: |4
 
         Save the report into a ``report.yaml`` file with the
         following format:

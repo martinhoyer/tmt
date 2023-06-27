@@ -23,4 +23,4 @@ provision:
 /listed:
     execute:
         script:
-            - /bin/false; /bin/true
+          - /bin/false; /bin/true

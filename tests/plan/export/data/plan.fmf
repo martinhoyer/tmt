@@ -1,4 +1,5 @@
-description: Testing data for test the feature to export plans to yaml or dict
+description: Testing data for test the feature to export plans to
+    yaml or dict
 
 discover:
     how: fmf

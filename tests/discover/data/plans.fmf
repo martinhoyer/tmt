@@ -51,18 +51,18 @@ execute:
             how: shell
             url: https://github.com/teemtee/tmt
             tests:
-            - name: directory is there
-              test: test -d examples
+              - name: directory is there
+                test: test -d examples
         /static:
         /dynamic-ref:
-          /no-context:
-              discover+:
-                  ref: "@tests/discover/data/dynamic-ref.fmf"
-          /with-context:
-              context:
-                  branch: fedora
-              discover+:
-                  ref: "@tests/discover/data/dynamic-ref.fmf"
+            /no-context:
+                discover+:
+                    ref: "@tests/discover/data/dynamic-ref.fmf"
+            /with-context:
+                context:
+                    branch: fedora
+                discover+:
+                    ref: "@tests/discover/data/dynamic-ref.fmf"
 
 /fmf:
     /url:
@@ -132,11 +132,11 @@ execute:
                 environment:
                     PICK_TMT: 'REPLACED_BY_CMDLINE'
                 discover:
-                -   how: fmf
+                  - how: fmf
                     url: https://github.com/teemtee/tmt.git
                     name: TMT
                     test: ${PICK_TMT}
-                -   how: fmf
+                  - how: fmf
                     url: https://github.com/teemtee/fmf.git
                     test: $@{PICK_FMF}
                     name: FMF

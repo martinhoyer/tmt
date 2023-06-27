@@ -1,9 +1,8 @@
 summary: Packages or libraries recommended for the test execution
 
-story:
-    As a tester I want to specify additional packages which should
-    be installed on the system if available and no error should be
-    reported if they cannot be installed.
+story: As a tester I want to specify additional packages which should
+    be installed on the system if available and no error should
+    be reported if they cannot be installed.
 
 description: |
     Sometimes there can be additional packages which are not

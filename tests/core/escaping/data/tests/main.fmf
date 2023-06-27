@@ -4,7 +4,7 @@ require: []
 test: "true"
 
 /01-basic quote's error:
-  summary: Test a correct quote escaping in test name
+    summary: Test a correct quote escaping in test name
 
 /02-advanced \n @? 'test' \"|":
-  summary: Test a correct quote escaping in test name
+    summary: Test a correct quote escaping in test name

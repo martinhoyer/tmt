@@ -31,8 +31,7 @@ example: |
 
 /virtual:
     summary: Provision a virtual machine (default)
-    description:
-        Create a new virtual machine on the localhost using
+    description: Create a new virtual machine on the localhost using
         testcloud (libvirt). Testcloud takes care of downloading
         an image and making necessary changes to it for optimal
         experience (such as disabling UseDNS and GSSAPI for SSH).
@@ -45,11 +44,10 @@ example: |
 
 /local:
     summary: Use the localhost for testing
-    description:
-        Do not provision any system. Tests will be executed
+    description: Do not provision any system. Tests will be executed
         directly on the localhost. Note that for some actions like
-        installing additional packages you need root permission or
-        enabled sudo.
+        installing additional packages you need root permission
+        or enabled sudo.
     example: |
         provision:
             how: local
@@ -59,9 +57,8 @@ example: |
 
 /container:
     summary: Provision a container
-    description:
-        Download (if necessary) and start a new container using
-        podman or docker.
+    description: Download (if necessary) and start a new container
+        using podman or docker.
     example: |
         provision:
             how: container
@@ -71,8 +68,7 @@ example: |
 
 /openstack:
     summary: Provision a virtual machine in OpenStack
-    description:
-        Create a virtual machine using OpenStack.
+    description: Create a virtual machine using OpenStack.
     example: |
         provision:
             how: openstack

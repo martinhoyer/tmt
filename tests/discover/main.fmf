@@ -8,9 +8,8 @@
 
 /references:
     summary: Verify that basic referencing works.
-    description:
-        Make sure that all combinations of 'url', 'ref' and 'path'
-        parameters work as expected.
+    description: Make sure that all combinations of 'url', 'ref'
+        and 'path' parameters work as expected.
     tier: 2
     /fmf:
         test: ./references.sh
@@ -38,9 +37,9 @@
     test: ./distgit.sh
     enabled: false
     adjust:
-    - enabled: true
-      when: how == full or trigger == commit
-      tag+: [additional_coverage]
+      - enabled: true
+        when: how == full or trigger == commit
+        tag+: [additional_coverage]
 
 /dynamic-ref:
     /fmf:

@@ -2,8 +2,7 @@ summary: Importing plans from a remote repository
 title: Import Plans
 order: 90
 
-story:
-    As a user I want to reference a plan from a remote repository
+story: As a user I want to reference a plan from a remote repository
     in order to prevent duplication and minimize maintenance.
 
 description: |
