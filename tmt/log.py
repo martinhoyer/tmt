@@ -454,12 +454,13 @@ class Logger:
         self.topics = topics or DEFAULT_TOPICS
 
     def __repr__(self) -> str:
-        return '<Logger:' \
-            f' name={self._logger.name}' \
-            f' verbosity={self.verbosity_level}' \
-            f' debug={self.debug_level}' \
-            f' quiet={self.quiet}' \
-            f' topics={self.topics}>'
+        return ('<Logger:'
+                f' name={self._logger.name}'
+                f' verbosity={self.verbosity_level}'
+                f' debug={self.debug_level}'
+                f' quiet={self.quiet}'
+                f' topics={self.topics}>'
+                )
 
     @property
     def labels_span(self) -> int:

@@ -865,10 +865,11 @@ class BasePlugin(Phase):
                             from exc
 
                 assert data is not None
-                assert data.__class__ is plugin_data_class, \
-                    f'Data package is instance of {data.__class__.__name__}, ' \
-                    f'plugin {plugin_class.__name__} ' \
+                assert data.__class__ is plugin_data_class, (
+                    f'Data package is instance of {data.__class__.__name__}, '
+                    f'plugin {plugin_class.__name__} '
                     f'expects {plugin_data_class.__name__}'
+                    )
 
                 plugin = plugin_class(
                     logger=step._logger.descend(logger_name=None),
@@ -1047,10 +1048,11 @@ class BasePlugin(Phase):
         selected ones.
         """
 
-        assert self.data.__class__ is self._data_class, \
-            f'Plugin {self.__class__.__name__} woken with incompatible ' \
-            f'data {self.data}, ' \
+        assert self.data.__class__ is self._data_class, (
+            f'Plugin {self.__class__.__name__} woken with incompatible '
+            f'data {self.data}, '
             f'expects {self._data_class.__name__}'
+            )
 
         if self.step.status() == 'done':
             self.debug('step is done, not overwriting plugin data')

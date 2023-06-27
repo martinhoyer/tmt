@@ -832,9 +832,8 @@ class Core(
                     return
 
                 for bad_property in match.group(1).replace("'", '').replace(' ', '').split(','):
-                    yield LinterOutcome.WARN, \
-                        f'key "{bad_property}" not recognized by schema,' \
-                        f' and does not match "{match.group(2)}" pattern'
+                    yield LinterOutcome.WARN, (f'key "{bad_property}" not recognized by schema, '
+                                               f'and does not match "{match.group(2)}" pattern')
 
             # A key value is not recognized. This is often a case with keys whose values are
             # limited by an enum, like `how`. Unfortunatelly, validator will record every mismatch
