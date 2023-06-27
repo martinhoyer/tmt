@@ -785,7 +785,7 @@ class Common(_CommonBase):
             *,
             parent: Optional[CommonDerivedType] = None,
             name: Optional[str] = None,
-            workdir: WorkdirArgumentType = None,
+            workdir: Optional[WorkdirArgumentType] = None,
             cli_context: Optional['tmt.cli.Context'] = None,
             relative_indent: int = 1,
             logger: tmt.log.Logger,
@@ -1167,7 +1167,7 @@ class Common(_CommonBase):
         except OSError as error:
             raise FileError(f"Failed to write '{path}'.\n{error}")
 
-    def _workdir_init(self, id_: WorkdirArgumentType = None) -> None:
+    def _workdir_init(self, id_: Optional[WorkdirArgumentType] = None) -> None:
         """
         Initialize the work directory
 

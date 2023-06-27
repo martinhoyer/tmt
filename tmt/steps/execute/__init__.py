@@ -149,7 +149,7 @@ class ExecutePlugin(tmt.steps.Plugin):
             *,
             step: Step,
             data: StepData,
-            workdir: tmt.utils.WorkdirArgumentType = None,
+            workdir: Optional[tmt.utils.WorkdirArgumentType] = None,
             logger: tmt.log.Logger) -> None:
         super().__init__(logger=logger, step=step, data=data, workdir=workdir)
         self._results: List[tmt.Result] = []
