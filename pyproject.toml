@@ -95,7 +95,6 @@ ignore = [
     "B904",  # Within an `except` clause, raise exceptions with `raise ... from err` or `raise ...
     "COM812",  # Trailing comma missing
     "PIE790",  # Unnecessary `pass` statement
-    "PLC1901",  # `{}` can be simplified to `{}` as an empty string is falsey
     "PLE1205",  # Too many arguments for `logging` format string
     "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
     "RUF013",  # PEP 484 prohibits implicit `Optional`
@@ -108,9 +107,6 @@ extend-immutable-calls = [ "tmt.utils.field" ]
 
 [tool.ruff.isort]
 known-first-party = ["tmt"]
-
-[tool.ruff.per-file-ignores]
-"tmt/steps/report/polarion.py" = ["DTZ005"]
 
 [tool.pytest.ini_options]
 markers = [
