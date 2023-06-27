@@ -21,11 +21,9 @@ description: |
     In each plan, the execute step must produce a ``results.yaml`` file
     with results for executed tests. The format of the file is described
     at :ref:`/spec/plans/results`.
-
 /upgrade:
     summary: Perform system upgrades during testing
-    story:
-        As a tester I want to verify that a configured application
+    story: As a tester I want to verify that a configured application
         or service still correctly works after the system upgrade.
     description: |
         In order to enable developing tests for upgrade testing, we
@@ -78,10 +76,10 @@ description: |
 
       - |
         # Upgrade path /paths/fedora35to36.fmf in the remote repository
-        discover: # Selects appropriate upgrade tasks (L1 tests)
+        discover:  # Selects appropriate upgrade tasks (L1 tests)
             how: fmf
             filter: "tag:fedora"
-        environment: # This is passed to upgrade tasks
+        environment:  # This is passed to upgrade tasks
             SOURCE: 35
             TARGET: 36
         execute:
@@ -126,26 +124,20 @@ description: |
     link:
       - implemented-by: /tmt/steps/execute/upgrade.py
       - verified-by: /tests/execute/upgrade
-
-
 /isolate:
     summary: Run tests in an isolated environment
-    description:
-        Optional boolean attribute `isolate` can be used to
-        request a clean test environment for each test.
+    description: Optional boolean attribute `isolate` can be used
+        to request a clean test environment for each test.
     example: |
         execute:
             how: tmt
             isolate: true
-
 /exit-first:
     summary: Stop execution after a test fails
-    story:
-        As a user I want to avoid waiting for all discovered
+    story: As a user I want to avoid waiting for all discovered
         tests to finish if one of them fails.
-    description:
-        Optional boolean attribute `exit-first` can be used to
-        make the executor stop executing tests once a test
+    description: Optional boolean attribute `exit-first` can be
+        used to make the executor stop executing tests once a test
         failure is encountered.
     example: |
         execute:
@@ -154,7 +146,6 @@ description: |
     link:
       - implemented-by: /tmt/steps/execute/internal.py
       - verified-by: /tests/execute/exit-first
-
 /tmt:
     summary: Internal test executor
     story: As a user I want to execute tests directly from tmt.
@@ -204,7 +195,6 @@ description: |
     link:
       - implemented-by: /tmt/steps/execute/internal.py
       - verified-by: /tests/execute/framework
-
 /script:
     summary: Execute shell scripts
     story: As a user I want to easily run shell script as a test.
@@ -251,10 +241,9 @@ description: |
     /several:
         summary: Multiple shell commands
         title: Multiple commands
-        description:
-            You can also include several commands as a list.
-            Executor will run commands one-by-one and check exit
-            code of each.
+        description: You can also include several commands as a
+            list. Executor will run commands one-by-one and check
+            exit code of each.
         example: |
             execute:
                 script:
@@ -266,13 +255,11 @@ description: |
     /multi:
         summary: Multi-line shell script
         title: Multi-line script
-        description:
-            Providing a multi-line shell script is also supported.
-            Note that the first command with non-zero exit code
-            will finish the execution. See the
-            :ref:`/spec/tests/test` key for details about default
-            shell options.
-        example: |
+        description: Providing a multi-line shell script is also
+            supported. Note that the first command with non-zero
+            exit code will finish the execution. See the :ref:`/spec/tests/test`
+            key for details about default shell options.
+        example: |-
             execute:
                 script: |
                     dnf -y install httpd curl

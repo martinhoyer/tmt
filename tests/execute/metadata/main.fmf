@@ -1,8 +1,7 @@
 summary: Verify that metadata.yaml content is complete
-description:
-    Check whether original 'require' and 'recommend' values are
-    stored in the 'metadata.yaml' file, that default values are
-    present and that custom metadata keys are included as well.
+description: Check whether original 'require' and 'recommend' values
+    are stored in the 'metadata.yaml' file, that default values
+    are present and that custom metadata keys are included as well.
 tag-: [container]
 tier: 3
 duration: 15m

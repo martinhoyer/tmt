@@ -1,5 +1,4 @@
-story:
-    As a tester I want to specify detailed hardware requirements
+story: As a tester I want to specify detailed hardware requirements
     for the guest on which the tests will be executed.
 
 description: |
@@ -12,7 +11,6 @@ description: |
 
     Introduction
     ^^^^^^^^^^^^
-
     Individual requirements are provided as a simple ``key:
     value`` pairs, for example the minimum amount of
     :ref:`/spec/hardware/memory`, or the related information is
@@ -26,7 +24,6 @@ description: |
     The ``operator`` is optional, it may be any of the following: ``=``, ``!=``,
     ``>``, ``>=``, ``<``, ``>=``, ``~`` (regex match), and ``!~`` (regex *not*
     matches). When operator is omitted, ``=`` is assumed.
-
     .. note::
 
         It is **highly** recommended to wrap values with single or double quotes,
@@ -83,7 +80,6 @@ description: |
     sufficient:
 
     .. code-block:: yaml
-
         # By default exact value expected, these are equivalent:
         cpu:
             model: 37
@@ -107,7 +103,6 @@ description: |
 
     The `pint`__ library is used for processing various units,
     both decimal and binary prefixes can be used:
-
     .. code-block::
 
         1 MB = 1 000 000 B
@@ -124,7 +119,6 @@ description: |
     other provision plugins is on the way.  Check individual
     plugin documentation for additional information on the
     hardware requirement support.
-
     .. note::
 
         Some plugins may require additional configuration. For
@@ -135,17 +129,14 @@ description: |
         it will not deliver the required virtual machine when the
         plugin's backend, the Artemis deployment, isn't configured
         correctly.
-
     .. note::
 
         Some plugins may support requirements that are impossible
         to satisfy, e.g. the :ref:`/spec/plans/provision/local`
         plugin can support the ``cpu.family`` requirement, but it
         is hard-locked to the CPU of one's own machine.
-
-
 example:
-  - |
+  - |-
     # Use the artemis plugin to provision the latest Fedora on
     # a guest with the x86_64 architecture and 8 GB of memory
     provision:

@@ -1,9 +1,8 @@
 summary: Specify how test result should be interpreted
 
-story:
-    As a tester I want to regularly execute the test but
-    temporarily ignore test result until more investigation is
-    done and the test can be fixed properly.
+story: As a tester I want to regularly execute the test but temporarily
+    ignore test result until more investigation is done and the
+    test can be fixed properly.
 
 description: |
     Even if a test fails it might makes sense to execute it to be
@@ -24,7 +23,6 @@ description: |
         ``results.json`` file in the ``${TMT_TEST_DATA}``
         directory. The format of the file, notes and detailed examples
         are documented at :ref:`/spec/plans/results`.
-
 example:
   - |
     # Plain swapping fail to pass and pass to fail result
@@ -33,7 +31,6 @@ example:
   - |
     # Look for $TMT_TEST_DATA/results.yaml (or results.json) with custom results
     result: custom
-
 link:
   - implemented-by: /tmt/base.py
   - verified-by: /tests/execute/result

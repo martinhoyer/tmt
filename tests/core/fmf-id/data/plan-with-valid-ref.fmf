@@ -1,6 +1,5 @@
 execute:
-  how: tmt
-
+    how: tmt
 discover:
   - how: fmf
     ref: branch-or-tag-ref

@@ -1,12 +1,10 @@
 /free:
     test: free
-
 /uptime:
     test: uptime
     adjust:
         duration: 1m
         when: arch == ppc64
-
 /pidof:
     test: pidof sh
     adjust:

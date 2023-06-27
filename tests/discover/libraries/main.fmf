@@ -1,6 +1,5 @@
 summary: Verify beakerlib libraries support
-description:
-    Run a test which requires a beakerlib library 'httpd/http'
+description: Run a test which requires a beakerlib library 'httpd/http'
     which has an additional dependency on 'openssl/certgen'. Make
     sure that all required packages are installed and libraries
     are fetched into the discover step workdir. Make sure that the
@@ -8,13 +7,12 @@ description:
 tier: 3
 duration: 25m
 tag-: [virtual, container]
-enabled: False
+enabled: false
 require+:
   - tmt-provision-container
   - tmt-provision-virtual
-
 adjust:
-    enabled: True
+    enabled: true
     when: how == full
     because: this can be run only with a full virtualization
     tag+: [additional_coverage]

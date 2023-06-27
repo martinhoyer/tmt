@@ -1,7 +1,6 @@
 summary: Packages, libraries or files required for test execution
 
-story:
-    As a tester I want to specify packages, libraries and files
+story: As a tester I want to specify packages, libraries and files
     which are required by the test and need to be installed on or
     copied over to the system so that the test can be successfully
     executed.
@@ -53,7 +52,6 @@ description: |
 
     __ https://github.com/beakerlib/
     __ https://fmf.readthedocs.io/en/latest/concept.html#identifiers
-
 example:
   - |
     # Require a single package
@@ -110,7 +108,6 @@ example:
     require:
       - type: file
         pattern: /
-
 link:
   - implemented-by: /tmt/base.py
   - implemented-by: /tmt/steps/discover

@@ -1,12 +1,10 @@
 execute:
     how: tmt
-
 /smoke:
     provision:
         how: local
     execute:
         script: tmt --help
-
 /tests:
     provision:
         how: local
@@ -22,7 +20,7 @@ execute:
             recommend:
               - tmt
             # fmf-id in require/recommend doesn't work
-            #require:
+            # require:
             #- url: https://github.com/teemtee/tmt
             adjust:
               - when: some_dimension is defined
@@ -32,7 +30,7 @@ execute:
             link:
               - https://github.com/teemtee/tmt/pull/1461
             tag:
-              - yes
+              - true
             tier: 3
             component:
               - tmt
@@ -44,26 +42,24 @@ execute:
             path: /
             result: xfail
             summary: Concise summary
-
 /shell:
     /url:
         discover:
             how: shell
             url: https://github.com/teemtee/tmt
             tests:
-            - name: directory is there
-              test: test -d examples
+              - name: directory is there
+                test: test -d examples
         /static:
         /dynamic-ref:
-          /no-context:
-              discover+:
-                  ref: "@tests/discover/data/dynamic-ref.fmf"
-          /with-context:
-              context:
-                  branch: fedora
-              discover+:
-                  ref: "@tests/discover/data/dynamic-ref.fmf"
-
+            /no-context:
+                discover+:
+                    ref: "@tests/discover/data/dynamic-ref.fmf"
+            /with-context:
+                context:
+                    branch: fedora
+                discover+:
+                    ref: "@tests/discover/data/dynamic-ref.fmf"
 /fmf:
     /url:
         /ref:
@@ -132,15 +128,14 @@ execute:
                 environment:
                     PICK_TMT: 'REPLACED_BY_CMDLINE'
                 discover:
-                -   how: fmf
+                  - how: fmf
                     url: https://github.com/teemtee/tmt.git
                     name: TMT
                     test: ${PICK_TMT}
-                -   how: fmf
+                  - how: fmf
                     url: https://github.com/teemtee/fmf.git
                     test: $@{PICK_FMF}
                     name: FMF
-
 
     /nourl:
         /ref:

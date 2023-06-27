@@ -6,7 +6,6 @@ provision:
 execute:
     how: upgrade
     url: https://github.com/teemtee/upgrade
-
 /no-path:
     summary: Basic upgrade test with no upgrade path
 /path:

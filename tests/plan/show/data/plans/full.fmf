@@ -7,7 +7,6 @@ order: 70
 tag: foo
 tier: 3
 link: https://something.org/related
-
 # Steps
 discover:
     how: fmf
@@ -26,7 +25,6 @@ report:
 finish:
     how: ansible
     playbook: cleanup.yaml
-
 # Extra
 environment:
     KEY: VAL

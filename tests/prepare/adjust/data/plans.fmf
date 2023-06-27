@@ -4,7 +4,6 @@ provision:
     how: container
 execute:
     how: tmt
-
 # Plan with a prepare step defined
 /defined:
     summary: Prepare required package
@@ -15,7 +14,6 @@ execute:
         prepare+:
             package: [python2, PyYAML]
         when: distro ~< centos-8
-
 # Plan with no prepare step defined
 /without:
     summary: Do not prepare anything

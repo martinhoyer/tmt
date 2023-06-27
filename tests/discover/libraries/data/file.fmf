@@ -1,6 +1,5 @@
 summary: A simple test for the file command
-description:
-    Requires a library stored deep in the directory structure.
+description: Requires a library stored deep in the directory structure.
 test: ./file.sh
 path: /
 require:

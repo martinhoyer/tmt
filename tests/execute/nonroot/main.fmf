@@ -1,10 +1,10 @@
 summary: Scripts used in execute are pushed via sudo
 tag:
-- additional_coverage
-- virtual
+  - additional_coverage
+  - virtual
 require:
-- tmt
-- tmt-provision-virtual
+  - tmt
+  - tmt-provision-virtual
 tier: "3"
 
 enabled: false

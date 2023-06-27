@@ -1,8 +1,7 @@
 summary: Check help messages
-description:
-    A couple of oneline examples showing how simple shell
-    tests can be written directly in the discover step. The
-    last one demonstrates a custom script in given directory.
+description: A couple of oneline examples showing how simple shell
+    tests can be written directly in the discover step. The last
+    one demonstrates a custom script in given directory.
 discover:
     tests:
       - name: /help/main

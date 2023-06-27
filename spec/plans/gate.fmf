@@ -16,7 +16,7 @@ description: |
     Each plan can define one or more gates it should be blocking.
     Attached is an example of configuring multiple gates.
 
-example: |
+example: |-
     /test:
         /pull-request:
             /pep:

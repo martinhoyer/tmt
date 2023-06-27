@@ -1,5 +1,4 @@
 summary: Check whether an injected shell code is executed
-
 # By default, we run under a container only
 environment:
     PROVISION_METHODS: container

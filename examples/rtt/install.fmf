@@ -1,4 +1,3 @@
-
 # common settings
 discover:
     summary: Postinstall checks
@@ -9,7 +8,6 @@ provision:
     how: rtt-magic
 execute:
     how: shell
-
 # pxe install
 /pxe:
     summary: "Test pxe installation"
@@ -21,7 +19,6 @@ execute:
     /complex:
         provision+:
             setup: complex
-
 # http install
 /http:
     summary: "Test http installation"

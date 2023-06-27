@@ -1,7 +1,6 @@
 summary: Definition of the initiator dimension
 
-story:
-    As a user I want to run a custom set of tests based on the
+story: As a user I want to run a custom set of tests based on the
     service, pipeline or tool which initiated the testing.
 
 description: |
@@ -36,7 +35,7 @@ description: |
     to its name. For manual testing ``--context initiator=human``
     is expected on the command line.
 
-example: |
+example: |-
     # Enable the plan only when run manually
     summary: Tests requiring special environment
     discover:

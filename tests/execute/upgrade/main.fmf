@@ -1,5 +1,4 @@
 duration: 10m
-
 /full:
     summary: Perform a full upgrade from F35 to F36
     test: ./full.sh
@@ -8,19 +7,16 @@ duration: 10m
     # requires nested virtualization (runs in VM)
     enabled: false
     adjust:
-    - enabled: true
-      when: how == full
-      tag+: [additional_coverage]
+      - enabled: true
+        when: how == full
+        tag+: [additional_coverage]
     tier: 3
-
 /simple:
     summary: Run a single task from upgrades repo
     test: ./simple.sh
-
 /override:
     summary: Override the filter in remote upgrade path
     test: ./override.sh
-
 /ignore_test:
     summary: Ignore test -n run subcommand in remote repo
     test: ./ignore-test.sh

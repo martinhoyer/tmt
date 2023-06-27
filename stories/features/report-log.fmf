@@ -1,7 +1,6 @@
 title: Save a log file
-story:
-    As a tester I want to save a log from a test using the
-    restraint command during test execution.
+story: As a tester I want to save a log from a test using the restraint
+    command during test execution.
 
 description: |
     The ``tmt-file-submit`` command can be used to save a log
@@ -19,8 +18,7 @@ description: |
     __ https://restraint.readthedocs.io/en/latest/commands.html#rstrnt-report-log
 
 example: |
-        tmt-file-submit -l /path/to/log/log.txt
-
+    tmt-file-submit -l /path/to/log/log.txt
 link:
   - implemented-by: /tmt/steps/execute/internal.py
   - verified-by: /tests/execute/restraint/report-log

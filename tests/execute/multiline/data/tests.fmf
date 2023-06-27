@@ -2,8 +2,7 @@
     test: |
         /bin/true
         /bin/true
-
 /bad:
-    test: |
+    test: |-
         /bin/false
         /bin/true

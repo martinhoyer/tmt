@@ -8,11 +8,11 @@
         memory:
             min: '1 GB'
         arch:
-            - 'x86_64'
+          - 'x86_64'
     # Machine configuration
     prepare:
         ansible:
-            - 'setup.yml'
+          - 'setup.yml'
     # Test execution
     execute:
         how: restraint
@@ -35,9 +35,9 @@
     /update:
         provision+:
             arch:
-                - x86_64
-                - ppc64
-                - s390x
+              - x86_64
+              - ppc64
+              - s390x
         /basic:
             summary: Run all Tier1, Tier2 and Tier3 tests
             discover+:
@@ -56,4 +56,4 @@
                     max: '8 GB'
             prepare:
                 ansible:
-                    - 'integration.yml'
+                  - 'integration.yml'

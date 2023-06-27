@@ -4,7 +4,6 @@
         import:
             url: https://github.com/teemtee/tmt
             name: /plans/sanity/lint
-
 /ref-and-path:
     summary: Git ref and custom path
     plan:
@@ -20,7 +19,6 @@
         plan+:
             import+:
                 path: tests/run/worktree/data/prepare
-
 /full:
     summary: Full plan with test scripts
     plan:

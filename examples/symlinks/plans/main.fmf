@@ -1,22 +1,19 @@
 # Use localhost by default
 provision:
     how: local
-
 # Install packages
-#prepare:
+# prepare:
 #  - name: tmt
 #    how: install
 #    package: tmt
 #    copr: psss/tmt
 #    directory: tmp/RPMS/noarch
-
 # Ansible playbook
-#prepare:
+# prepare:
 #    how: ansible
 #    playbook: ansible/packages.yml
-
 # Shell commands
-#prepare:
+# prepare:
 #    how: shell
 #    script:
 #    - sudo dnf install -y 'dnf-command(copr)'

@@ -1,7 +1,5 @@
 test: ./test.sh
-
 /A:
-  summary: Dummy test A
-
+    summary: Dummy test A
 /B:
-  summary: Dummy test B
+    summary: Dummy test B

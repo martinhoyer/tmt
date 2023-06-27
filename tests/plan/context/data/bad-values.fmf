@@ -6,4 +6,4 @@ context:
     bar: 1
     baz: false
     dud:
-      how: about
+        how: about

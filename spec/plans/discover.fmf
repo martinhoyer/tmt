@@ -38,7 +38,6 @@ description: |
           summary: Short test summary.
           description: Long test description.
           ...
-
 /shell:
     summary: Provide a manual list of shell test cases
     description: |
@@ -111,7 +110,6 @@ description: |
 
     link:
       - implemented-by: /tmt/steps/discover/shell.py
-
 /fmf:
     summary: Discover available tests using the fmf format
     description: |
@@ -234,7 +232,6 @@ description: |
             dist-git-source: true
     link:
       - implemented-by: /tmt/steps/discover/fmf.py
-
 /where:
     summary: Execute tests on selected guests
     description: |
@@ -289,7 +286,7 @@ description: |
                   - how: fmf
                     filter: tag:server-tests
 
-      - |
+      - |-
         # Alternative syntax using the 'where' dictionary
         # encapsulating for shell script tests
         discover:

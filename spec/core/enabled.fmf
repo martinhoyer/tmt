@@ -1,8 +1,7 @@
 summary: Allow disabling individual tests, plans or stories
 
-story:
-    As a developer or tester I want selected tests or plans to be
-    skipped during test execution.
+story: As a developer or tester I want selected tests or plans to
+    be skipped during test execution.
 
 description: |
     When a test or a plan is broken or it is not relevant for
@@ -26,7 +25,6 @@ example: |
 
     # List only enabled tests
     tmt tests ls --filter enabled:true
-
 link:
   - implemented-by: /tmt/base.py
   - verified-by: /tests/test/select

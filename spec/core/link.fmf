@@ -1,7 +1,6 @@
 summary: Link related objects
 
-story:
-    As a user I want to link related tests, stories or external
+story: As a user I want to link related tests, stories or external
     issues so that I can easily find out what the test, plan or
     story is addressing.
 

@@ -1,6 +1,5 @@
-story:
-    As a developer I want to define application features and track
-    which have been already implemented, verified and documented.
+story: As a developer I want to define application features and
+    track which have been already implemented, verified and documented.
 
 description: |
     Stories, which implement the L3 metadata, can be used to track
@@ -13,7 +12,7 @@ description: |
     support common :ref:`/spec/core` attributes which are shared
     across all metadata levels.
 
-example: |
+example: |-
     story:
         As a user I want to see more detailed information for
         particular command.

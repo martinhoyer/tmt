@@ -1,8 +1,7 @@
 summary: Definition of the trigger dimension
 
-story:
-    As a user I want to run a custom set of tests for
-    different events which trigger the testing.
+story: As a user I want to run a custom set of tests for different
+    events which trigger the testing.
 
 description: |
     Testing can be triggered by various events and a different set
@@ -27,7 +26,7 @@ description: |
     This context dimension will usually be provided from the
     command line.
 
-example: |
+example: |-
     summary: Full test coverage (takes three days)
     discover:
         how: fmf

@@ -8,9 +8,7 @@ discover:
 
   - name: Advanced plan's name escaping \n @? 'test' \"|"
     how: fmf
-
 provision:
-  how: container
-
+    how: container
 execute:
-  how: tmt
+    how: tmt

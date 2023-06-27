@@ -1,7 +1,6 @@
 manual: true
 test: test.md
 path: /manual_test_passed
-
 /manual_true:
     /correct_path:
         /pass:
@@ -15,7 +14,6 @@ path: /manual_test_passed
     /wrong_path:
         summary: Wrong test path
         test: wrong_path.md
-
 /manual_false:
     summary: Automated test
     manual: false

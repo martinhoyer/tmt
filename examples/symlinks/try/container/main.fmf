@@ -3,7 +3,6 @@ provision:
     how: container
 #    image: fedora
 #    pull: false
-
 # Enable special container filter
 /core:
     discover+:

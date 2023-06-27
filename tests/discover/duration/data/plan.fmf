@@ -19,7 +19,6 @@
                 test: test
         execute:
             how: tmt
-
 /defined:
     /fmf:
         summary: 'Defined duration in the fmf metadata'

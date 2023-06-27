@@ -1,8 +1,7 @@
 summary: Shell command which executes the test
 
-story:
-    As a test writer I want to run a single test script in
-    multiple ways (e.g. by providing different parameters).
+story: As a test writer I want to run a single test script in multiple
+    ways (e.g. by providing different parameters).
 
 description: |
     This attribute defines how the test is to be executed.
@@ -20,7 +19,6 @@ description: |
     going unnoticed. You may revert this setting by explicitly
     using ``set +eo pipefail``. These options are not applied when
     ``beakerlib`` is used as the :ref:`/spec/tests/framework`.
-
 example:
   - |
     # Run a script
@@ -42,7 +40,6 @@ example:
     # Define a manual test
     test: manual.md
     manual: true
-
 link:
   - implemented-by: /tmt/base.py
   - verified-by: /tests/execute

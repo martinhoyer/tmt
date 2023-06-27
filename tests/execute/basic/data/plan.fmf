@@ -4,11 +4,9 @@ provision:
     how: local
 execute:
     how: tmt
-
 /shell:
     discover+:
         test: shell
-
 /beakerlib:
     discover+:
         test: beakerlib

@@ -1,5 +1,4 @@
-story:
-    As a tester I want to store test metadata close to the test
+story: As a tester I want to store test metadata close to the test
     source code.
 
 description: |
@@ -14,7 +13,7 @@ description: |
     common :ref:`/spec/core` attributes which are shared across
     all metadata levels.
 
-example: |
+example: |-
     summary: Check the man page
     test: man tmt | grep friendly
     require: grep

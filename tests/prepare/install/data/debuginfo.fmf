@@ -1,5 +1,4 @@
-summary:
-    Install debuginfo packages
+summary: Install debuginfo packages
 prepare:
   - name: debuginfo
     how: install
@@ -10,10 +9,8 @@ execute:
     script:
       - rpm -q grep-debuginfo grep-debugsource
       - rpm -q elfutils-debuginfo elfutils-debugsource
-
 /fedora:
     summary+: " on Fedora"
-
 /centos-8:
     summary+: " on CentOS 8"
     provision+:
@@ -27,7 +24,6 @@ execute:
           - dnf install -y 'dnf-command(config-manager)'
           - dnf config-manager --enable debuginfo
         order: 10
-
 /centos-7:
     summary+: " on CentOS 7"
     provision+:

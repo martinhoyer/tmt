@@ -1,6 +1,5 @@
-story:
-    As a tester I want to specify detailed installation of a guest
-    using the kickstart script.
+story: As a tester I want to specify detailed installation of a
+    guest using the kickstart script.
 
 description: |
     As part of the :ref:`/spec/plans/provision` step it is possible to
@@ -34,7 +33,6 @@ description: |
     booted.  Post-install kernel options are set in the boot loader
     configuration, to be passed on the kernel command line after
     installation.
-
     .. note::
 
         The implementation for the ``kickstart`` key is in progress.
@@ -43,9 +41,8 @@ description: |
         plugins, and may not be fully supported by other provisioning
         plugins in the future.  Check individual plugin documentation
         for additional information on the kickstart support.
-
 example:
-  - |
+  - |-
     # Use the artemis plugin to provision a guest from Beaker.
     # The following `kickstart` specification will be run
     # during the guest installation.

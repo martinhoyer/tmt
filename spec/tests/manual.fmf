@@ -1,8 +1,7 @@
 summary: Test automation state
 
-story:
-    As a tester I need to store detailed manual instructions covering
-    test scenario I have to perform manually.
+story: As a tester I need to store detailed manual instructions
+    covering test scenario I have to perform manually.
 
 description: |
     Attribute marks whether this test needs human interaction
@@ -73,8 +72,7 @@ description: |
     __ https://github.com/teemtee/tmt/tree/main/examples/manual/
 
 example: |
-  manual: true
-  test: manual.md
-
+    manual: true
+    test: manual.md
 link:
   - implemented-by: /tmp/base.py

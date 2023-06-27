@@ -1,10 +1,8 @@
-summary:
-    Demonstrate various test discover options
+summary: Demonstrate various test discover options
 execute:
     how: tmt
 provision:
     how: local
-
 /fmf:
     /directory:
         /mini:

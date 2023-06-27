@@ -1,5 +1,4 @@
 story: 'As a user I want to comfortably work with tests'
-
 /ls:
     story: 'List available tests'
     example: tmt test ls
@@ -7,42 +6,35 @@ story: 'As a user I want to comfortably work with tests'
       - implemented-by: /tmt/cli.py
       - verified-by: /tests/core/ls
       - documented-by: /docs/examples.rst#explore-tests
-
 /show:
     story: 'Show test metadata'
     example: tmt test show
     link:
       - implemented-by: /tmt/cli.py
       - documented-by: /docs/examples.rst#explore-tests
-
 /lint:
     story: 'Check test against the L1 metadata specification'
-    description:
-        Verify that test metadata are aligned with the
-        specification, e.g. that all required attributes are
-        present and that all attributes have correct type.
+    description: Verify that test metadata are aligned with the
+        specification, e.g. that all required attributes are present
+        and that all attributes have correct type.
     example: tmt test lint
     link:
       - implemented-by: /tmt/cli.py
       - documented-by: /docs/examples.rst#lint-tests
-
 /create:
     story: 'Create a new test skeleton'
-    description:
-        Provide an easy way how to create a new test. Ideally
-        with support for multiple test skeletons. Similarly as
-        beaker-wizard (which should be obsoleted by this) the
-        tool should prompt for required values if not provided
-        on the command line.
+    description: Provide an easy way how to create a new test. Ideally
+        with support for multiple test skeletons. Similarly as beaker-wizard
+        (which should be obsoleted by this) the tool should prompt
+        for required values if not provided on the command line.
     example:
-        - tmt test create
-        - tmt test create /tests/area/feature
-        - tmt test create /tests/area/feature --skeleton beakerlib
-        - tmt test create /tests/area/feature --duration=1h
+      - tmt test create
+      - tmt test create /tests/area/feature
+      - tmt test create /tests/area/feature --skeleton beakerlib
+      - tmt test create /tests/area/feature --duration=1h
     link:
       - implemented-by: /tmt/cli.py
       - documented-by: /docs/examples.rst#create-tests
-
 /import:
     story: 'As a tester I want to import test metadata.'
     example: tmt test import
@@ -50,7 +42,6 @@ story: 'As a user I want to comfortably work with tests'
       - implemented-by: /tmt/convert.py
       - verified-by: /tests/test_convert
       - documented-by: /docs/examples.rst#convert-tests
-
 /export:
     story: 'As a tester I want to export test metadata.'
 
@@ -106,18 +97,16 @@ story: 'As a user I want to comfortably work with tests'
         link:
           - implemented-by: /tmt/export.py
           - documented-by: /docs/questions#nitrate-migration
-
 /filter:
     story: 'Filter available tests'
-    description:
-        Search tests using a regular expression or a filter.
+    description: Search tests using a regular expression or a filter.
         Use ``.`` to select tests under the current directory.
     example:
-        - tmt test ls .
-        - tmt test ls REGEXP
-        - tmt test show --filter tier:1
-        - tmt test show --condition 'int(tier) < 2'
-        - tmt test show --condition '"gcc" in require'
+      - tmt test ls .
+      - tmt test ls REGEXP
+      - tmt test show --filter tier:1
+      - tmt test show --condition 'int(tier) < 2'
+      - tmt test show --condition '"gcc" in require'
     link:
       - implemented-by: /tmt/base.py
       - documented-by: /docs/examples.rst#filter-tests

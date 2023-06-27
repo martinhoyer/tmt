@@ -9,7 +9,6 @@
         playbook: packages.yaml
     execute:
         how: shell
-
 /tests:
     /smoke:
         test: python3 -c "import time"

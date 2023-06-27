@@ -1,4 +1,4 @@
 test: /bin/true
-#comment
-relevancy: |
-    distro = rhel: False
+# comment
+relevancy: |-
+    distro = rhel: false

@@ -7,13 +7,11 @@ provision:
     how: container
 execute:
     how: tmt
-
 /local:
     prepare:
         how: ansible
         playbook: playbook.yml
         extra-args: '-vvv'
-
 /remote:
     prepare:
         how: ansible

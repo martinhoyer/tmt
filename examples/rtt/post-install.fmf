@@ -1,5 +1,4 @@
 test: ./test.sh
-
 /check1:
     summary: Post installation check one
 /check2:

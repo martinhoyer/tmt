@@ -9,7 +9,6 @@
             INT: 1
     /no:
         summary: This is a test without variables
-
 /plan:
     discover:
         how: fmf

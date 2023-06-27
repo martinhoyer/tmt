@@ -21,7 +21,6 @@ description: |
     tokens or passwords. The syntax is as follows::
 
         key_identifiers:key_in_response:python_type:replaced_value
-
     Example::
 
         requre-patch purge --replaces :milestone_url:str:SomeText \
@@ -34,18 +33,15 @@ description: |
 
         cd tests/integration
         sudo unshare -n sudo -u `whoami` pytest -v test_nitrate.py
-
 environment:
     REQURE_MODE: read
 framework: shell
 require:
   - python3-pytest
 tag: [integration]
-tier: null
+tier:
 link: https://github.com/packit/requre
-
 /coverage_bugzilla:
     test: "python3 -m pytest -vvv -ra --showlocals -k 'test_coverage_bugzilla'"
-
 /the_rest:
     test: "python3 -m pytest -vvv -ra --showlocals -k 'not test_coverage_bugzilla'"

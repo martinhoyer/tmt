@@ -1,5 +1,4 @@
 summary: Simple plan with a test writing to file
-
 discover:
   - how: fmf
     filter: tag:test1
@@ -11,13 +10,10 @@ discover:
         test: echo test > $TMT_TEST_DATA/out-test.txt
       - name: /write/plan-data
         test: echo test > $TMT_PLAN_DATA/out-plan.txt
-
 provision:
     how: local
-
 execute:
     how: tmt
-
 report:
   - name: display
     how: display
@@ -25,7 +21,6 @@ report:
     how: html
   - name: junit
     how: junit
-
 finish:
   - script: touch ../finish/file
   - script: ln -s . ../finish/link

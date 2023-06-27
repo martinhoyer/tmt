@@ -1,9 +1,8 @@
 summary: Supported context dimensions
 
-story:
-    As a tester I want to clearly specify dimensions, such as
-    'distro' or 'trigger', so that I can well describe the
-    context in which a test is running.
+story: As a tester I want to clearly specify dimensions, such as
+    'distro' or 'trigger', so that I can well describe the context
+    in which a test is running.
 
 description: |
     The following dimensions are reserved for storing dedicated
@@ -45,12 +44,11 @@ description: |
         :ref:`/spec/context/trigger` section for the full list
         of supported values.
 
-example: |
+example: |-
     context:
         distro: fedora-33
         variant: Workstation
         arch: x86_64
-
     context:
         product: rhscl
         collection: httpd24

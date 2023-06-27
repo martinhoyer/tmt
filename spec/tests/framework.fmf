@@ -1,7 +1,6 @@
 summary: Test framework defining how tests should be executed
 
-story:
-    As a tester I want to include tests using different test
+story: As a tester I want to include tests using different test
     execution framework in a single plan.
 
 description: |
@@ -26,7 +25,6 @@ description: |
     beakerlib
         Exit code and BeakerLib's ``TestResults`` file determine
         the test result.
-
 example:
   - |
     # Test written in shell
@@ -34,7 +32,6 @@ example:
   - |
     # A beakerlib test
     framework: beakerlib
-
 link:
   - implemented-by: /tmt/base.py
   - verified-by: /tests/execute/framework

@@ -8,7 +8,6 @@
     /weird:
         summary: An error encountered
         test: a-weird-command
-
 /beakerlib:
     framework: beakerlib
     /good:

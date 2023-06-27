@@ -11,11 +11,11 @@
         /bin/false
 /beakerlib:
     framework: beakerlib
-    test: |
+    test: |-
         . /usr/share/beakerlib/beakerlib.sh || exit 1
         rlJournalStart
             rlPhaseStartSetup
-                rlFileBackup "test.fmf" # backup this file
+                rlFileBackup "test.fmf"  # backup this file
                 rlFileBackup --namespace NS1 "test.fmf"
             rlPhaseEnd
         rlJournalEnd

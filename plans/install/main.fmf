@@ -1,6 +1,5 @@
 provision:
     how: container
-
 # Run only during a full testing
 enabled: false
 adjust:

@@ -13,7 +13,6 @@ discover:
     how: fmf
     where: server
     test: /test/server/cleanup
-
 provision:
   - name: httpd-server
     role: server
@@ -29,6 +28,5 @@ provision:
     role: client
     how: virtual
     connection: system
-
 execute:
     how: tmt

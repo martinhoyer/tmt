@@ -1,4 +1,5 @@
-summary: Define format of on-disk description of provisioned guest topology
+summary: Define format of on-disk description of provisioned guest
+    topology
 title: Guest Topology Format
 order: 95
 
@@ -14,12 +15,10 @@ description: |
     * ``TMT_TOPOLOGY_BASH`` for a shell-friendly ``NAME=VALUE`` file
 
     Both files are always available, and both carry the same information.
-
     .. warning::
 
         The shell-friendly file contains arrays, therefore it's compatible
         with Bash 4.x and newer.
-
     .. note::
 
         The shell-friendly file is easy to ingest for a shell-based tests,
@@ -101,14 +100,12 @@ description: |
         TMT_ROLES[role1]="guest1 guest2 ..."
         TMT_ROLES[role2]="guestN ..."
         ...
-
 example:
   - |
     # A trivial pseudo-test script
     . "$TMT_TOPOLOGY_BASH"
 
     echo "I'm running on ${TMT_GUEST[name]}"
-
 link:
   - verified-by: /tests/multihost/complete
   - implemented-by: /tmp/steps/__init__.py

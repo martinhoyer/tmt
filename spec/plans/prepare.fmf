@@ -18,7 +18,6 @@ description: |
     gathered from the :ref:`/spec/tests/require` attribute of
     individual tests order ``70`` is used, for recommended
     packages it is ``75``.
-
     .. note::
 
         If you want to use the ``prepare`` step to generate data
@@ -41,16 +40,12 @@ example: |
       - name: service
         how: shell
         script: systemctl start httpd
-
 /shell:
-    summary:
-        Prepare system using shell (bash) commands
-    description:
-        Execute arbitrary shell commands to set up the system.
-
-        Default shell options are applied to the script, see the
-        :ref:`/spec/tests/test` key specification for more
-        details.
+    summary: Prepare system using shell (bash) commands
+    description: "Execute arbitrary shell commands to set up the\
+        \ system.\nDefault shell options are applied to the script,\
+        \ see the :ref:`/spec/tests/test` key specification for\
+        \ more details."
 
     example: |
         prepare:
@@ -58,21 +53,16 @@ example: |
             script: dnf install -y httpd
     link:
       - implemented-by: /tmt/steps/provision
-
 /ansible:
-    summary:
-        Apply ansible playbook to get the desired final state.
-    description:
-        One or more playbooks can be provided as a list under the
-        ``playbook`` attribute.  Each of them will be applied
-        using ``ansible-playbook`` in the given order. The path
-        must be relative to the metadata tree root.
-
-        Use ``extra-args`` attribute to enable optional arguments for
-        ``ansible-playbook``.
-
-        Remote playbooks can be referenced as well as the local ones,
-        and both kinds can be used at the same time.
+    summary: Apply ansible playbook to get the desired final state.
+    description: "One or more playbooks can be provided as a list\
+        \ under the ``playbook`` attribute.  Each of them will be\
+        \ applied using ``ansible-playbook`` in the given order.\
+        \ The path must be relative to the metadata tree root.\n\
+        Use ``extra-args`` attribute to enable optional arguments\
+        \ for ``ansible-playbook``.\nRemote playbooks can be referenced\
+        \ as well as the local ones, and both kinds can be used\
+        \ at the same time."
 
     example: |
         prepare:
@@ -85,10 +75,8 @@ example: |
     link:
       - implemented-by: /tmt/steps/provision
       - verified-by: /tests/prepare/ansible
-
 /install:
-    summary:
-        Install packages on the guest
+    summary: Install packages on the guest
     description: |
         One or more RPM packages can be specified under the
         ``package`` attribute. The packages will be installed
@@ -145,7 +133,6 @@ example: |
     link:
       - implemented-by: /tmt/steps/provision
       - verified-by: /tests/prepare/install
-
 /where:
     summary: Apply preparation on selected guests
     description: |
@@ -157,7 +144,7 @@ example: |
         list to specify multiple names or roles. By default, when
         the ``where`` key is not defined, preparation is done on all
         provisioned guests.
-    example: |
+    example: |-
         # Start Apache on the server
         prepare:
           - how: shell

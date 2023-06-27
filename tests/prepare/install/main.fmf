@@ -1,7 +1,6 @@
 summary: Various package installation options
-description:
-    Check basic installation of an existing and missing package.
-    Make sure that special characters are correctly escaped.
+description: Check basic installation of an existing and missing
+    package. Make sure that special characters are correctly escaped.
     Verify that installation from copr works for epel7. Exercises
     all provision methods in full mode, container only by default.
 environment:

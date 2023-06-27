@@ -8,9 +8,8 @@
         how: local
     execute:
         how: tmt
-
 /test:
-    test: |
+    test: |-
         if [ -e file ] ; then
             echo exists
             exit 0

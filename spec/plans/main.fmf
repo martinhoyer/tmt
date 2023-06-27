@@ -1,6 +1,5 @@
-story:
-    As a tester I want to easily execute selected tests or
-    selected test steps in given environment.
+story: As a tester I want to easily execute selected tests or selected
+    test steps in given environment.
 
 description: |
     **Plans**, also called L2 metadata, are used to group relevant
@@ -27,7 +26,7 @@ description: |
     common :ref:`/spec/core` attributes which are shared across
     all metadata levels.
 
-example: |
+example: |-
     # Enabled a minimal smoke test
     execute:
         script: foo --version

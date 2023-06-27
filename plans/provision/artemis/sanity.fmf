@@ -12,18 +12,15 @@
 #       --image "$ARTEMIS_COMPOSE" --keyname "$ARTEMIS_KEYNAME"
 
 summary: Sanity tests of Artemis provision plugin
-
 discover:
     how: fmf
     filter: 'tag: artemis & tier: 1'
-
 provision:
     how: artemis
 
     # NOTE: the required keys are missing *on purpose* - they must be given
     # on command-line.
-
 enabled: false
 adjust:
-  when: how == artemis
-  enabled: true
+    when: how == artemis
+    enabled: true

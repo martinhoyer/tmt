@@ -1,5 +1,4 @@
-summary:
-    Features related to machine boot
+summary: Features related to machine boot
 example:
   - |
     # Guest with BIOS

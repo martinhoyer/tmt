@@ -1,5 +1,4 @@
 test: 'true'
-
 /enabled:
     /default:
         summary: This test is enabled by default

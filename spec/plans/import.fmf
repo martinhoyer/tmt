@@ -2,8 +2,7 @@ summary: Importing plans from a remote repository
 title: Import Plans
 order: 90
 
-story:
-    As a user I want to reference a plan from a remote repository
+story: As a user I want to reference a plan from a remote repository
     in order to prevent duplication and minimize maintenance.
 
 description: |
@@ -32,7 +31,6 @@ description: |
     .. versionadded:: 1.19
 
     __ https://fmf.readthedocs.io/en/latest/concept.html#identifiers
-
 example:
   - |
     # Minimal reference is using 'url' and 'name'
@@ -54,7 +52,6 @@ example:
             url: https://github.com/teemtee/tmt
             path: /examples/httpd
             name: /smoke
-
 link:
   - relates: https://github.com/teemtee/tmt/issues/975
   - verified-by: /tests/plan/import

@@ -1,4 +1,3 @@
-
 # Common configuration
 discover:
     how: fmf
@@ -6,19 +5,15 @@ discover:
 prepare:
     how: ansible
     playbook:
-        - ci/rhel-8.yml
+      - ci/rhel-8.yml
 execute:
     how: tmt
-
 # Individual plans
 /pull-request/smoke:
-    summary:
-        Basic set of quick smoke tests for systemd
+    summary: Basic set of quick smoke tests for systemd
     discover+:
         filter: "tier: 1 & distros: rhel-8"
-
 /pull-request/functional:
-    summary:
-        Tier two functional tests
+    summary: Tier two functional tests
     discover+:
         filter: "tier: 2 & distros: rhel-8"

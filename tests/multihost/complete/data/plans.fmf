@@ -13,14 +13,13 @@ provision:
     name: server
     role: server
     image: fedora:36
-
 execute:
-  how: tmt
-
+    how: tmt
 prepare:
   - how: shell
     script:
-      - for envvar in $(compgen -A variable | egrep 'TMT' | sort); do echo "$envvar=${!envvar}"; done
+      - for envvar in $(compgen -A variable | egrep 'TMT' | sort);
+        do echo "$envvar=${!envvar}"; done
       - "sed -e 's/^/topology-sh: /' $TMT_TOPOLOGY_BASH"
       - "sed -e 's/^/topology-yaml: /' $TMT_TOPOLOGY_YAML"
     where:
@@ -28,12 +27,12 @@ prepare:
 
   - how: shell
     script:
-      - for envvar in $(compgen -A variable | egrep 'TMT' | sort); do echo "$envvar=${!envvar}"; done
+      - for envvar in $(compgen -A variable | egrep 'TMT' | sort);
+        do echo "$envvar=${!envvar}"; done
       - "sed -e 's/^/topology-sh: /' $TMT_TOPOLOGY_BASH"
       - "sed -e 's/^/topology-yaml: /' $TMT_TOPOLOGY_YAML"
     where:
       - server
-
 discover:
   - name: server-setup
     how: fmf

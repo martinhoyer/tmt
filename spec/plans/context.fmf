@@ -1,7 +1,6 @@
 summary: Definition of the test execution context
 
-story:
-    As a user I want to define the default context in which tests
+story: As a user I want to define the default context in which tests
     included in given plan should be executed.
 
 description: |
@@ -10,7 +9,6 @@ description: |
     on the command line. See the :ref:`/spec/context` definition
     for the full list of supported context dimensions. Must be a
     ``dictionary``.
-
 example:
   - |
     summary:
@@ -32,6 +30,5 @@ example:
         how: tmt
     context:
         component: dash
-
 link:
   - implemented-by: /tmt/base.py

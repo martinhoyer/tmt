@@ -3,14 +3,12 @@
     test: |
         systemctl start httpd
         echo foo > /var/www/html/index.html
-
 /server/cleanup:
     test: |
         systemctl stop httpd
-
 /client:
     require: [curl, wget]
-    test: |
+    test: |-
         echo "Guest topology stored in '$TMT_TOPOLOGY_BASH':"
         cat "$TMT_TOPOLOGY_BASH"
         . "$TMT_TOPOLOGY_BASH"

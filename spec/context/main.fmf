@@ -1,7 +1,6 @@
 summary: Definition of the environment context
 
-story:
-    As a user I want to define a context so that test, plan or
+story: As a user I want to define a context so that test, plan or
     story metadata can be adjusted to it accordingly.
 
 description: |
@@ -32,6 +31,5 @@ example: |
 
     tmt -c distro=fedora test show
     tmt -c distro=fedora plan show
-
 link:
   - implemented-by: /tmt/base.py

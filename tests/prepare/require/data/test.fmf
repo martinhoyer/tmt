@@ -2,12 +2,10 @@
     summary: Test requiring an available package
     require: tree
     test: rpm -q tree
-
 /missing:
     summary: Test requiring a missing package
     require: forest
     test: rpm -q forest
-
 /mixed:
     summary: Require one available and one missing
     require: [tree, forest]

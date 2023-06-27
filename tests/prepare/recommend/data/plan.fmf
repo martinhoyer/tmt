@@ -4,17 +4,14 @@ provision:
     how: container
 execute:
     how: tmt
-
 /mixed:
     summary: One package found, one not available
     discover+:
         test: mixed
-
 /debuginfo:
     summary: One debuginfo package found, one not available
     discover+:
         test: debuginfo
-
 /weird:
     summary: No recommended package found
     discover+:

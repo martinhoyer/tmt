@@ -5,10 +5,8 @@ prepare:
   - name: shell
     how: shell
     script: grep PASS /tmp/testfile
-
 execute:
     script: grep PASS /tmp/testfile
-
 finish:
     script:
       - grep PASS /tmp/testfile

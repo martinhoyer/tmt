@@ -11,16 +11,13 @@ description: |
     to its best abilities and the required specification. However, it
     is possible to specify the keyword ``pool`` and select the
     desired cloud provider.
-
     Artemis project:
     https://gitlab.com/testing-farm/artemis
-
     .. note::
 
         When used together with TF infrastructure
         some of the options from the first example below
         will be filled for you by the TF service.
-
 example:
   - |
     provision:
@@ -56,7 +53,6 @@ example:
         hardware:
             # Pick a guest with at least 8 GB RAM
             memory: ">= 8 GB"
-
 link:
   - implemented-by: /tmt/steps/provision/artemis.py
   - implemented-by: /tmt/schemas/provision/artemis.yaml

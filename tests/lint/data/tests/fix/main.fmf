@@ -1,4 +1,4 @@
 summary: Concise summary describing what the test does
 test: ./test.sh
-relevancy: |
-    distro = rhel: False
+relevancy: |-
+    distro = rhel: false

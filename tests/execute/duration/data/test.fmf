@@ -6,7 +6,6 @@
     /beakerlib:
         framework: beakerlib
         test: ./short.sh
-
 /long:
     summary: Test exceeding the duration limit
     duration: 5s

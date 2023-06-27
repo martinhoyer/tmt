@@ -6,9 +6,9 @@
             execute:
                 how: sti
                 playbook:
-                    - 'tests.yml'
+                  - 'tests.yml'
                 tag:
-                    - 'classic'
+                  - 'classic'
         # Simple shell script
         /shell:
             execute:

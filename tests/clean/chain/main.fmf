@@ -1,5 +1,5 @@
 summary: Checks that tmt clean command chaining works
-description: |
+description: |-
     Chaining of subcommands under tmt clean requires special order
     of operations to be forced to remove potential user error,
     such as removing runs and then trying to clean guests (when

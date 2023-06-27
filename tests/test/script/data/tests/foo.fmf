@@ -2,7 +2,6 @@
     summary: Normal test metadata should be accepted
     test: 'false'
     framework: shell
-
 /neg:
     summary: Malformed test metadata should be rejected
     test: false
