@@ -1,67 +1,67 @@
 /options:
-    summary: Check that all supported options are present
-    test: ./options.sh
+  summary: Check that all supported options are present
+  test: ./options.sh
 
 /order:
-    summary: Test order is defined and respected
-    test: ./order.sh
+  summary: Test order is defined and respected
+  test: ./order.sh
 
 /references:
-    summary: Verify that basic referencing works.
-    description:
-        Make sure that all combinations of 'url', 'ref' and 'path'
-        parameters work as expected.
-    tier: 2
-    /fmf:
-        test: ./references.sh
-    /shell:
-        test: ./references-shell.sh
+  summary: Verify that basic referencing works.
+  description: >
+    Make sure that all combinations of 'url', 'ref' and 'path'
+    parameters work as expected.
+  tier: 2
+  /fmf:
+    test: ./references.sh
+  /shell:
+    test: ./references-shell.sh
 
 /modified:
-    summary: Check filtering for tests modified since a given ref
-    test: ./modified.sh
+  summary: Check filtering for tests modified since a given ref
+  test: ./modified.sh
 
 /filtering:
-    summary: Test selection by name and advanced filter
-    test: ./filtering.sh
+  summary: Test selection by name and advanced filter
+  test: ./filtering.sh
 
 /scripts:
-    summary: Check test discovery from the execute step
-    test: ./scripts.sh
+  summary: Check test discovery from the execute step
+  test: ./scripts.sh
 
 /parametrize:
-    summary: Check that plan parametrization works
-    test: ./parametrize.sh
+  summary: Check that plan parametrization works
+  test: ./parametrize.sh
 
 /distgit:
-    summary: Get tests from the source tarball from dist-git lookaside
-    test: ./distgit.sh
-    enabled: false
-    adjust:
+  summary: Get tests from the source tarball from dist-git lookaside
+  test: ./distgit.sh
+  enabled: false
+  adjust:
     - enabled: true
       when: how == full or trigger == commit
       tag+: [additional_coverage]
 
 /dynamic-ref:
-    /fmf:
-        summary: Check that dynamic ref evaluation works (fmf)
-        test: ./dynamic-ref.sh "/fmf"
-    /shell:
-        summary: Check that dynamic ref evaluation works (shell)
-        test: ./dynamic-ref.sh "/shell/url"
+  /fmf:
+    summary: Check that dynamic ref evaluation works (fmf)
+    test: ./dynamic-ref.sh "/fmf"
+  /shell:
+    summary: Check that dynamic ref evaluation works (shell)
+    test: ./dynamic-ref.sh "/shell/url"
 
 /tests:
-    summary: Tests defined under discover can use all metadata
-    test: ./tests.sh
+  summary: Tests defined under discover can use all metadata
+  test: ./tests.sh
 
 /force:
-    summary: Force run of discover finds tests
-    test: ./force.sh
+  summary: Force run of discover finds tests
+  test: ./force.sh
 
 /serial-number:
-    summary: Test test serial number assignment
-    test: ./serial-number.sh
+  summary: Test test serial number assignment
+  test: ./serial-number.sh
 
 /sanitize-metadata-name:
-    summary: Test for plan/test name having control character
-    test: ./sanitize-metadata-name.sh
+  summary: Test for plan/test name having control character
+  test: ./sanitize-metadata-name.sh

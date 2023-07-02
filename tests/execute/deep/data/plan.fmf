@@ -1,9 +1,9 @@
 discover:
-    how: fmf
-    url: https://github.com/teemtee/tmt
-    path: /tests/execute/basic/data
-    test: good
+  how: fmf
+  url: https://github.com/teemtee/tmt
+  path: /tests/execute/basic/data
+  test: good
 provision:
-    how: local
+  how: local
 execute:
-    how: tmt
+  how: tmt

@@ -1,15 +1,15 @@
 provision:
-    how: local
+  how: local
 execute:
-    script:
-      - /bin/false
-      - /bin/true
+  script:
+    - /bin/false
+    - /bin/true
 
 /do-not-exit:
-    /tmt:
-        execute+:
-            how: tmt
+  /tmt:
+    execute+:
+      how: tmt
 
 /exit-first:
-    execute+:
-        exit-first: true
+  execute+:
+    exit-first: true

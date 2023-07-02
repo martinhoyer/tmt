@@ -1,21 +1,21 @@
 discover:
-    how: fmf
+  how: fmf
 provision:
-    how: container
+  how: container
 execute:
-    how: tmt
+  how: tmt
 
 /mixed:
-    summary: One package found, one not available
-    discover+:
-        test: mixed
+  summary: One package found, one not available
+  discover+:
+    test: mixed
 
 /debuginfo:
-    summary: One debuginfo package found, one not available
-    discover+:
-        test: debuginfo
+  summary: One debuginfo package found, one not available
+  discover+:
+    test: debuginfo
 
 /weird:
-    summary: No recommended package found
-    discover+:
-        test: weird
+  summary: No recommended package found
+  discover+:
+    test: weird

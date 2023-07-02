@@ -1,9 +1,9 @@
 summary: This is just a plan
 discovery:
-    how: fmf
-    url: https://github.com/teemtee/tmt
+  how: fmf
+  url: https://github.com/teemtee/tmt
 prepareahoj:
-    how: ansible
-    playbook: ansible/packages.yml
+  how: ansible
+  playbook: ansible/packages.yml
 execute:
-    how: tmt
+  how: tmt

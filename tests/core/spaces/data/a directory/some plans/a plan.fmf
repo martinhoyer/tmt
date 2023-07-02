@@ -1,7 +1,7 @@
 discover:
-    name: some discover
-    how: fmf
+  name: some discover
+  how: fmf
 provision:
-    how: local
+  how: local
 execute:
-    how: tmt
+  how: tmt

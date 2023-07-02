@@ -1,8 +1,8 @@
 discover:
-    how: fmf
+  how: fmf
 provision:
-    how: virtual
-    memory: 4000
-    disk: 40
+  how: virtual
+  memory: 4000
+  disk: 40
 execute:
-    how: tmt
+  how: tmt

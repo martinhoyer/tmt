@@ -1,9 +1,9 @@
 summary: Verify TTY handling in test environment
 
 environment:
-    PROVISION_METHODS: local container
+  PROVISION_METHODS: local container
 adjust:
   - when: how == full
     environment:
-        PROVISION_METHODS: local container virtual
+      PROVISION_METHODS: local container virtual
     tag+: [additional_coverage]

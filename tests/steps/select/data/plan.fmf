@@ -1,4 +1,4 @@
 provision:
-    how: local
+  how: local
 execute:
-    script: 'true'
+  script: 'true'

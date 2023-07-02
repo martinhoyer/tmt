@@ -1,55 +1,55 @@
 execute:
-    how: tmt
+  how: tmt
 provision:
-    how: local
+  how: local
 
 prepare:
-    how: shell
-    script: touch $TMT_PLAN_DATA/execution_order
+  how: shell
+  script: touch $TMT_PLAN_DATA/execution_order
 
 finish:
-    how: shell
-    script: cat $TMT_PLAN_DATA/execution_order
+  how: shell
+  script: cat $TMT_PLAN_DATA/execution_order
 
 /single-without-order-tag:
-    summary: Tests sorted by their name
-    discover:
-        how: fmf
-        filter: tag:no-order
+  summary: Tests sorted by their name
+  discover:
+    how: fmf
+    filter: tag:no-order
 
 /single-without-order-name:
-    summary: Tests sorted by their name
-    discover:
-        how: fmf
-        test: no-order
+  summary: Tests sorted by their name
+  discover:
+    how: fmf
+    test: no-order
 
 /single-enumerate:
-    summary: Tests sorted by their order in discover config
-    discover:
-        how: fmf
-        test:
-        - /no-order-2
-        - /no-order-0
-        - /no-order-1
+  summary: Tests sorted by their order in discover config
+  discover:
+    how: fmf
+    test:
+      - /no-order-2
+      - /no-order-0
+      - /no-order-1
 
 /single-enumerate-and-order:
-    summary: Tests sorted by their order in discover config
-    discover:
-        how: fmf
-        test:
-        - /no-order-2
-        - /order-80
-        - /no-order-0
-        - /no-order-1
+  summary: Tests sorted by their order in discover config
+  discover:
+    how: fmf
+    test:
+      - /no-order-2
+      - /order-80
+      - /no-order-0
+      - /no-order-1
 
 /single-order:
-    summary: Tests sorted by their order attribute
-    discover:
-        how: fmf
+  summary: Tests sorted by their order attribute
+  discover:
+    how: fmf
 
 /multiple-by-enumerate:
-    summary: Sort configs first (position), then tests inside
-    discover:
+  summary: Sort configs first (position), then tests inside
+  discover:
     - name: enumerate-and-order
       how: fmf
       test:
@@ -62,15 +62,15 @@ finish:
     - name: third
       how: shell
       tests:
-      - name: /order-default
-        test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order
-      - name: /order-20
-        order: 20
-        test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order
+        - name: /order-default
+          test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order
+        - name: /order-20
+          order: 20
+          test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order
 
 /multiple-by-order:
-    summary: Sort configs first (order attr), then tests inside
-    discover:
+  summary: Sort configs first (order attr), then tests inside
+  discover:
     - name: order-80
       order: 80
       how: fmf
@@ -85,8 +85,8 @@ finish:
     - name: order-default
       how: shell
       tests:
-      - name: /order-20
-        order: 20
-        test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order
-      - name: /order-default
-        test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order
+        - name: /order-20
+          order: 20
+          test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order
+        - name: /order-default
+          test: echo $TMT_TEST_DATA >> $TMT_PLAN_DATA/execution_order

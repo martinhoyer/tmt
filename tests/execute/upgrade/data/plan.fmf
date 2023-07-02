@@ -1,15 +1,15 @@
 discover:
-    how: fmf
+  how: fmf
 provision:
-    how: virtual
-    image: $@{distro}
+  how: virtual
+  image: $@{distro}
 execute:
-    how: upgrade
-    url: https://github.com/teemtee/upgrade
+  how: upgrade
+  url: https://github.com/teemtee/upgrade
 
 /no-path:
-    summary: Basic upgrade test with no upgrade path
+  summary: Basic upgrade test with no upgrade path
 /path:
-    summary: Basic upgrade test with upgrade path
-    execute+:
-        upgrade-path: $@{upgrade-path}
+  summary: Basic upgrade test with upgrade path
+  execute+:
+    upgrade-path: $@{upgrade-path}

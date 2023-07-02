@@ -1,2 +1,2 @@
 test: /bin/true
-requires: "typo, should be require"
+requires: 'typo, should be require'

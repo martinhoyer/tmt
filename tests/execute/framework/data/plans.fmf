@@ -1,6 +1,6 @@
 provision:
-    how: container
+  how: container
 discover:
-    how: fmf
+  how: fmf
 execute:
-    how: tmt
+  how: tmt

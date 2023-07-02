@@ -1,45 +1,45 @@
 /plan:
-    discover:
-        how: fmf
-    provision:
-        how: local
-    execute:
-        how: tmt
+  discover:
+    how: fmf
+  provision:
+    how: local
+  execute:
+    how: tmt
 
 /test:
-    /pass:
-        summary: Run command 'true'
-        test: 'true'
-    /fail:
-        summary: Run command 'false'
-        test: 'false'
-    /error:
-        summary: Run a non-existing command
-        test: a-weird-command
-    /timeout:
-        summary: Timeout
-        duration: 2s
-        test: sleep 10
-    /xfail:
-        summary: Run command 'false' but report pass
-        test: 'false'
-        result: xfail
+  /pass:
+    summary: Run command 'true'
+    test: 'true'
+  /fail:
+    summary: Run command 'false'
+    test: 'false'
+  /error:
+    summary: Run a non-existing command
+    test: a-weird-command
+  /timeout:
+    summary: Timeout
+    duration: 2s
+    test: sleep 10
+  /xfail:
+    summary: Run command 'false' but report pass
+    test: 'false'
+    result: xfail
 
 # Special plan to introduce more than one guest, for verification of --display-guest.
 # Disabled by default, but enabled in the corresponding test by a magic of context.
 /multihost-plan:
-    enabled: false
+  enabled: false
 
-    discover:
-        how: fmf
-    provision:
-        - name: guest-1
-          how: container
-        - name: guest-2
-          how: container
-    execute:
-        how: tmt
+  discover:
+    how: fmf
+  provision:
+    - name: guest-1
+      how: container
+    - name: guest-2
+      how: container
+  execute:
+    how: tmt
 
-    adjust:
-      - when: report_multihost == yes
-        enabled: true
+  adjust:
+    - when: report_multihost == yes
+      enabled: true

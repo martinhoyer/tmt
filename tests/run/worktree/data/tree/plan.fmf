@@ -1,13 +1,13 @@
 summary: Verify that TMT_TREE is correctly set
 provision:
-    how: container
+  how: container
 discover:
-    how: fmf
+  how: fmf
 execute:
-    how: tmt
+  how: tmt
 prepare:
-    how: shell
-    script: declare -p TMT_TREE
+  how: shell
+  script: declare -p TMT_TREE
 finish:
-    how: shell
-    script: declare -p TMT_TREE
+  how: shell
+  script: declare -p TMT_TREE

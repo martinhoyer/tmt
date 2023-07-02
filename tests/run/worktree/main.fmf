@@ -1,23 +1,22 @@
 summary: Check whether worktree is correctly set
-description:
-    For the `prepare` and `finish` steps, the current working
-    directory must be set to the metadata tree root for best user
-    experience. Also tests defined directly in the plan (under the
-    `discover` or `execute` step) should be executed there.
+description: >
+  For the `prepare` and `finish` steps, the current working
+  directory must be set to the metadata tree root for best user
+  experience. Also tests defined directly in the plan (under the
+  `discover` or `execute` step) should be executed there.
 
-    By default tested in a `container`, for pull requests also
-    against `local` and during `full` testing using `virtual` as
-    well.
+  By default tested in a `container`, for pull requests also
+  against `local` and during `full` testing using `virtual` as
+  well.
 require+: [tmt-provision-container]
-
 environment:
-    PROVISION_METHODS: 'container'
+  PROVISION_METHODS: 'container'
 adjust:
   - environment:
-        PROVISION_METHODS: 'container local'
+      PROVISION_METHODS: 'container local'
     when: trigger == commit
   - environment:
-        PROVISION_METHODS: 'container local virtual'
+      PROVISION_METHODS: 'container local virtual'
     result: xfail # issue 964
     duration: 10m
     when: how == full

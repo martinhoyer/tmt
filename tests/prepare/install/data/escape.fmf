@@ -1,6 +1,6 @@
 prepare:
-    how: install
-    package: dnf-command(copr)
+  how: install
+  package: dnf-command(copr)
 execute:
-    how: tmt
-    script: rpm -q dnf-plugins-core
+  how: tmt
+  script: rpm -q dnf-plugins-core

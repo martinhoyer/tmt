@@ -1,9 +1,9 @@
 provision:
-    how: container
+  how: container
 prepare:
   - name: Run preparation script
     how: shell
     script: ./prepare.sh
 execute:
-    how: tmt
-    script: /usr/bin/own-program | grep hello
+  how: tmt
+  script: /usr/bin/own-program | grep hello

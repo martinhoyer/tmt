@@ -1,24 +1,24 @@
 execute:
-    how: tmt
+  how: tmt
 
 /all:
-    discover:
-        how: fmf
+  discover:
+    how: fmf
 
 /selected:
-    discover:
-        how: fmf
-        test: tier
+  discover:
+    how: fmf
+    test: tier
 
 /filtered:
-    discover:
-        how: fmf
-        filter: tag:nonsense
+  discover:
+    how: fmf
+    filter: tag:nonsense
 
 /duplicate:
-    discover:
-        how: fmf
-        test:
-        - /tier/two
-        - /tier/one
-        - /tier/two
+  discover:
+    how: fmf
+    test:
+      - /tier/two
+      - /tier/one
+      - /tier/two

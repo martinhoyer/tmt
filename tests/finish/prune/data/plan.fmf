@@ -13,10 +13,10 @@ discover:
         test: echo test > $TMT_PLAN_DATA/out-plan.txt
 
 provision:
-    how: local
+  how: local
 
 execute:
-    how: tmt
+  how: tmt
 
 report:
   - name: display

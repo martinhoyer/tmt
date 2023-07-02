@@ -12,4 +12,4 @@ provision:
     role: client
     how: container
 execute:
-    script: tmt --help
+  script: tmt --help

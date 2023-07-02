@@ -1,23 +1,23 @@
 discover:
-    how: fmf
+  how: fmf
 provision:
-    how: container
+  how: container
 prepare:
-    how: install
-    package: procps-ng
+  how: install
+  package: procps-ng
 execute:
-    how: tmt
+  how: tmt
 
 adjust:
-    prepare+:
-        package: procps
-    when: distro ~< centos-7
-    because: procps has been forked
+  prepare+:
+    package: procps
+  when: distro ~< centos-7
+  because: procps has been forked
 
 /centos-7:
-    provision+:
-        image: centos:7
+  provision+:
+    image: centos:7
 
 /centos-6:
-    provision+:
-        image: centos:6
+  provision+:
+    image: centos:6

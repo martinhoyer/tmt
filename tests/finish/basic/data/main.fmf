@@ -1,8 +1,8 @@
 provision:
-    how: local
+  how: local
 prepare:
-    script: mkdir ../cleanup-test
+  script: mkdir ../cleanup-test
 execute:
-    script: 'true'
+  script: 'true'
 finish:
-    script: rmdir ../cleanup-test
+  script: rmdir ../cleanup-test

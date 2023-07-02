@@ -1,14 +1,14 @@
 discover:
-    how: fmf
+  how: fmf
 provision:
-    how: local
+  how: local
 execute:
-    how: tmt
+  how: tmt
 
 /shell:
-    discover+:
-        test: shell
+  discover+:
+    test: shell
 
 /beakerlib:
-    discover+:
-        test: beakerlib
+  discover+:
+    test: beakerlib

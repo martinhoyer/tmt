@@ -1,9 +1,9 @@
 provision+:
-    image: centos:7
+  image: centos:7
 prepare:
-    how: install
-    copr: '@oamg/convert2rhel'
-    package: convert2rhel
+  how: install
+  copr: '@oamg/convert2rhel'
+  package: convert2rhel
 execute:
-    how: tmt
-    script: rpm -q convert2rhel
+  how: tmt
+  script: rpm -q convert2rhel

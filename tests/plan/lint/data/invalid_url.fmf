@@ -1,5 +1,5 @@
 discover:
-    how: fmf
-    url: http://invalid-url
+  how: fmf
+  url: http://invalid-url
 execute:
-    how: tmt
+  how: tmt

@@ -1,9 +1,9 @@
 discover:
-    how: fmf
-    test:
-     - abort
-     - do-not-run
+  how: fmf
+  test:
+    - abort
+    - do-not-run
 provision:
-    how: container
+  how: container
 execute:
-    how: tmt
+  how: tmt

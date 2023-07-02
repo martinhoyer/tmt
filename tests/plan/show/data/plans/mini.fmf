@@ -1,2 +1,2 @@
 execute:
-    script: /bin/true
+  script: /bin/true

@@ -31,4 +31,4 @@ provision:
     connection: system
 
 execute:
-    how: tmt
+  how: tmt

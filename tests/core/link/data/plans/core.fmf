@@ -1,7 +1,6 @@
-summary:
-    Basic functionality
+summary: Basic functionality
 execute:
-    how: tmt
+  how: tmt
 link:
   - verifies: /stories/covered
   - verifies: /stories/verified

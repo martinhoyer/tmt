@@ -1,9 +1,9 @@
 /basic:
-    summary: Test behavior of 'result' attribute in test metadata
-    test: ./basic.sh
+  summary: Test behavior of 'result' attribute in test metadata
+  test: ./basic.sh
 /custom:
-    summary: Test custom results format provided in results.yaml
-    test: ./custom.sh
+  summary: Test custom results format provided in results.yaml
+  test: ./custom.sh
 /repeated:
-    summary: Repeated test should provide multiple results
-    test: ./repeated.sh
+  summary: Repeated test should provide multiple results
+  test: ./repeated.sh

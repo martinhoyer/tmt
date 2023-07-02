@@ -1,12 +1,12 @@
 summary: Verify that test debugging works fine
-description:
-    Prepare the environment for testing using provision & prepare,
-    then debug test code using repeated discover & execute.
+description: >
+  Prepare the environment for testing using provision & prepare,
+  then debug test code using repeated discover & execute.
 
 environment:
-    PROVISION_METHODS: local container
+  PROVISION_METHODS: local container
 adjust:
-    environment:
-        PROVISION_METHODS: local container virtual
-    when: how == full
-    tag+: [additional_coverage]
+  environment:
+    PROVISION_METHODS: local container virtual
+  when: how == full
+  tag+: [additional_coverage]

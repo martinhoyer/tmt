@@ -1,6 +1,6 @@
 provision:
-    how: container
+  how: container
 prepare:
-    script: echo content > file
+  script: echo content > file
 execute:
-    script: grep content file
+  script: grep content file

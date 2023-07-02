@@ -1,6 +1,6 @@
 discover:
-    how: fmf
-    url: https://github.com/teemtee/tmt
-    ref: invalid-ref-123456
+  how: fmf
+  url: https://github.com/teemtee/tmt
+  ref: invalid-ref-123456
 execute:
-    how: tmt
+  how: tmt

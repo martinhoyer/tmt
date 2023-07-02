@@ -1,10 +1,9 @@
 summary: Check libraries can end in '.git' suffix
-description:
-    User doesn't need to care/remember whether to use '.git'
-    suffix or not in the 'require' or 'recommend' section -
-    both are allowed.
+description: >
+  User doesn't need to care/remember whether to use '.git'
+  suffix or not in the 'require' or 'recommend' section -
+  both are allowed.
 test: ./file.sh
-
 /test1:
   recommend:
     - url: https://github.com/beakerlib/database.git

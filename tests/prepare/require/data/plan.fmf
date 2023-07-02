@@ -1,19 +1,19 @@
 provision:
-    how: container
+  how: container
 execute:
-    how: tmt
+  how: tmt
 
 /available:
-    discover:
-        how: fmf
-        test: available
+  discover:
+    how: fmf
+    test: available
 
 /missing:
-    discover:
-        how: fmf
-        test: missing
+  discover:
+    how: fmf
+    test: missing
 
 /mixed:
-    discover:
-        how: fmf
-        test: mixed
+  discover:
+    how: fmf
+    test: mixed

@@ -1,5 +1,5 @@
 summary: Essential command line features
 provision:
-    how: invalid
+  how: invalid
 execute:
-    how: tmt
+  how: tmt

@@ -1,8 +1,8 @@
 /plan:
   discover:
-     how: fmf
+    how: fmf
   execute:
-     how: tmt
+    how: tmt
 
 /test:
   test: uname -a

@@ -1,20 +1,20 @@
 summary: Check that ansible prepare works for basic images
-description:
-    Try to provision a container with specific image (fedora,
-    centos) and prepare it with an ansible playbook. Make sure the
-    environment variables are correctly handed over. In the full
-    testing mode check virtual and local provision method as well.
+description: >
+  Try to provision a container with specific image (fedora,
+  centos) and prepare it with an ansible playbook. Make sure the
+  environment variables are correctly handed over. In the full
+  testing mode check virtual and local provision method as well.
 
 # By default we run under a container only
 environment:
-    PROVISION_METHODS: container
+  PROVISION_METHODS: container
 adjust:
   - when: trigger == commit
     environment:
-        PROVISION_METHODS: container local
+      PROVISION_METHODS: container local
     because: the pipeline does not support nested virtualization
   - when: how == full
     environment:
-        PROVISION_METHODS: container virtual local
+      PROVISION_METHODS: container virtual local
     because: local/virtual provision needs root/full virtualization
     tag+: [additional_coverage]

@@ -1,9 +1,9 @@
 provision:
-    how: container
-    image: fedora
+  how: container
+  image: fedora
 prepare:
-    how: install
-    package: fmf
+  how: install
+  package: fmf
 execute:
-    how: tmt
-    script: fmf --help
+  how: tmt
+  script: fmf --help

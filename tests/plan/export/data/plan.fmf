@@ -1,33 +1,33 @@
 description: Testing data for test the feature to export plans to yaml or dict
 
 discover:
-    how: fmf
+  how: fmf
 execute:
-    how: tmt
+  how: tmt
 
 /basic:
-    summary: Just basic keys.
-    order: 0
+  summary: Just basic keys.
+  order: 0
 
 /context:
-    summary: Define context
-    context:
-        component: dash
+  summary: Define context
+  context:
+    component: dash
 
 /environment:
-    summary: Define environment
-    environment:
-        RELEASE: f35
+  summary: Define environment
+  environment:
+    RELEASE: f35
 
 /gate:
-    summary: Define gate
-    gate:
-      - merge-pull-request
-      - add-build-to-update
-      - add-build-to-compose
+  summary: Define gate
+  gate:
+    - merge-pull-request
+    - add-build-to-update
+    - add-build-to-compose
 
 /remote:
-    plan:
-        import:
-            url: https://github.com/teemtee/tmt
-            name: /plans/features/basic
+  plan:
+    import:
+      url: https://github.com/teemtee/tmt
+      name: /plans/features/basic

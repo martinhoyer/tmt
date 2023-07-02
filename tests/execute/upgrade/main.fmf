@@ -1,26 +1,26 @@
 duration: 10m
 
 /full:
-    summary: Perform a full upgrade from F35 to F36
-    test: ./full.sh
-    # dnf upgrade is run, this may take quite long
-    duration: 1h
-    # requires nested virtualization (runs in VM)
-    enabled: false
-    adjust:
+  summary: Perform a full upgrade from F35 to F36
+  test: ./full.sh
+  # dnf upgrade is run, this may take quite long
+  duration: 1h
+  # requires nested virtualization (runs in VM)
+  enabled: false
+  adjust:
     - enabled: true
       when: how == full
       tag+: [additional_coverage]
-    tier: 3
+  tier: 3
 
 /simple:
-    summary: Run a single task from upgrades repo
-    test: ./simple.sh
+  summary: Run a single task from upgrades repo
+  test: ./simple.sh
 
 /override:
-    summary: Override the filter in remote upgrade path
-    test: ./override.sh
+  summary: Override the filter in remote upgrade path
+  test: ./override.sh
 
 /ignore_test:
-    summary: Ignore test -n run subcommand in remote repo
-    test: ./ignore-test.sh
+  summary: Ignore test -n run subcommand in remote repo
+  test: ./ignore-test.sh

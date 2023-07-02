@@ -1,8 +1,8 @@
 summary: Exclude packages during installation
 prepare:
-    how: install
-    package: httpd-*
-    exclude: httpd-manual
+  how: install
+  package: httpd-*
+  exclude: httpd-manual
 execute:
-    how: tmt
-    script: rpm -q httpd-manual && exit 1 || echo 'Good!'
+  how: tmt
+  script: rpm -q httpd-manual && exit 1 || echo 'Good!'

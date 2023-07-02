@@ -1,7 +1,7 @@
 provision:
-    how: container
+  how: container
 prepare:
-    how: ansible
-    playbook: 'playbook.yaml; cat /tmp/secret*'
+  how: ansible
+  playbook: 'playbook.yaml; cat /tmp/secret*'
 execute:
-    script: /bin/true
+  script: /bin/true

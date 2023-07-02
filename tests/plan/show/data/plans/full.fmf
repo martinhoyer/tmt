@@ -10,27 +10,27 @@ link: https://something.org/related
 
 # Steps
 discover:
-    how: fmf
-    filter: tier:1
+  how: fmf
+  filter: tier:1
 provision:
-    how: container
-    image: fedora
+  how: container
+  image: fedora
 prepare:
-    how: shell
-    script: systemctl start libvirtd
+  how: shell
+  script: systemctl start libvirtd
 execute:
-    how: tmt
+  how: tmt
 report:
-    how: html
-    open: true
+  how: html
+  open: true
 finish:
-    how: ansible
-    playbook: cleanup.yaml
+  how: ansible
+  playbook: cleanup.yaml
 
 # Extra
 environment:
-    KEY: VAL
+  KEY: VAL
 environment-file:
   - variables.yaml
 context:
-    distro: fedora
+  distro: fedora

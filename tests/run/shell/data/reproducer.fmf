@@ -1,12 +1,12 @@
 execute:
-    how: tmt
+  how: tmt
 discover:
-    how: shell
-    tests:
-      - name: uses bash
-        test: declare -p BASH_VERSION
+  how: shell
+  tests:
+    - name: uses bash
+      test: declare -p BASH_VERSION
 provision:
-    how: local
+  how: local
 prepare:
   - name: Test that tmt uses bash in prepare
     how: shell

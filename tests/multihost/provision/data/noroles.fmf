@@ -4,4 +4,4 @@ provision:
   - name: server
     how: container
 execute:
-    script: echo works fine
+  script: echo works fine
