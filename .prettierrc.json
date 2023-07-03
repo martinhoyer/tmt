@@ -1,0 +1,12 @@
+{
+  "overrides": [
+    {
+      "files": ["*.fmf", "*.yml", "*yaml"],
+      "options": {
+        "parser": "yaml",
+        "printWidth": 72,
+        "singleQuote": true
+      }
+    }
+  ]
+}
