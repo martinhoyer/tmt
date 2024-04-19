@@ -24,12 +24,17 @@ ReducedPackages = list[Union[Package, PackagePath]]
 
 PACKAGE_PATH: dict[FileSystemPath, str] = {
     FileSystemPath('/usr/bin/arch'): 'busybox',
-    FileSystemPath('/usr/bin/flock'): 'flock'
+    FileSystemPath('/usr/bin/flock'): 'flock',
+    # Note: not used for anything serious, serves for unit tests as
+    # an installable path.
+    FileSystemPath('/usr/bin/dos2unix'): 'dos2unix'
     }
 
 
 @provides_package_manager('apk')
 class Apk(tmt.package_managers.PackageManager):
+    NAME = 'apk'
+
     probe_command = Command('apk', '--version')
 
     install_command = Command('add')
