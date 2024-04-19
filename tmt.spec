@@ -1,11 +1,11 @@
 Name:           tmt
-Version:        1.32.1
-Release:        %autorelease
+Version:        1.32.2
+Release:        1.20240419123824855515.main.0.g8c77fcd0%{?dist}
 Summary:        Test Management Tool
 
 License:        MIT
 URL:            https://github.com/teemtee/tmt
-Source0:        %{pypi_source tmt}
+Source0:        tmt-1.32.2.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  python3-devel
@@ -109,7 +109,7 @@ All extra dependencies of the Test Management Tool. Install this
 package to have all available plugins ready for testing.
 
 %prep
-%autosetup -p1 -n tmt-%{version}
+%autosetup -p1 -n tmt-1.32.2
 
 %generate_buildrequires
 %pyproject_buildrequires
@@ -148,4 +148,6 @@ install -pm 644 %{name}/steps/provision/mrack/mrack* %{buildroot}/etc/%{name}/
 %files -n tmt+all -f %{_pyproject_ghost_distinfo}
 
 %changelog
-%autochangelog
+
+* Fri Apr 19 2024 Martin Hoyer <mhoyer@redhat.com> - 1.32.2-1.20240419123824855515.main.0.g8c77fcd0
+- Development snapshot (8c77fcd0)
