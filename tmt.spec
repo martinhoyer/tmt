@@ -124,4 +124,5 @@ install -pm 644 %{name}/steps/provision/mrack/mrack* %{buildroot}/etc/%{name}/
 %config(noreplace) %{_sysconfdir}/%{name}/mrack*
 %files -n tmt+all -f %{_pyproject_ghost_distinfo}
 
+%changelog
 %autochangelog
