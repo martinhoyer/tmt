@@ -1,0 +1,13 @@
+site_name: tmt documentation
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Guide: guide.md
+  - Examples: examples.md
+  - Spec: spec.md
+  - Stories: stories.md
+  - Questions: questions.md
+  - Releases: releases.md
+  - Contribute: contribute.md

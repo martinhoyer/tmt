@@ -1,0 +1,28 @@
+# tmt
+
+Welcome to the Test Management Tool documentation!
+
+The **tmt** python module and command line tool implement the
+`specification`{.interpreted-text role="ref"} which allows to store all
+test metadata directly within a git repository. It provides an elegant
+and comfortable way to manage tests and safely execute them across
+different environments.
+
+Check the `Overview<overview>`{.interpreted-text role="ref"} to get a
+high-level summary of available functionality, follow our
+`guide`{.interpreted-text role="ref"} which will help you with the first
+steps and teach you how to efficiently use the tool, check out the
+`stories`{.interpreted-text role="ref"} which motivated the effort,
+consult the `specification`{.interpreted-text role="ref"} to get
+detailed information about supported features, get inspired by many
+`examples`{.interpreted-text role="ref"} demonstrating the usage on
+real-life scenarios.
+
+## Table of Contents
+
+::: {.toctree maxdepth="2"}
+Overview \<overview\> Guide \<guide\> Specification \<spec\> Plugins
+\<plugins/index\> Examples \<examples\> Stories \<stories\> Questions
+\<questions\> Contribute \<contribute\> Code \<code/index\> Releases
+\<releases\>
+:::
