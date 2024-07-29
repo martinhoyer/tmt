@@ -1,6 +1,33 @@
-site_name: tmt documentation
+site_name: TMT documentation
 theme:
   name: material
+  logo: https://raw.githubusercontent.com/teemtee/docs/main/logo/tmt-transparent-175x175.png
+  favicon: https://raw.githubusercontent.com/teemtee/docs/main/logo/tmt-favicon.ico
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: orange  # tmt logo brown hex: 433431
+                       # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#custom-color-schemes
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: orange
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: orange
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
 nav:
   - Home: index.md
   - Overview: overview.md
@@ -11,3 +38,38 @@ nav:
   - Questions: questions.md
   - Releases: releases.md
   - Contribute: contribute.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      pygments_lang_class: true
+  - pymdownx.highlight:
+      auto_title: true
+  - pymdownx.snippets
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
