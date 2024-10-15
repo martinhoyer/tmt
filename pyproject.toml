@@ -319,7 +319,6 @@ select = [
     "PIE",  # flake8-pie
     "PYI",  # flake8-pyi
     "PT",  # flake8-pytest-style
-    "Q003",  # avoidable-escaped-quote
     "Q004",  # unnecessary-escaped-quote
     "RSE",  # flake8-raise
     "RET",  # flake8-return
@@ -375,6 +374,15 @@ ignore = [
     "D400",  # First line should end with a period
     "D401",  # First line of docstring should be in imperative mood
     "D415",  # First line should end with a period, question mark, or exclamation point
+
+    # Conflicting format/lint rules https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    "W191",
+    "E111",
+    "E114",
+    "E117",
+    "D206",
+    "D300",
+    "COM819",
     ]
 
 logger-objects = ["tmt.log.Logger"]
