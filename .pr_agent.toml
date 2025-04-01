@@ -1,0 +1,3 @@
+[rag_arguments]
+enable_rag=true
+rag_repo_list=['/teemtee/tmt', '/teemtee/fmf']
