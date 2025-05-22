@@ -5,7 +5,6 @@ import tmt.utils
 from tmt.frameworks import TestFramework, provides_framework
 from tmt.result import ResultOutcome
 from tmt.steps.execute import TEST_OUTPUT_FILENAME, TestInvocation
-from tmt.utils import Path
 
 
 @provides_framework('pytest')
@@ -19,22 +18,24 @@ class Pytest(TestFramework):
         # and how options/arguments should be passed.
         script = invocation.test.test
         if invocation.test.path:
-            script = f'{invocation.test.path.unrooted() / script}'
+            script = f'{invocation.test.path.unrooted()}'
         return tmt.utils.ShellScript(f"pytest {script}")
 
     @classmethod
     def extract_results(
         cls,
         invocation: 'TestInvocation',
-        results: list[tmt.result.Result],  # This is for tmt-report-result, might not be directly used by pytest output
+        results: list[
+            tmt.result.Result
+        ],  # This is for tmt-report-result, might not be directly used by pytest output
         logger: tmt.log.Logger,
     ) -> list[tmt.result.Result]:
-        '''
+        """
         Check result of a pytest test.
         Parse pytest output to determine the result.
         This will likely involve parsing JUnit XML output if pytest is configured to produce it,
         or parsing stdout for specific patterns.
-        '''
+        """
         assert invocation.return_code is not None
         note: list[str] = []
 
@@ -42,7 +43,7 @@ class Pytest(TestFramework):
         # This needs to be enhanced to parse pytest's rich output (e.g., JUnit XML).
         if invocation.return_code == 0:
             result_outcome = ResultOutcome.PASS
-        elif invocation.return_code == 5: # Exit code 5 means no tests were collected
+        elif invocation.return_code == 5:  # Exit code 5 means no tests were collected
             result_outcome = ResultOutcome.INFO
             note.append("No tests found by pytest.")
         else:
@@ -62,7 +63,7 @@ class Pytest(TestFramework):
             tmt.Result.from_test_invocation(
                 invocation=invocation,
                 result=result_outcome,
-                log=[log_path], # Potentially add JUnit XML path here
+                log=[log_path],  # Potentially add JUnit XML path here
                 note=note,
             )
         ]
