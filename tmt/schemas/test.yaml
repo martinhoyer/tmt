@@ -53,6 +53,7 @@ properties:
     enum:
       - beakerlib
       - shell
+      - pytest
 
   # https://tmt.readthedocs.io/en/stable/spec/tests.html#check
   check:
