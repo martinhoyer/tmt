@@ -247,6 +247,34 @@ and plans under separate folders, e.g. ``tests`` and ``plans``.
 This will also allow you to use :ref:`inheritance` to prevent
 unnecessary data duplication.
 
+.. _framework-pytest:
+
+Pytest
+^^^^^^
+
+The ``pytest`` framework allows you to execute tests written using the
+`pytest <https://docs.pytest.org/>`_ framework.
+
+To use it, specify ``framework: pytest`` in your test metadata. The ``test``
+attribute should point to a Python file or a directory that pytest can
+process.
+
+.. code-block:: yaml
+
+    # Example of a pytest test definition
+    summary: My pytest test
+    test: test_example.py
+    framework: pytest
+
+Currently, the result of the test execution is determined by the exit code
+of the ``pytest`` command:
+* ``0``: pass
+* ``5``: info (no tests found)
+* Other non-zero: fail
+
+Future enhancements will include richer result parsing, potentially from
+pytest's JUnit XML output.
+
 
 Stories
 ------------------------------------------------------------------

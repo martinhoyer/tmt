@@ -1,0 +1,21 @@
+# tests/execute/framework/pytest/tests.fmf
+- name: /pass
+  summary: Pytest passing test
+  test: ./test.py
+  framework: pytest
+  duration: 1m
+  tag: [pytest-smoke, pytest-pass]
+
+- name: /fail
+  summary: Pytest failing test
+  test: ./test_fail.py
+  framework: pytest
+  duration: 1m
+  tag: [pytest-smoke, pytest-fail]
+
+- name: /no_tests_found
+  summary: Pytest no tests found
+  test: ./test_no_tests.py
+  framework: pytest
+  duration: 1m
+  tag: [pytest-smoke, pytest-no-tests]

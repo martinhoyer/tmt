@@ -11,8 +11,8 @@ description: |
     also determines possible additional required packages to be
     installed on the test environment.
 
-    Currently ``shell`` and ``beakerlib`` are supported. Each
-    `execute` step plugin must list which frameworks it supports
+    Currently ``shell``, ``beakerlib``, and ``pytest`` are supported.
+    Each `execute` step plugin must list which frameworks it supports
     and raise an error when an unsupported framework is detected.
 
     Must be a ``string``, by default ``shell`` is used.
@@ -27,6 +27,13 @@ description: |
         Exit code and BeakerLib's ``TestResults`` file determine
         the test result.
 
+    pytest
+        The exit code of the ``pytest`` command determines the test
+        result. Exit code ``0`` means ``pass``, ``5`` (no tests found)
+        means ``info``, and other non-zero exit codes are treated as
+        ``fail``. The ``test`` attribute should point to a test file or
+        directory that pytest can discover and run.
+
 example:
   - |
     # Test written in shell
@@ -34,6 +41,10 @@ example:
   - |
     # A beakerlib test
     framework: beakerlib
+  - |
+    # A pytest test
+    test: test_example.py
+    framework: pytest
 
 link:
   - implemented-by: /tmt/base.py

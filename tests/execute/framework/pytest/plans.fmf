@@ -1,0 +1,12 @@
+# tests/execute/framework/pytest/plans.fmf
+discover:
+    how: fmf
+    filter: "tag:pytest-smoke" # Or a more specific tag if needed
+execute:
+    how: tmt
+provision:
+    how: container
+    image: fedora # Or any image with pytest installed or where it can be installed
+prepare:
+  - how: install
+    package: pytest # Ensure pytest is available
