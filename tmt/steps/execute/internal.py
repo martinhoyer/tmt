@@ -331,12 +331,20 @@ class ExecuteInternalData(tmt.steps.execute.ExecuteStepData):
         is_flag=True,
         help='Disable interactive progress bar showing the current test.',
     )
+    pytest_plugins: list[str] = field(
+        default_factory=list,
+        option='--pytest-plugin',
+        multiple=True,
+        help='Specify pytest plugin to install with uv.'
+        )
 
     # ignore[override] & cast: two base classes define to_spec(), with conflicting
     # formal types.
     def to_spec(self) -> dict[str, Any]:  # type: ignore[override]
         data = cast(dict[str, Any], super().to_spec())
         data['script'] = [str(script) for script in self.script]
+        if self.pytest_plugins:
+            data['pytest-plugins'] = self.pytest_plugins
 
         return data
 

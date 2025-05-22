@@ -1,12 +1,15 @@
 # tests/execute/framework/pytest/plans.fmf
 discover:
     how: fmf
-    filter: "tag:pytest-smoke" # Or a more specific tag if needed
-execute:
-    how: tmt
+    # Assuming tests.fmf has 'tag: pytest-smoke' for these tests
+    filter: "tag: pytest-smoke"
 provision:
     how: container
-    image: fedora # Or any image with pytest installed or where it can be installed
-prepare:
-  - how: install
-    package: pytest # Ensure pytest is available
+    image: fedora # Or an image where uv can be easily installed/is available
+execute:
+    how: tmt # This uses ExecuteInternal and thus ExecuteInternalData
+    pytest-plugins:
+      - pytest-html
+# 'uv' should be installed via tmt's dependency mechanism for the framework
+# If 'uv' itself needs to be prepared, that would be handled by tmt core
+# based on the DependencySimple('uv') from pytest.py
