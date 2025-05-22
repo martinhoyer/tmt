@@ -250,10 +250,13 @@ unnecessary data duplication.
 .. _framework-pytest:
 
 Pytest
-^^^^^^
+------
 
 The ``pytest`` framework allows you to execute tests written using the
-`pytest <https://docs.pytest.org/>`_ framework.
+`pytest <https://docs.pytest.org/>`_ framework. TMT utilizes ``uv``
+internally to create an isolated environment where ``pytest`` and any
+specified plugins are installed and executed. This means ``uv`` is a
+required dependency for using the ``pytest`` framework.
 
 To use it, specify ``framework: pytest`` in your test metadata. The ``test``
 attribute should point to a Python file or a directory that pytest can
@@ -266,8 +269,25 @@ process.
     test: test_example.py
     framework: pytest
 
+**Specifying Pytest Plugins**
+
+You can specify additional `pytest plugins <https://docs.pytest.org/en/latest/plugins.html>`_
+to be installed alongside ``pytest``. This is done using the ``pytest-plugins``
+key within the ``execute`` step of your plan. TMT will use ``uv`` to install
+these plugins.
+
+.. code-block:: yaml
+
+    # Example plan specifying pytest plugins
+    execute:
+      how: tmt
+      pytest-plugins:
+        - pytest-cov
+        - requests-mock
+        # - other-plugin
+
 Currently, the result of the test execution is determined by the exit code
-of the ``pytest`` command:
+of the ``pytest`` command (as executed by ``uvx``):
 * ``0``: pass
 * ``5``: info (no tests found)
 * Other non-zero: fail

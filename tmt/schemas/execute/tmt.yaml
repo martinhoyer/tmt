@@ -43,5 +43,15 @@ properties:
   duration:
     $ref: "/schemas/common#/definitions/duration"
 
+  pytest-plugins:
+    type: array
+    items:
+      type: string
+    description: >
+      A list of pytest plugins to be installed by 'uv' alongside pytest
+      when using the 'pytest' framework. These will be passed to
+      'uv tool install pytest --with <plugin>'.
+    example: ['pytest-cov', 'requests-mock']
+
 required:
   - how
