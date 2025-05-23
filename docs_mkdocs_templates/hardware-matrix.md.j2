@@ -1,0 +1,14 @@
+{% raw %}## Hardware requirement support
+
+Below you can find a matrix documenting which hardware requirement are
+supported by plugins bundled with tmt.
+
+| Requirement | {% for plugin in MATRIX['memory'].keys() %}{% if plugin == 'virtual.testcloud' %}virtual{% else %}{{ plugin }}{% endif %} |{% endfor %}
+|-------------|{% for plugin in MATRIX['memory'].keys() %}:---:|{% endfor %}
+{% for requirement, plugins in MATRIX.items() %}
+| [{{ requirement }}](../spec/hardware.md#{{ requirement }}) | {% for plugin, (enabled, note_id) in plugins.items() %}{% if enabled %}✅{% if note_id %}[^{{ note_id }}]{% endif %}{% else %}❌{% endif %} |{% endfor %}
+{% endfor %}
+
+{% for note_id, note_text in NOTES.items() %}
+[^{{ note_id }}]: {{ note_text | replace('``', '`') }}
+{% endfor %}{% endraw %}

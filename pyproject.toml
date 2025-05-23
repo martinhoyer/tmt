@@ -93,11 +93,18 @@ all = [
     ]
 # Needed for readthedocs and man page build. Not being packaged in rpm.
 docs = [
-    "renku-sphinx-theme==0.4.0",
-    "readthedocs-sphinx-ext",
-    "docutils>=0.18.1",
-    "Sphinx==7.3.7",
-    "fmf>=1.7.0",
+    # "renku-sphinx-theme==0.4.0", # Removed
+    # "readthedocs-sphinx-ext", # Removed
+    # "docutils>=0.18.1", # Removed (root dependency docutils>=0.16 remains)
+    # "Sphinx==7.3.7", # Removed
+    "fmf>=1.7.0", # Keep fmf as it's not Sphinx-specific
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.21",
+    "mkdocstrings>=0.25.1",
+    "mkdocstrings-python>=1.9.2",
+    "mkdocs-material-extensions>=1.3.1",
+    "mkdocs-mermaid2-plugin>=1.1.0",
+    "mkdocs-linkcheck>=1.2.0",
     ]
 
 [project.scripts]
@@ -192,16 +199,29 @@ python = ["3.9", "3.12", "3.13"]
 dependencies = ["tmt[docs]"]
 
 [tool.hatch.envs.docs.scripts]
-# Note that in RTD there are a few additional flags (from RTD's default build
-# script) e.g. -E, -d, and -D. These should not affect generated documentation
-# files below, but it may be providing additional metadata for RTD to index.
-html = "sphinx-build -b html {root}/docs {root}/docs/_build {args}"
-linkcheck = "sphinx-build -b linkcheck {root}/docs {root}/docs/_build {args}"
+generate = [
+  "python docs/scripts/generate-plugins.py discover docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py provision docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py prepare docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py execute docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py report docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py finish docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py prepare-feature docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py test-checks docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-stories.py docs_mkdocs_templates/story.md.j2",
+  "python docs/scripts/generate-hardware-matrix.py docs_mkdocs_templates/hardware-matrix.md.j2 docs_mkdocs/spec/hardware-matrix.md",
+  "python docs/scripts/generate-lint-checks.py docs_mkdocs_templates/lint-checks.md.j2 docs_mkdocs/spec/lint-checks.md",
+  "python docs/scripts/generate-template-extensions.py docs_mkdocs_templates/template-extensions.md.j2 docs_mkdocs/code/template-extensions.md",
+  "python docs/scripts/generate-test-runner-guest-matrix.py docs_mkdocs_templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs_mkdocs/guide/test-runner-guest-compatibility-matrix.md",
+]
+build = "mkdocs build --config-file mkdocs.yml --strict"
+linkcheck = "mkdocs linkcheck --config-file mkdocs.yml"
+# Old 'man' script, kept as it might be unrelated to HTML docs
 man = [
     "cp {root}/docs/header.txt {root}/man.rst",
-    "tail -n+8 docs/overview.rst >> {root}/man.rst",
+    "tail -n+8 docs/overview.rst >> {root}/man.rst", # This path might need adjustment if docs/overview.rst is removed/moved
     # TODO rst2man cannot process this directive, removed for now
-    "sed '/versionadded::/d' -i {root}/man.rst",
+    "sed '/versionadded::/d' -i {root}/man.rst", # This path might need adjustment if docs/overview.rst is removed/moved
     "rst2man.py {root}/man.rst > {root}/tmt.1",
     "rm -f {root}/man.rst",
     ]

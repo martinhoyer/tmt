@@ -1,0 +1,127 @@
+site_name: TMT
+site_url: "" # Placeholder for actual site URL if deploying
+repo_url: https://github.com/teemtee/tmt # Assuming this is the repo
+repo_name: teemtee/tmt
+edit_uri: edit/main/docs_mkdocs/ # Path to where docs_mkdocs will be in the repo
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    # - navigation.expand # Keep this commented for now, can be too verbose
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow # Automatically scroll Table of Contents
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  # logo: assets/logo.png # Placeholder
+  # favicon: assets/favicon.png # Placeholder
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google # Updated based on pyproject.toml (pep257 -> google)
+            show_root_heading: true
+            show_source: true
+            members_order: source # Or 'alphabetical'
+            # group_by_category: true # Might be useful later
+            # show_category_heading: true # Might be useful later
+  - mkdocs-mermaid2-plugin
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details # must be before superfences
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name/materialx.emoji.twemoji
+      emoji_generator: !!python/name/materialx.emoji.to_svg
+  - pymdownx.magiclink
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+      slugify: !!python/name/pymdownx.slugs.uslugify # For better anchor generation
+
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Guide:
+    - guide.md
+    - Test Runner Guest Compatibility: guide/test-runner-guest-compatibility-matrix.md
+  - Specification:
+    - spec.md
+    - Core Attributes: spec/core.md
+    - Tests: spec/tests.md
+    - Plans: spec/plans.md
+    - Stories: spec/stories.md # This is /spec/stories from generate-stories
+    - Context: spec/context.md
+    - Hardware: spec/hardware.md
+    - Hardware Matrix: spec/hardware-matrix.md
+    - Results: spec/results.md
+    - Lint Checks: spec/lint-checks.md
+  - Plugins:
+    - Overview: plugins/index.md # Placeholder created
+    - Discover: plugins/discover.md
+    - Provision: plugins/provision.md
+    - Prepare: plugins/prepare.md
+    - Execute: plugins/execute.md
+    - Report: plugins/report.md
+    - Finish: plugins/finish.md
+    - Prepare Features: plugins/prepare-feature.md
+    - Test Checks: plugins/test-checks.md
+  - Examples: examples.md
+  - Stories: # This is the main /stories section
+    - stories.md # Converted from docs/stories.rst (main intro)
+    - Documentation: stories/docs.md
+    - CLI: stories/cli.md
+    - Installation: stories/install.md
+    - Features: stories/features.md
+    - Deferred: stories/deferred.md
+  - Questions: questions.md
+  - Contribute: contribute.md
+  - Code:
+    - index: code/index.md
+    - Class Overview: code/classes.md
+    - Plugin Introduction: code/plugin-introduction.md
+    - Template Extensions: code/template-extensions.md
+    - API - tmt: code/tmt.md
+    - API - tmt.steps: code/tmt.steps.md
+  - Releases: releases.md
+
+# copyright: Copyright &copy; 2023 Red Hat, Inc. # Example
+# extra:
+#   social:
+#     - icon: fontawesome/brands/github
+#       link: https://github.com/teemtee
+#     - icon: fontawesome/brands/twitter
+#       link: https://twitter.com/teemtee # Fictional

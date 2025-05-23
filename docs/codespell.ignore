@@ -1,3 +1,0 @@
-    # Override the parent implementation - it would try to call `Tree.storys()`...
-                            passt \
-                            passt-selinux \

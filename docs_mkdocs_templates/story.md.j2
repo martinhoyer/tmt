@@ -1,0 +1,215 @@
+{% raw %}{#
+    A Jinja2 template for rendering stories in tmt's own docs (Markdown version).
+#}
+
+{#
+    Render a given example as a Markdown code block.
+
+    :param str example: the example to render. May contain syntax
+        token to use for highlighting instead of the default ``yaml``.
+#}
+{% macro render_example(example) %}
+    {% set example = example.strip() %}
+    {% set syntax_match = example | regex_search('^# syntax: ([a-z]+)') %}
+    {% if syntax_match %}
+        {% set example = '\n'.join(example.splitlines()[1:]) %}
+        {% set syntax = syntax_match[0] %}
+    {% else %}
+        {% set syntax = 'yaml' %}
+    {% endif %}
+```{{ syntax }}
+{{ example | trim }}
+```
+{% endmacro %}
+
+{#
+    Convert link relation into a nicely formatted string.
+
+    :param tmt.base.Link link: instance.
+#}
+{% macro printable_relation(link) %}{{ link.relation.replace('relates', 'relates-to').replace('-', ' ').capitalize() }}{% endmacro %}
+
+{#
+    Emit a remote link in Markdown.
+
+    :param tmt.base.Link link: link to render.
+    :param str label: label of the link.
+    :param url: URL to point at.
+#}
+{% macro _emit_remote_link(link, label, url) %}
+* {{ printable_relation(link) }} [{{ label }}]({{ url }}){% if link.note %} ({{ link.note }}){% endif %}
+{% endmacro %}
+
+{#
+    Emit a link leading to something in tmt upstream repository (Markdown).
+
+    :param tmt.base.Link link: link to render.
+#}
+{% macro emit_tmt_repo_link(link) %}
+{{ _emit_remote_link(link, link.target, link.target | web_git_url(STORY.fmf_id.url, STORY.fmf_id.ref)) }}
+{% endmacro %}
+
+{#
+    Emit a link leading to tmt plugin sources (Markdown).
+
+    :param tmt.base.Link link: link to render.
+#}
+{% macro emit_tmt_plugin_link(link) %}
+{% set matched = link.target | match('^/tmt/steps/([a-z_]+/[a-z_]+)\\.py$') %}
+{#
+    A couple of plugins where the file name does not match the "how" name
+    used commonly in fmf files/on command line.
+#}
+{% set plugin_name = matched.group(1) %}
+{% if plugin_name == "execute/internal" %}
+    {% set plugin_name = "execute/tmt" %}
+{% elif plugin_name == "provision/mrack" %}
+    {% set plugin_name = "provision/beaker" %}
+{% elif plugin_name == "provision/podman" %}
+    {% set plugin_name = "provision/container" %}
+{% elif plugin_name == "provision/testcloud" %}
+    {% set plugin_name = "provision/virtual" %}
+{% endif %}
+{{ _emit_remote_link(link, plugin_name, link.target | web_git_url(STORY.fmf_id.url, STORY.fmf_id.ref)) }}
+{% endmacro %}
+
+{#
+    Emit a link leading to fmf object in tmt upstream repository (Markdown).
+
+    Since a link can point to a root of hierarchy of fmf objects, we
+    render all of them, with their names instead of labeling them all
+    with ``link.target``.
+
+    We are ignoring stories on purpose: stories are rendered as docs,
+    therefore links pointing to stories are rendered as in-doc references
+    by the template.
+
+    :param tmt.base.Link link: link to render.
+#}
+{% macro emit_tmt_object_links(link) %}
+{% if link.target.startswith('/tests') %}
+  {% set objects = STORY.tree.tests(names=["^" + link.target + "(/|$)"]) %}
+{% elif link.target.startswith('/plans') %}
+  {% set objects = STORY.tree.plans(names=["^" + link.target + "(/|$)"]) %}
+{% else %}
+  {{ raise_error("Cannot use emit_tmt_object_links for target '" + link.target + "'.") }}
+{% endif %}
+{% if not objects %}
+  {{ raise_error("No test or plan was found for target '" + link.target + "'.") }}
+{% endif %}
+{% for object in objects %}
+* {{ printable_relation(link) }} [{{ object.name }}]({{ object.web_link() }}) (View on GitHub){% if link.note %} ({{ link.note }}){% endif %}
+{% endfor %}
+{% endmacro %}
+
+{#
+    Emit a link leading to tmt's own docs/ directory (Markdown).
+
+    :param link: tmt.base.Link instance.
+#}
+{% macro emit_docs_link(link) %}
+{% set matched = link.target | match('^/docs/(.+?)\\.rst(?:#([a-zA-Z0-9_\\-]+))?$') %}
+{% set page_path = matched.group(1) %}
+{% set fragment = matched.group(2) %}
+{# Basic relative path - this will likely need adjustment based on actual output structure #}
+{% set relative_path = '../' * (page_path.split('/') | length -1) %}
+{% set md_link = relative_path + page_path + '.md' %}
+{% if fragment %}
+  {% set md_link = md_link + '#' + fragment.lower().replace('_', '-') %}
+{% endif %}
+* {{ printable_relation(link) }} [{{ page_path.split('/') | last }}]({{ md_link }}){% if link.note %} ({{ link.note }}){% endif %}
+{% endmacro %}
+
+{% if INCLUDE_TITLE %}
+{% set depth = STORY.name | regex_findall('/') | length -1 %}
+{% set title_level = '#' * (depth + 2) %} {# Assuming depth 0 is ## #}
+{% if STORY.title and STORY.title != STORY.node.parent.get('title') %}
+    {% set title = STORY.title %}
+{% else %}
+    {% set title = STORY.name | regex_replace('.*/', '') %}
+{% endif %}
+{{ title_level }} {{ title | trim }}
+{% endif %}
+
+{# Summary, story and description #}
+{% if STORY.summary and STORY.summary != STORY.node.parent.get('summary') %}
+{{ STORY.summary | trim }}
+{% endif %}
+
+{% if STORY.story != STORY.node.parent.get('story') %}
+*{{ STORY.story | trim }}*
+{% endif %}
+
+{# Insert note about unimplemented feature (leaf nodes only) #}
+{% if not STORY.node.children and not STORY.implemented %}
+!!! note
+    This is a draft, the story is not implemented yet.
+{% endif %}
+
+{% if STORY.description and STORY.description != STORY.node.parent.get('description') %}
+{{ STORY.description }}
+{% endif %}
+
+{# Examples #}
+{% if STORY.example and STORY.example != STORY.node.parent.get('example') %}
+    {% for example in STORY.example %}
+        {% if example == STORY.example | first %}
+**Examples:**
+        {% endif %}
+
+{{ render_example(example) }}
+    {% endfor %}
+{% endif %}
+
+{# Status #}
+{% if not STORY.node.children %}
+    {% if STORY.status %}
+**Status:** {{ STORY.status | listed }}
+    {% else %}
+**Status:** idea
+    {% endif %}
+{% endif %}
+
+{# Links #}
+{% for link in STORY.link.get() %}
+{# Links pointing to docs #}
+{% if link.target | match('^/docs/') %}
+{{ emit_docs_link(link) }}
+
+{# Links pointing to step core implementation #}
+{% elif link.target | match('^/tmt/steps(?:/__init__.py)?$') %}
+{{ emit_tmt_repo_link(link) }}
+
+{# Links pointing to step implementations #}
+{% elif link.target | match('^/tmt/steps/([a-z_]+)(?:$|(?:/__init__.py))$') %}
+{{ emit_tmt_repo_link(link) }}
+
+{# Links pointing to step plugins #}
+{% elif link.target | match('^/tmt/steps/([a-z_]+/[a-z_]+)\\.py$') %}
+{{ emit_tmt_plugin_link(link) }}
+
+{# Links pointing to other tmt code #}
+{% elif link.target.startswith('/tmt') %}
+{{ emit_tmt_repo_link(link) }}
+
+{# Links pointing to stories #}
+{% elif link.target | match('^/stories') %}
+* {{ printable_relation(link) }} [{{ link.target | regex_replace('^/', '') }}]({{ '../' * (link.target | regex_replace('^/', '')).split('/') | length }}{{ link.target | regex_replace('^/', '') }}.md){% if link.note %} ({{ link.note }}){% endif %}
+
+{# Links pointing to tests #}
+{% elif link.target | match ('^/tests') %}
+{{ emit_tmt_object_links(link) }}
+
+{# Links pointing to plans #}
+{% elif link.target | match ('^/plans') %}
+{{ emit_tmt_object_links(link) }}
+
+{# Links pointing to websites #}
+{% elif link.target | match('^https?://') %}
+* {{ printable_relation(link) }} [{{ link.target }}]({{ link.target }}){% if link.note %} ({{ link.note }}){% endif %}
+
+{# Links pointing to anything else #}
+{% else %}
+* {{ printable_relation(link) }} `{{ link.target }}`{% if link.note %} ({{ link.note }}){% endif %}
+{% endif %}
+{% endfor %}{% endraw %}

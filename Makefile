@@ -44,15 +44,14 @@ requre:  ## Regenerate test data for integration tests
 ## Documentation
 ##
 docs: clean  ## Build documentation
-	hatch run docs:html
+	hatch run docs:generate && hatch run docs:build
 
-man:  ## Build man page
-	hatch run docs:man
+
 
 ##
 ## Packaging & Packit
 ##
-build: clean man
+build: clean
 	hatch build
 tarball: clean tmp build
 	mkdir -p $(TMP)/SOURCES
@@ -267,8 +266,8 @@ tags:
 
 clean:  ## Remove all temporary files, packaging artifacts and docs
 	rm -rf $(TMP) build dist tmt.1
-	rm -rf .cache .mypy_cache .ruff_cache
-	make -C docs clean
+	rm -rf .cache .mypy_cache .ruff_cache site docs_mkdocs/site # Add site and docs_mkdocs/site
+	# make -C docs clean # Removed
 	find . -type f -name "*.py[co]" -delete
 	find . -type f -name "*,cover" -delete
 	find . -type d -name "__pycache__" -delete
