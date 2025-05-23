@@ -91,16 +91,6 @@ all = [
     "tmt[report-polarion]",
     "tmt[link-jira]",
     ]
-# Needed for readthedocs and man page build. Not being packaged in rpm.
-docs = [
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.6.14",
-    #"mkdocstrings>=0.29.1",
-    "mkdocstrings-python>=1.16.10",
-    "pymdown-extensions",
-    "markdown",
-    "Pygments",
-    ]
 
 [project.scripts]
 tmt = "tmt.__main__:run_cli"
@@ -191,7 +181,19 @@ description = "Run scripts with multiple Python versions"
 python = ["3.9", "3.12", "3.13"]
 
 [tool.hatch.envs.docs]
-dependencies = ["tmt[docs]"]
+dependencies = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings-python",
+    "pymdown-extensions",
+    "markdown",
+    "Pygments",
+    "griffe-inherited-docstrings",
+    "griffe-pydantic",
+    "griffe-typingdoc",
+    "griffe-warnings-deprecated",
+    "griffe-fieldz",  # attrs, etc
+    ]
 
 [tool.hatch.envs.docs.scripts]
 generate = [
@@ -210,7 +212,7 @@ generate = [
   "python docs/scripts/generate-test-runner-guest-matrix.py docs/templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs/guide/test-runner-guest-compatibility-matrix.md",
 ]
 build = "mkdocs build --config-file mkdocs.yml --strict"
-linkcheck = "mkdocs linkcheck --config-file mkdocs.yml"
+serve = "mkdocs serve"
 
 [dirs.env]
 virtual = ".venv"
