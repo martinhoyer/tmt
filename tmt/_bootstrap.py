@@ -1,5 +1,4 @@
-"""
-Loggers for use during tmt startup.
+"""Loggers for use during tmt startup.
 
 Very special loggers used by tmt plugin discovery and configuration
 loaders. Established logging is needed even by this type of code, and

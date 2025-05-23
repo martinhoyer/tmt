@@ -42,10 +42,7 @@ def _duration_to_seconds_filter(duration: None) -> None:
 
 
 def _duration_to_seconds_filter(duration: Optional[str]) -> Optional[int]:
-    """
-    Convert valid duration string in to seconds
-    """
-
+    """Convert valid duration string in to seconds."""
     if duration is None:
         return None
     try:
@@ -56,9 +53,7 @@ def _duration_to_seconds_filter(duration: Optional[str]) -> Optional[int]:
 
 
 def _escape_control_chars_filter(func: Callable[[str], str]) -> Callable[[str], str]:
-    """
-    Wrap the escape filter function and escape ASCII chosen control characters
-    """
+    """Wrap the escape filter function and escape ASCII chosen control characters."""
 
     def wrapper(value: str) -> str:
         # Define unicode characters which are not allowed in the XML and need to be removed.
@@ -105,16 +100,13 @@ def _escape_control_chars_filter(func: Callable[[str], str]) -> Callable[[str], 
 
 
 class ImplementProperties:
-    """
-    Define a properties attribute.
+    """Define a properties attribute.
 
     This class can be used to easily add properties attribute by inheriting it.
     """
 
     class PropertyDict(TypedDict):
-        """
-        Defines a property dict, which gets propagated into the final template properties.
-        """
+        """Defines a property dict, which gets propagated into the final template properties."""
 
         name: str
         value: str
@@ -132,8 +124,7 @@ class ImplementProperties:
 
 
 class ResultWrapper(ImplementProperties):
-    """
-    The context wrapper for :py:class:`tmt.Result`.
+    """The context wrapper for :py:class:`tmt.Result`.
 
     Adds possibility to wrap the :py:class:`tmt.Result` and dynamically add more attributes which
     get available inside the template context.
@@ -149,19 +140,15 @@ class ResultWrapper(ImplementProperties):
         self._subresults_context_class = subresults_context_class
 
     def __getattr__(self, name: str) -> Any:
-        """
-        Returns an attribute of a wrapped ``tmt.Result`` instance
-        """
-
+        """Returns an attribute of a wrapped ``tmt.Result`` instance."""
         return getattr(self._wrapped, name)
 
     @property
     def subresult(self) -> 'ResultsContext':
-        """
-        Override the ``tmt.Result.subresult`` and wrap all the ``tmt.result.SubResult`` instances
-        into the ``ResultsContext``.
-        """
+        """Override the ``tmt.Result.subresult``.
 
+        Wrap all the ``tmt.result.SubResult`` instances into the ``ResultsContext``.
+        """
         # `tmt.result.SubResult.subresult` is not defined, just raise the AttributeError to silent
         # the typing errors.
         if isinstance(self._wrapped, tmt.result.SubResult):
@@ -173,18 +160,14 @@ class ResultWrapper(ImplementProperties):
 
 
 class ResultsContext(ImplementProperties):
-    """
-    The results context for Jinja templates.
+    """The results context for Jinja templates.
 
     A class which keeps the results context (especially the result summary) for JUnit template. It
     wraps all the :py:class:`tmt.Result` instances into the :py:class:`ResultWrapper`.
     """
 
     def __init__(self, results: Union[list[tmt.Result], list[tmt.result.SubResult]]) -> None:
-        """
-        Decorate/wrap all the ``Result`` and ``SubResult`` instances with more attributes
-        """
-
+        """Decorate/wrap all the ``Result`` and ``SubResult`` instances with more attributes."""
         super().__init__()
 
         # Decorate all the tmt.Results with more attributes
@@ -193,57 +176,36 @@ class ResultsContext(ImplementProperties):
         ]
 
     def __iter__(self) -> Iterator[ResultWrapper]:
-        """
-        Possibility to iterate over results by iterating an instance
-        """
-
+        """Possibility to iterate over results by iterating an instance."""
         return iter(self._results)
 
     def __len__(self) -> int:
-        """
-        Returns the number of results
-        """
-
+        """Returns the number of results."""
         return len(self._results)
 
     @functools.cached_property
     def passed(self) -> list[ResultWrapper]:
-        """
-        Returns results of passed tests
-        """
-
+        """Returns results of passed tests."""
         return [r for r in self._results if r.result == ResultOutcome.PASS]
 
     @functools.cached_property
     def skipped(self) -> list[ResultWrapper]:
-        """
-        Returns results of skipped tests
-        """
-
+        """Returns results of skipped tests."""
         return [r for r in self._results if r.result in (ResultOutcome.SKIP, ResultOutcome.INFO)]
 
     @functools.cached_property
     def failed(self) -> list[ResultWrapper]:
-        """
-        Returns results of failed tests
-        """
-
+        """Returns results of failed tests."""
         return [r for r in self._results if r.result == ResultOutcome.FAIL]
 
     @functools.cached_property
     def errored(self) -> list[ResultWrapper]:
-        """
-        Returns results of tests with error/warn outcome
-        """
-
+        """Returns results of tests with error/warn outcome."""
         return [r for r in self._results if r.result in (ResultOutcome.ERROR, ResultOutcome.WARN)]
 
     @functools.cached_property
     def duration(self) -> int:
-        """
-        Returns the total duration of all tests in seconds
-        """
-
+        """Returns the total duration of all tests in seconds."""
         # cast: mypy does not understand the proxy-ness of `ResultWrapper`. `r.duration`
         # will exists, therefore adding a `cast` to convince mypy the list is pretty much
         # nothing but the list of results.
@@ -262,20 +224,22 @@ def make_junit_xml(
     results_context: Optional[ResultsContext] = None,
     **extra_variables: Any,
 ) -> str:
-    """
-    Create JUnit XML file and return the data.
+    """Create JUnit XML file and return the data.
 
-    :param phase: instance of a :py:class:`tmt.steps.report.ReportPlugin`.
-    :param flavor: name of a JUnit flavor to generate.
-    :param template_path: if set, the provided template will be used instead of a pre-defined
-        flavor template. In this case, the ``flavor`` must be set to ``custom`` value.
-    :param include_output_log: if enabled, the ``<system-out>`` tags are included in the final
-        template output.
-    :param prettify: allows to control the XML pretty print.
-    :param results_context: if set, the provided :py:class:`ResultsContext` is used in a template.
-    :param extra_variables: if set, these variables get propagated into the Jinja template.
+    Args:
+        phase: instance of a :py:class:`tmt.steps.report.ReportPlugin`.
+        flavor: name of a JUnit flavor to generate.
+        template_path: if set, the provided template will be used
+            instead of a pre-defined flavor template. In this case, the
+            ``flavor`` must be set to ``custom`` value.
+        include_output_log: if enabled, the ``<system-out>`` tags are
+            included in the final template output.
+        prettify: allows to control the XML pretty print.
+        results_context: if set, the provided :py:class:`ResultsContext`
+            is used in a template.
+        **extra_variables: if set, these variables get propagated into
+            the Jinja template.
     """
-
     # Get the template context for tmt results
     results_context = results_context or ResultsContext(phase.step.plan.execute.results())
 
@@ -293,10 +257,7 @@ def make_junit_xml(
         )
 
     def _read_log_filter(log: Path) -> str:
-        """
-        Read the contents of a given result log
-        """
-
+        """Read the contents of a given result log."""
         if not log:
             return ''
 
@@ -306,10 +267,7 @@ def make_junit_xml(
             return ''
 
     def _failures_filter(paths: list[Path]) -> list[str]:
-        """
-        Return a list of failures from a given failure log file
-        """
-
+        """Return a list of failures from a given failure log file."""
         failures: list[str] = []
         for path in paths:
             try:
@@ -488,8 +446,7 @@ class ReportJUnitData(tmt.steps.report.ReportStepData):
     """,
 )
 class ReportJUnit(tmt.steps.report.ReportPlugin[ReportJUnitData]):
-    """
-    Save test results in chosen JUnit flavor format.
+    """Save test results in chosen JUnit flavor format.
 
     When flavor is set to custom, the ``template-path`` with a path to a custom template must be
     provided.
@@ -514,10 +471,7 @@ class ReportJUnit(tmt.steps.report.ReportPlugin[ReportJUnitData]):
     _data_class = ReportJUnitData
 
     def check_options(self) -> None:
-        """
-        Check the module options
-        """
-
+        """Check the module options."""
         if self.data.flavor == 'custom' and not self.data.template_path:
             raise tmt.utils.ReportError(
                 "The 'custom' flavor requires the '--template-path' argument."
@@ -530,10 +484,7 @@ class ReportJUnit(tmt.steps.report.ReportPlugin[ReportJUnitData]):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         members = super()._preserved_workdir_members
 
         if self.data.file is None:
@@ -542,10 +493,7 @@ class ReportJUnit(tmt.steps.report.ReportPlugin[ReportJUnitData]):
         return members
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Read executed tests and write junit
-        """
-
+        """Read executed tests and write junit."""
         super().go(logger=logger)
 
         self.check_options()

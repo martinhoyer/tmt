@@ -1,5 +1,4 @@
-"""
-tmt's logging subsystem.
+"""tmt's logging subsystem.
 
 Adds a layer on top of Python's own :py:mod:`logging` subsystem. This layer implements the desired
 verbosity and debug levels, colorization, formatting, verbosity inheritance and other features used
@@ -124,8 +123,7 @@ def _debug_level_from_global_envvar() -> int:
 
 
 def decide_colorization(no_color: bool, force_color: bool) -> tuple[bool, bool]:
-    """
-    Decide whether the output and logging should be colorized.
+    """Decide whether the output and logging should be colorized.
 
     Based on values of CLI options, environment variables and output stream
     properties, a colorization setup is decided. The following inputs are
@@ -144,25 +142,25 @@ def decide_colorization(no_color: bool, force_color: bool) -> tuple[bool, bool]:
     colorization would then be the outcome of stream's :py:meth:`file.isatty`
     method.
 
-    .. note::
+    Note:
+        Be aware that "forced enable" is stronger than "forced disable". If
+        ``--force-color`` or ``TMT_FORCE_COLOR`` are set, colors will be enabled
+        despite any disabling options or environment variables.
 
-       Be aware that "forced enable" is stronger than "forced disable". If
-       ``--force-color`` or ``TMT_FORCE_COLOR`` are set, colors will be enabled
-       despite any disabling options or environment variables.
+    Note:
+        All inputs with the exception of ``isatty`` result control both types of
+        output, regular output and logging, and applies to both of them. Only
+        ``isatty`` outcome is specific for each type, and may result in one
+        output type dropping colors while the other would be colorized.
 
-    .. note::
+    Args:
+        no_color: value of the ``--no-color`` CLI option.
+        force_color: value of the `--force-color`` CLI option.
 
-       All inputs with the exception of ``isatty`` result control both types of
-       output, regular output and logging, and applies to both of them. Only
-       ``isatty`` outcome is specific for each type, and may result in one
-       output type dropping colors while the other would be colorized.
-
-    :param no_color: value of the ``--no-color`` CLI option.
-    :param force_color: value of the `--force-color`` CLI option.
-    :returns: a tuple of two booleans, one for output colorization, the other
+    Returns:
+        a tuple of two booleans, one for output colorization, the other
         for logging colorization.
     """
-
     # Default values: assume colors & unicorns everywhere.
     apply_colors_output = apply_colors_logging = True
 
@@ -204,24 +202,24 @@ def indent(
     labels: Optional[list[str]] = None,
     labels_padding: int = 0,
 ) -> str:
-    """
-    Indent a key/value message.
+    """Indent a key/value message.
 
     If both ``key`` and ``value`` are specified, ``{key}: {value}``
     message is rendered. Otherwise, just ``key`` is used alone. If
     ``value`` contains multiple lines, each but the very first line is
     indented by one extra level.
 
-    :param value: optional value to print at right side of ``key``.
-    :param color: optional color to apply on ``key``.
-    :param level: number of indentation levels. Each level is indented
-                  by :py:data:`INDENT` spaces.
-    :param labels: optional list of strings to prepend to each message.
-        Each item would be wrapped within square brackets (``[foo] message...``).
-    :param labels_padding: if set, rendered labels would be padded to this
-        length.
+    Args:
+        value: optional value to print at right side of ``key``.
+        color: optional color to apply on ``key``.
+        level: number of indentation levels. Each level is indented by
+            :py:data:`INDENT` spaces.
+        labels: optional list of strings to prepend to each message.
+            Each item would be wrapped within square brackets (``[foo]
+            message...``).
+        labels_padding: if set, rendered labels would be padded to this
+            length.
     """
-
     from tmt.utils.themes import style
 
     indent = ' ' * INDENT * level
@@ -260,9 +258,7 @@ def indent(
 
 @container
 class LogRecordDetails:
-    """
-    tmt's log message components attached to log records
-    """
+    """tmt's log message components attached to log records."""
 
     key: str
     value: Optional[LoggableValue] = None
@@ -445,8 +441,7 @@ class LoggingFunction(Protocol):
 
 
 class Logger:
-    """
-    A logging entry point, representing a certain level of verbosity and handlers.
+    """A logging entry point, representing a certain level of verbosity and handlers.
 
     Provides actual logging methods plus methods for managing verbosity levels
     and handlers.
@@ -465,23 +460,24 @@ class Logger:
         apply_colors_output: bool = True,
         apply_colors_logging: bool = True,
     ) -> None:
-        """
-        Create a ``Logger`` instance with given verbosity levels.
+        """Create a ``Logger`` instance with given verbosity levels.
 
-        :param actual_logger: a :py:class:`logging.Logger` instance, the raw logger
-            to use for logging.
-        :param base_shift: shift applied to all messages processed by this logger.
-        :param labels_padding: if set, rendered labels would be padded to this
-            length.
-        :param verbosity_level: desired verbosity level, usually derived from ``-v``
-            command-line option.
-        :param debug_level: desired debugging level, usually derived from ``-d``
-            command-line option.
-        :param quiet: if set, all messages would be suppressed, with the exception of
-            warnings (:py:meth:`warn`), errors (:py:meth:`fail`) and messages emitted
-            with :py:meth:`print`.
+        Args:
+            actual_logger: a :py:class:`logging.Logger` instance, the
+                raw logger to use for logging.
+            base_shift: shift applied to all messages processed by this
+                logger.
+            labels_padding: if set, rendered labels would be padded to
+                this length.
+            verbosity_level: desired verbosity level, usually derived
+                from ``-v`` command-line option.
+            debug_level: desired debugging level, usually derived from
+                ``-d`` command-line option.
+            quiet: if set, all messages would be suppressed, with the
+                exception of warnings (:py:meth:`warn`), errors
+                (:py:meth:`fail`) and messages emitted with
+                :py:meth:`print`.
         """
-
         self._logger = actual_logger
 
         self._base_shift = base_shift
@@ -526,18 +522,12 @@ class Logger:
 
     @property
     def labels_span(self) -> int:
-        """
-        Length of rendered labels
-        """
-
+        """Length of rendered labels."""
         return len(render_labels(self.labels))
 
     @staticmethod
     def _normalize_logger(logger: logging.Logger) -> logging.Logger:
-        """
-        Reset properties of a given :py:class:`logging.Logger` instance
-        """
-
+        """Reset properties of a given :py:class:`logging.Logger` instance."""
         logger.propagate = True
         logger.level = logging.DEBUG
 
@@ -546,13 +536,11 @@ class Logger:
         return logger
 
     def clone(self) -> 'Logger':
-        """
-        Create a copy of this logger instance.
+        """Create a copy of this logger instance.
 
         All its settings are propagated to new instance. Settings are **not** shared,
         and may be freely modified after cloning without affecting the other logger.
         """
-
         return Logger(
             self._logger,
             base_shift=self._base_shift,
@@ -571,19 +559,20 @@ class Logger:
         logger_name: Optional[str] = None,
         extra_shift: int = 1,
     ) -> 'Logger':
-        """
-        Create a copy of this logger instance, but with a new raw logger.
+        """Create a copy of this logger instance, but with a new raw logger.
 
         New :py:class:`logging.Logger` instance is created from our raw logger, forming a
         parent/child relationship between them, and it's then wrapped with ``Logger`` instance.
         Settings of this logger are copied to new one, with the exception of ``base_shift``
         which is increased by one, effectively indenting all messages passing through new logger.
 
-        :param logger_name: optional name for the underlying :py:class:`logging.Logger` instance.
-            Useful for debugging. If not set, a generic one is created.
-        :param extra_shift: by how many extra levels should messages be indented by new logger.
+        Args:
+            logger_name: optional name for the underlying
+                :py:class:`logging.Logger` instance. Useful for
+                debugging. If not set, a generic one is created.
+            extra_shift: by how many extra levels should messages be
+                indented by new logger.
         """
-
         logger_name = logger_name or f'logger{next(self._child_id_counter)}'
         actual_logger = self._normalize_logger(self._logger.getChild(logger_name))
 
@@ -601,10 +590,7 @@ class Logger:
         )
 
     def add_logfile_handler(self, filepath: 'tmt.utils.Path') -> None:
-        """
-        Attach a log file handler to this logger
-        """
-
+        """Attach a log file handler to this logger."""
         handler = LogfileHandler(filepath)
 
         handler.setFormatter(LogfileFormatter())
@@ -614,13 +600,12 @@ class Logger:
         self._logger.addHandler(handler)
 
     def add_console_handler(self, show_timestamps: bool = False) -> None:
-        """
-        Attach console handler to this logger.
+        """Attach console handler to this logger.
 
-        :param show_timestamps: when set, emitted messages would include
-            the time.
+        Args:
+            show_timestamps: when set, emitted messages would include
+                the time.
         """
-
         handler = ConsoleHandler(stream=sys.stderr)
 
         handler.setFormatter(
@@ -641,13 +626,11 @@ class Logger:
         cli_invocation: Optional['tmt.cli.CliInvocation'] = None,
         **kwargs: Any,
     ) -> 'Logger':
-        """
-        Update logger's settings to match given CLI options.
+        """Update logger's settings to match given CLI options.
 
         Use this method to update logger's settings after :py:meth:`Logger.descend` call,
         to reflect options given to a tmt subcommand.
         """
-
         actual_kwargs: dict[str, Any] = {}
 
         if cli_invocation is not None:
@@ -705,8 +688,7 @@ class Logger:
         apply_colors_logging: bool = True,
         **verbosity_options: Any,
     ) -> 'Logger':
-        """
-        Create a (root) tmt logger.
+        """Create a (root) tmt logger.
 
         This method has a very limited set of use cases:
 
@@ -715,10 +697,11 @@ class Logger:
         * 3rd party apps treating tmt as a library, i.e. when they wish tmt to
           use their logger instead of tmt's default one.
 
-        :param actual_logger: a :py:class:`logging.Logger` instance to wrap.
-            If not set, a default logger named ``tmt`` is created.
+        Args:
+            actual_logger: a :py:class:`logging.Logger` instance to
+                wrap. If not set, a default logger named ``tmt`` is
+                created.
         """
-
         actual_logger = actual_logger or cls._normalize_logger(logging.getLogger('tmt'))
 
         return Logger(
@@ -733,14 +716,12 @@ class Logger:
         details: LogRecordDetails,
         message: str = '',
     ) -> None:
-        """
-        Emit a log record describing the message and related properties.
+        """Emit a log record describing the message and related properties.
 
         This method converts tmt's specific logging approach, with keys, values, colors
         and shifts, to :py:class:`logging.LogRecord` instances compatible with :py:mod:`logging`
         workflow and carrying extra information for our custom filters and handlers.
         """
-
         details.logger_labels = self.labels
         details.logger_labels_padding = self.labels_padding
 
@@ -770,10 +751,7 @@ class Logger:
         color: 'tmt.utils.themes.Style' = None,
         shift: int = 0,
     ) -> str:
-        """
-        Format the given text in a way suitable for :py:meth:`print`
-        """
-
+        """Format the given text in a way suitable for :py:meth:`print`."""
         text = indent(
             text,
             # Always apply colors - message can be decolorized later.
@@ -878,11 +856,9 @@ class Logger:
 
     @classmethod
     def get_bootstrap_logger(cls) -> 'Logger':
-        """
-        Create a logger designed for tmt startup time.
+        """Create a logger designed for tmt startup time.
 
-        .. warning::
-
+        Warning:
             This logger has a **very** limited use case span, i.e.
             before tmt can digest its command-line options and create a
             proper logger. This happens inside
@@ -892,7 +868,6 @@ class Logger:
             anywhere outside of this brief time in tmt's runtime should
             be ruled out.
         """
-
         if cls._bootstrap_logger is None:
             # Stay away of our future main logger
             actual_logger = Logger._normalize_logger(logging.getLogger('_tmt_bootstrap'))

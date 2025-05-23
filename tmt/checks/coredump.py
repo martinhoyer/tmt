@@ -68,8 +68,7 @@ class CoredumpCheck(Check):
         return self.to_spec()
 
     def _configure_coredump(self, guest: "Guest", logger: tmt.log.Logger) -> None:
-        """
-        Try configure coredump storage.
+        """Try configure coredump storage.
 
         Non-privileged users might not have permission to change the config,
         while being able to use coredumpctl
@@ -148,8 +147,7 @@ class CoredumpCheck(Check):
                 return False
 
     def _has_required_permissions(self, guest: "Guest", logger: tmt.log.Logger) -> bool:
-        """
-        Check if we have sufficient permissions to access coredump data.
+        """Check if we have sufficient permissions to access coredump data.
 
         Note: coredumpctl returns 1 when no dumps are found, which is a valid
         case that indicates we have proper permissions.
@@ -178,11 +176,8 @@ class CoredumpCheck(Check):
                 logger.debug("Cannot access coredump data - permission issues")
                 return False
 
-    def _check_coredump_available(
-        self, guest: "Guest", logger: tmt.log.Logger
-    ) -> tuple[bool, str]:
-        """
-        Check if coredump functionality is available and usable.
+    def _check_coredump_available(self, guest: "Guest", logger: tmt.log.Logger) -> tuple[bool, str]:
+        """Check if coredump functionality is available and usable.
 
         Checks for:
         1. systemd availability through guest facts
@@ -190,9 +185,10 @@ class CoredumpCheck(Check):
         3. systemd-coredump.socket is active or can be activated
         4. Has sufficient permissions to access coredump data
 
-        :returns: A tuple of (available, reason) where available is True if coredump
-                 is available and usable, and reason is a string explaining why it's not
-                 available if applicable.
+        Returns:
+            A tuple of (available, reason) where available is True if
+            coredump is available and usable, and reason is a string
+            explaining why it's not available if applicable.
         """
         # We need systemd for coredump functionality
         if not guest.facts.has_systemd:
@@ -218,8 +214,7 @@ class CoredumpCheck(Check):
         return True, ""
 
     def _wait_for_coredump_processes(self, guest: "Guest", logger: tmt.log.Logger) -> None:
-        """
-        Wait for systemd-coredump processes to finish processing dumps.
+        """Wait for systemd-coredump processes to finish processing dumps.
 
         Uses progressive waiting with a timeout to avoid getting stuck.
         """
@@ -267,8 +262,7 @@ class CoredumpCheck(Check):
         check_files_path: Path,
         previous_dumps_file: Path,
     ) -> list[str]:
-        """
-        Get any new crashes that have been detected since the test started.
+        """Get any new crashes that have been detected since the test started.
 
         Uses the timestamp of the latest coredump before the test to identify
         new coredumps created during test execution.
@@ -388,11 +382,12 @@ class CoredumpCheck(Check):
     def _check_coredump(
         self, invocation: "TestInvocation", logger: tmt.log.Logger
     ) -> tuple[ResultOutcome, list[Path]]:
-        """
-        Check coredump status and return appropriate result.
+        """Check coredump status and return appropriate result.
 
-        :returns: A tuple of (outcome, log_files) where log_files is a list of
-                 paths to files with coredump information and potential failures.
+        Returns:
+            A tuple of (outcome, log_files) where log_files is a list of
+            paths to files with coredump information and potential
+            failures.
         """
         log_files: list[Path] = []
 
@@ -427,8 +422,7 @@ class CoredumpCheck(Check):
         return ResultOutcome.PASS, log_files
 
     def _save_existing_coredumps(self, invocation: "TestInvocation") -> bool:
-        """
-        Save information about the latest coredump before the test.
+        """Save information about the latest coredump before the test.
 
         This allows us to only check for newer coredumps after the test.
         """
@@ -475,8 +469,7 @@ class CoredumpCheck(Check):
 # )
 @provides_check("coredump")
 class Coredump(CheckPlugin[CoredumpCheck]):
-    """
-    Check for system crashes using coredump.
+    r"""Check for system crashes using coredump.
 
     The check monitors for any crashes caught by systemd-coredump during test
     execution. This includes segmentation faults and other crashes that produce
@@ -543,7 +536,6 @@ class Coredump(CheckPlugin[CoredumpCheck]):
         logger: tmt.log.Logger,
     ) -> list[CheckResult]:
         """Check for crashes before the test starts."""
-
         # TODO: Uncomment when PR #3498 is merged
         # from tmt.utils.hints import get_hints
 

@@ -79,8 +79,7 @@ class ExecuteUpgradeData(ExecuteInternalData):
 
 @tmt.steps.provides_method('upgrade')
 class ExecuteUpgrade(ExecuteInternal):
-    """
-    Perform system upgrade during testing.
+    """Perform system upgrade during testing.
 
     In order to enable developing tests for upgrade testing, we need to provide
     a way how to execute these tests easily. This does not cover unit tests for
@@ -205,10 +204,7 @@ class ExecuteUpgrade(ExecuteInternal):
 
     @property  # type:ignore[override]
     def discover(self) -> Union[Discover, DiscoverFmf]:
-        """
-        Return discover plugin instance
-        """
-
+        """Return discover plugin instance."""
         # If we are in the second phase (upgrade), take tests from our fake
         # discover plugin.
         if self._discover_upgrade:
@@ -226,10 +222,7 @@ class ExecuteUpgrade(ExecuteInternal):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Execute available tests
-        """
-
+        """Execute available tests."""
         # Inform about the how, skip the actual execution
         ExecutePlugin.go(self, guest=guest, environment=environment, logger=logger)
 
@@ -256,10 +249,7 @@ class ExecuteUpgrade(ExecuteInternal):
         self._run_test_phase(guest, AFTER_UPGRADE_PREFIX, logger)
 
     def _get_plan(self, upgrades_repo: Path) -> tmt.base.Plan:
-        """
-        Get plan based on upgrade path
-        """
-
+        """Get plan based on upgrade path."""
         tree = tmt.base.Tree(logger=self._logger, path=upgrades_repo)
         try:
             # We do not want to consider plan -n provided on the command line
@@ -281,10 +271,7 @@ class ExecuteUpgrade(ExecuteInternal):
         return plans[0]
 
     def _fetch_upgrade_tasks(self) -> None:
-        """
-        Fetch upgrade tasks using DiscoverFmf
-        """
-
+        """Fetch upgrade tasks using DiscoverFmf."""
         data = DiscoverFmfStepData(
             name='upgrade-discover',
             how='fmf',
@@ -296,10 +283,7 @@ class ExecuteUpgrade(ExecuteInternal):
         self._run_discover_upgrade()
 
     def _run_discover_upgrade(self) -> None:
-        """
-        Silently run discover upgrade
-        """
-
+        """Silently run discover upgrade."""
         # Make it quiet, we do not want any output from discover
         assert self._discover_upgrade is not None
 
@@ -327,10 +311,7 @@ class ExecuteUpgrade(ExecuteInternal):
         dependencies: list[tmt.base.DependencySimple],
         recommends: bool = False,
     ) -> None:
-        """
-        Install packages required/recommended for upgrade
-        """
-
+        """Install packages required/recommended for upgrade."""
         phase_name = 'recommended' if recommends else 'required'
         data = PrepareInstallData(
             how='install',
@@ -345,10 +326,7 @@ class ExecuteUpgrade(ExecuteInternal):
         )
 
     def _prepare_remote_discover_data(self, plan: tmt.base.Plan) -> tmt.steps._RawStepData:
-        """
-        Merge remote discover data with the local filters
-        """
-
+        """Merge remote discover data with the local filters."""
         if len(plan.discover.data) > 1:
             raise tmt.utils.ExecuteError("Multiple discover configs are not supported.")
 
@@ -379,10 +357,7 @@ class ExecuteUpgrade(ExecuteInternal):
         return remote_raw_data
 
     def _perform_upgrade(self, guest: tmt.steps.provision.Guest, logger: tmt.log.Logger) -> None:
-        """
-        Perform a system upgrade
-        """
-
+        """Perform a system upgrade."""
         original_discover_phase = self.discover_phase
 
         try:
@@ -443,14 +418,12 @@ class ExecuteUpgrade(ExecuteInternal):
     def _run_test_phase(
         self, guest: tmt.steps.provision.Guest, prefix: str, logger: tmt.log.Logger
     ) -> None:
-        """
-        Execute a single test phase on the guest
+        """Execute a single test phase on the guest.
 
         Tests names are prefixed with the prefix argument in order to make
         their names unique so that the results are distinguishable.
         The prefix is also set as IN_PLACE_UPGRADE environment variable.
         """
-
         names_backup = []
         for test_origin in self.discover.tests(enabled=True):
             names_backup.append(test_origin.test.name)
@@ -468,10 +441,7 @@ class ExecuteUpgrade(ExecuteInternal):
             test_origin.test.name = names_backup[i]
 
     def _remove_old_results(self, prefix: str) -> None:
-        """
-        Remove old results that were replaced by prefixed ones
-        """
-
+        """Remove old results that were replaced by prefixed ones."""
         results = self.step.plan.execute.results()
         old_result_names = [
             result.name.removeprefix(f'/{prefix}')

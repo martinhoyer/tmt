@@ -1,4 +1,4 @@
-"""``tmt about`` implementation"""
+"""``tmt about`` implementation."""
 
 import json
 import re
@@ -21,11 +21,7 @@ TEMPLATES_DIRECTORY = tmt.utils.resource_files('cli/templates/about')
 @main.group(invoke_without_command=True, cls=CustomGroup)
 @pass_context
 def about(context: Context) -> None:
-    """
-    Show info about tmt itself, its plugins, documentation and other
-    components.
-    """
-
+    """Show info about tmt itself, its plugins, documentation and other components."""
     if context.invoked_subcommand is None:
         echo(context.get_help(), color=context.color)
 
@@ -62,10 +58,7 @@ def _render_plugins_list_rest() -> str:
 @about.group(invoke_without_command=True, cls=CustomGroup)
 @pass_context
 def plugins(context: Context) -> None:
-    """
-    Show info about tmt plugins.
-    """
-
+    """Show info about tmt plugins."""
     if context.invoked_subcommand is None:
         echo(context.get_help(), color=context.color)
 
@@ -80,10 +73,7 @@ def plugins(context: Context) -> None:
 )
 @pass_context
 def plugins_ls(context: Context, how: str) -> None:
-    """
-    List discovered tmt plugins.
-    """
-
+    """List discovered tmt plugins."""
     print = context.obj.logger.print  # noqa: A001
 
     if how in ('pretty', 'rest'):
@@ -97,8 +87,7 @@ def plugins_ls(context: Context, how: str) -> None:
 
     elif how in ('json', 'yaml'):
         structured_output = {
-            registry.name: list(registry.iter_plugin_ids())
-            for registry in iter_plugin_registries()
+            registry.name: list(registry.iter_plugin_ids()) for registry in iter_plugin_registries()
         }
 
         print(

@@ -23,11 +23,9 @@ class ProfileStepData(PrepareFeatureData):
 
 @provides_feature('profile')
 class Profile(Feature):
-    """
-    Prepare guest setup with a guest profile.
+    """Prepare guest setup with a guest profile.
 
-    .. note::
-
+    Note:
         Guest profiles are being developed, once there is an agreed upon
         text we could steal^Wborrow^Wreuse, we shall add it to this
         docstring.

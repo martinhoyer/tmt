@@ -12,9 +12,7 @@ Color: TypeAlias = Union[int, tuple[int, int, int], str, None]
 
 
 class Style(MetadataContainer):
-    """
-    A collection of parameters accepted by :py:func:`click.style`.
-    """
+    """A collection of parameters accepted by :py:func:`click.style`."""
 
     fg: Optional[Color] = None
     bg: Optional[Color] = None
@@ -26,10 +24,7 @@ class Style(MetadataContainer):
     strikethrough: Optional[bool] = None
 
     def apply(self, text: str) -> str:
-        """
-        Apply this style to a given string.
-        """
-
+        """Apply this style to a given string."""
         return _style(text, **self.dict())
 
 
@@ -37,9 +32,7 @@ _DEFAULT_STYLE = Style()
 
 
 class Theme(MetadataContainer):
-    """
-    A collection of items tmt uses to colorize various tokens of its CLI.
-    """
+    """A collection of items tmt uses to colorize various tokens of its CLI."""
 
     restructuredtext_text: Style = _DEFAULT_STYLE
 

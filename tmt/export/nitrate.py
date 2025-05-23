@@ -58,10 +58,7 @@ log = fmf.utils.Logging('tmt').logger
 
 
 def import_nitrate() -> Nitrate:
-    """
-    Conditionally import the nitrate module
-    """
-
+    """Conditionally import the nitrate module."""
     # Need to import nitrate only when really needed. Otherwise we get
     # traceback when nitrate not installed or config file not available.
     # And we want to keep the core tmt package with minimal dependencies.
@@ -81,12 +78,10 @@ def import_nitrate() -> Nitrate:
 
 
 def _nitrate_find_fmf_testcases(test: 'tmt.Test') -> Iterator[Any]:
-    """
-    Find all Nitrate test cases with the same fmf identifier
+    """Find all Nitrate test cases with the same fmf identifier.
 
     All component general plans are explored for possible duplicates.
     """
-
     import tmt.base
 
     assert nitrate
@@ -114,15 +109,13 @@ def _nitrate_find_fmf_testcases(test: 'tmt.Test') -> Iterator[Any]:
 
 
 def convert_manual_to_nitrate(test_md: Path) -> SectionsReturnType:
-    """
-    Convert Markdown document to html sections.
+    """Convert Markdown document to html sections.
 
     These sections can be exported to nitrate.
     Expects: Markdown document as a file.
     Returns: tuple of (step, expect, setup, cleanup) sections
     as html strings.
     """
-
     import tmt.base
 
     sections_headings: SectionsHeadingsType = {
@@ -207,10 +200,7 @@ def convert_manual_to_nitrate(test_md: Path) -> SectionsReturnType:
 
 
 def enabled_somewhere(test: 'tmt.Test') -> bool:
-    """
-    True if the test is enabled for some context (adjust rules)
-    """
-
+    """True if the test is enabled for some context (adjust rules)."""
     # Already enabled, no need to dig deeper
     if test.enabled:
         return True
@@ -251,10 +241,7 @@ def enabled_somewhere(test: 'tmt.Test') -> bool:
 
 
 def enabled_for_environment(test: 'tmt.base.Test', tcms_notes: str) -> bool:
-    """
-    Check whether test is enabled for specified environment
-    """
-
+    """Check whether test is enabled for specified environment."""
     field = StructuredField(tcms_notes)
     context_dict = {}
     try:
@@ -283,10 +270,7 @@ def enabled_for_environment(test: 'tmt.base.Test', tcms_notes: str) -> bool:
 
 
 def return_markdown_file() -> Optional[Path]:
-    """
-    Return path to the markdown file
-    """
-
+    """Return path to the markdown file."""
     files = '\n'.join(os.listdir())
     reg_exp = r'.+\.md$'
     md_files = re.findall(reg_exp, files, re.MULTILINE)
@@ -302,10 +286,7 @@ def return_markdown_file() -> Optional[Path]:
 
 
 def get_category(path: Path) -> str:
-    """
-    Get category from Makefile
-    """
-
+    """Get category from Makefile."""
     category = DEFAULT_NITRATE_CATEGORY
     try:
         category_search = re.search(
@@ -320,10 +301,7 @@ def get_category(path: Path) -> str:
 
 
 def create_nitrate_case(summary: str, category: str) -> NitrateTestCase:
-    """
-    Create new nitrate case
-    """
-
+    """Create new nitrate case."""
     # Create the new test case
     assert nitrate
     category = nitrate.Category(name=category, product=DEFAULT_PRODUCT)
@@ -338,13 +316,11 @@ def add_to_nitrate_runs(
     test: 'tmt.Test',
     dry_mode: bool,
 ) -> None:
-    """
-    Add nitrate test case to all active runs under given general plan
+    """Add nitrate test case to all active runs under given general plan.
 
     Go down plan tree from general plan, add case and case run to
     all open runs. Try to apply adjust.
     """
-
     assert nitrate
     for child_plan in nitrate.TestPlan.search(parent=general_plan.id):
         for testrun in child_plan.testruns:
@@ -364,10 +340,7 @@ def add_to_nitrate_runs(
 
 
 def prepare_extra_summary(test: 'tmt.Test', append_summary: bool) -> str:
-    """
-    extra-summary for export --create test
-    """
-
+    """extra-summary for export --create test."""
     assert test.fmf_id.url is not None  # narrow type
 
     parsed_url = urllib.parse.urlparse(test.fmf_id.url)
@@ -384,10 +357,7 @@ def prepare_extra_summary(test: 'tmt.Test', append_summary: bool) -> str:
 # avoid multiple searching for general plans (it is expensive)
 @cache
 def find_general_plan(component: str) -> NitrateTestPlan:
-    """
-    Return single General Test Plan or raise an error
-    """
-
+    """Return single General Test Plan or raise an error."""
     assert nitrate
     # At first find by linked components
     found: list[NitrateTestPlan] = nitrate.TestPlan.search(
@@ -413,10 +383,7 @@ def find_general_plan(component: str) -> NitrateTestPlan:
 
 
 def export_to_nitrate(test: 'tmt.Test') -> None:
-    """
-    Export fmf metadata to nitrate test cases
-    """
-
+    """Export fmf metadata to nitrate test cases."""
     import tmt.base
 
     import_nitrate()

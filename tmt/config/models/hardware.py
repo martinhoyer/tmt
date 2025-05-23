@@ -2,17 +2,7 @@ from tmt.container import MetadataContainer
 
 
 class MrackTranslation(MetadataContainer):
-    """
-    Here's a full config example:
-
-    .. code-block:: yaml
-
-     beaker:
-       translations:
-         - requirement: cpu.processors
-           template: '{"cpu": {"processors": {"_op": "{{ OPERATOR }}", "_value": "{{ VALUE }}"}}}'
-
-    """
+    """Configuration for MrackTranslation model."""
 
     requirement: str
     template: str

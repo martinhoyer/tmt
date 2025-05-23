@@ -98,9 +98,7 @@ class ProvisionPodmanData(PodmanGuestData, tmt.steps.provision.ProvisionStepData
 
 
 class GuestContainer(tmt.Guest):
-    """
-    Container Instance
-    """
+    """Container Instance."""
 
     _data_class = PodmanGuestData
 
@@ -116,10 +114,7 @@ class GuestContainer(tmt.Guest):
 
     @property
     def is_ready(self) -> bool:
-        """
-        Detect the guest is ready or not
-        """
-
+        """Detect the guest is ready or not."""
         # Check the container is running or not
         if self.container is None:
             return False
@@ -129,17 +124,11 @@ class GuestContainer(tmt.Guest):
         return str(cmd_output.stdout).strip() == 'true'
 
     def wake(self) -> None:
-        """
-        Wake up the guest
-        """
-
+        """Wake up the guest."""
         self.debug(f"Waking up container '{self.container}'.", level=2, shift=0)
 
     def pull_image(self) -> None:
-        """
-        Pull image if not available or pull forced
-        """
-
+        """Pull image if not available or pull forced."""
         assert self.image is not None  # narrow type
 
         self.podman(
@@ -148,13 +137,12 @@ class GuestContainer(tmt.Guest):
         )
 
     def _setup_network(self) -> list[str]:
-        """
-        Set up the desired network.
+        """Set up the desired network.
+
         Will look for existing network using the tmt workdir name,
         or will create that network if it doesn't exist.
         Returns the network arguments to be used in podman run command.
         """
-
         run_id = self._tmt_name().split('-')[1]
         self.network = f"tmt-{run_id}-network"
 
@@ -174,10 +162,7 @@ class GuestContainer(tmt.Guest):
         return ['--network', self.network]
 
     def start(self) -> None:
-        """
-        Start provisioned guest
-        """
-
+        """Start provisioned guest."""
         if self.is_dry_run:
             return
 
@@ -249,33 +234,33 @@ class GuestContainer(tmt.Guest):
         command: Optional[Union[Command, ShellScript]] = None,
         waiting: Optional[Waiting] = None,
     ) -> bool:
+        """Reboot the guest, and wait for the guest to recover.
+
+        Note:
+            Custom reboot command can be used only in combination with a
+            soft reboot. If both ``hard`` and ``command`` are set, a hard
+            reboot will be requested, and ``command`` will be ignored.
+
+            However, only hard reboots are supported by this guest class,
+            soft reboot and/or custom reboot command will result in an
+            exception.
+
+        Args:
+            hard: if set, force the reboot. This may result in a loss of
+                data. The default of ``False`` will attempt a graceful
+                reboot.
+            command: a command to run on the guest to trigger the
+                reboot. If ``hard`` is also set, ``command`` is ignored.
+            timeout: amount of time in which the guest must become
+                available again.
+            tick: how many seconds to wait between two consecutive
+                attempts of contacting the guest.
+            tick_increase: a multiplier applied to ``tick`` after every
+                attempt.
+
+        Returns:
+            ``True`` if the reboot succeeded, ``False`` otherwise.
         """
-        Reboot the guest, and wait for the guest to recover.
-
-        .. note::
-
-           Custom reboot command can be used only in combination with a
-           soft reboot. If both ``hard`` and ``command`` are set, a hard
-           reboot will be requested, and ``command`` will be ignored.
-
-           However, only hard reboots are supported by this guest class,
-           soft reboot and/or custom reboot command will result in an
-           exception.
-
-        :param hard: if set, force the reboot. This may result in a loss
-            of data. The default of ``False`` will attempt a graceful
-            reboot.
-        :param command: a command to run on the guest to trigger the
-            reboot. If ``hard`` is also set, ``command`` is ignored.
-        :param timeout: amount of time in which the guest must become available
-            again.
-        :param tick: how many seconds to wait between two consecutive attempts
-            of contacting the guest.
-        :param tick_increase: a multiplier applied to ``tick`` after every
-            attempt.
-        :returns: ``True`` if the reboot succeeded, ``False`` otherwise.
-        """
-
         if hard:
             if self.container is None:
                 raise tmt.utils.ProvisionError("No container initialized.")
@@ -309,25 +294,25 @@ class GuestContainer(tmt.Guest):
         log: Optional[tmt.log.LoggingFunction] = None,
         silent: bool = False,
     ) -> tmt.utils.CommandOutput:
-        """
-        Run an Ansible playbook on the guest.
+        """Run an Ansible playbook on the guest.
 
         This is a main workhorse for :py:meth:`ansible`. It shall run the
         playbook in whatever way is fitting for the guest and infrastructure.
 
-        :param playbook: path to the playbook to run.
-        :param playbook_root: if set, ``playbook`` path must be located
-            under the given root path.
-        :param extra_args: additional arguments to be passed to ``ansible-playbook``
-            via ``--extra-args``.
-        :param friendly_command: if set, it would be logged instead of the
-            command itself, to improve visibility of the command in logging output.
-        :param log: a logging function to use for logging of command output. By
-            default, ``logger.debug`` is used.
-        :param silent: if set, logging of steps taken by this function would be
-            reduced.
+        Args:
+            playbook: path to the playbook to run.
+            playbook_root: if set, ``playbook`` path must be located
+                under the given root path.
+            extra_args: additional arguments to be passed to ``ansible-
+                playbook`` via ``--extra-args``.
+            friendly_command: if set, it would be logged instead of the
+                command itself, to improve visibility of the command in
+                logging output.
+            log: a logging function to use for logging of command
+                output. By default, ``logger.debug`` is used.
+            silent: if set, logging of steps taken by this function
+                would be reduced.
         """
-
         playbook = self._sanitize_ansible_playbook_path(playbook, playbook_root)
 
         # As non-root we must run with podman unshare
@@ -372,10 +357,7 @@ class GuestContainer(tmt.Guest):
         silent: bool = True,
         **kwargs: Any,
     ) -> tmt.utils.CommandOutput:
-        """
-        Run given command via podman
-        """
-
+        """Run given command via podman."""
         try:
             return self._run_guest_command(Command('podman') + command, silent=silent, **kwargs)
         except tmt.utils.RunError as err:
@@ -402,10 +384,7 @@ class GuestContainer(tmt.Guest):
         on_process_start: Optional[OnProcessStartCallback] = None,
         **kwargs: Any,
     ) -> tmt.utils.CommandOutput:
-        """
-        Execute given commands in podman via shell
-        """
-
+        """Execute given commands in podman via shell."""
         if not self.container and not self.is_dry_run:
             raise tmt.utils.ProvisionError('Could not execute without provisioned container.')
 
@@ -458,10 +437,7 @@ class GuestContainer(tmt.Guest):
         options: Optional[list[str]] = None,
         superuser: bool = False,
     ) -> None:
-        """
-        Make sure that the workdir has a correct selinux context
-        """
-
+        """Make sure that the workdir has a correct selinux context."""
         if not self.is_ready:
             return
 
@@ -502,29 +478,18 @@ class GuestContainer(tmt.Guest):
         options: Optional[list[str]] = None,
         extend_options: Optional[list[str]] = None,
     ) -> None:
-        """
-        Nothing to be done to pull workdir
-        """
-
+        """Nothing to be done to pull workdir."""
         if not self.is_ready:
             return
 
     def stop(self) -> None:
-        """
-        Stop provisioned guest
-        """
-
+        """Stop provisioned guest."""
         if self.container:
-            self.podman(
-                Command('container', 'stop', '--time', str(self.stop_time), self.container)
-            )
+            self.podman(Command('container', 'stop', '--time', str(self.stop_time), self.container))
             self.info('container', 'stopped', 'green')
 
     def remove(self) -> None:
-        """
-        Remove the container
-        """
-
+        """Remove the container."""
         if self.container:
             self.podman(Command('container', 'rm', '-f', self.container))
             self.info('container', 'removed', 'green')
@@ -563,8 +528,7 @@ class GuestContainer(tmt.Guest):
     """,
 )
 class ProvisionPodman(tmt.steps.provision.ProvisionPlugin[ProvisionPodmanData]):
-    """
-    Create a new container using ``podman``.
+    """Create a new container using ``podman``.
 
     Example config:
 
@@ -603,20 +567,14 @@ class ProvisionPodman(tmt.steps.provision.ProvisionPlugin[ProvisionPodmanData]):
     _guest = None
 
     def default(self, option: str, default: Any = None) -> Any:
-        """
-        Return default data for given option
-        """
-
+        """Return default data for given option."""
         if option == 'pull':
             return self.data.force_pull
 
         return super().default(option, default=default)
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Provision the container
-        """
-
+        """Provision the container."""
         super().go(logger=logger)
 
         # Prepare data for the guest instance

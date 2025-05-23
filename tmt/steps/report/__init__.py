@@ -23,9 +23,7 @@ ReportStepDataT = TypeVar('ReportStepDataT', bound=ReportStepData)
 
 
 class ReportPlugin(tmt.steps.GuestlessPlugin[ReportStepDataT, None]):
-    """
-    Common parent of report plugins
-    """
+    """Common parent of report plugins."""
 
     # ignore[assignment]: as a base class, ReportStepData is not included in
     # ReportStepDataT.
@@ -43,10 +41,7 @@ class ReportPlugin(tmt.steps.GuestlessPlugin[ReportStepDataT, None]):
         usage: str,
         method_class: Optional[type[click.Command]] = None,
     ) -> click.Command:
-        """
-        Create base click command (common for all report plugins)
-        """
-
+        """Create base click command (common for all report plugins)."""
         # Prepare general usage message for the step
         if method_class:
             usage = Report.usage(method_overview=usage)
@@ -68,17 +63,12 @@ class ReportPlugin(tmt.steps.GuestlessPlugin[ReportStepDataT, None]):
         return report
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Perform actions shared among plugins when beginning their tasks
-        """
-
+        """Perform actions shared among plugins when beginning their tasks."""
         self.go_prolog(logger or self._logger)
 
 
 class Report(tmt.steps.Step):
-    """
-    Provide test results overview and send reports.
-    """
+    """Provide test results overview and send reports."""
 
     # Default implementation for report is display
     DEFAULT_HOW = 'display'
@@ -86,10 +76,7 @@ class Report(tmt.steps.Step):
     _plugin_base_class = ReportPlugin
 
     def wake(self) -> None:
-        """
-        Wake up the step (process workdir and command line)
-        """
-
+        """Wake up the step (process workdir and command line)."""
         super().wake()
 
         # Choose the right plugin and wake it up
@@ -111,18 +98,12 @@ class Report(tmt.steps.Step):
             self.save()
 
     def summary(self) -> None:
-        """
-        Give a concise report summary
-        """
-
+        """Give a concise report summary."""
         summary = tmt.result.Result.summary(self.plan.execute.results())
         self.info('summary', summary, 'green', shift=1)
 
     def go(self, force: bool = False) -> None:
-        """
-        Report the results
-        """
-
+        """Report the results."""
         super().go(force=force)
 
         # Nothing more to do if already done

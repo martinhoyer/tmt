@@ -40,10 +40,7 @@ class ApkEngine(PackageManagerEngine):
     _sudo_prefix: Command
 
     def prepare_command(self) -> tuple[Command, Command]:
-        """
-        Prepare installation command for apk
-        """
-
+        """Prepare installation command for apk."""
         if self.guest.facts.is_superuser is False:
             self._sudo_prefix = Command('sudo')
 
@@ -58,14 +55,12 @@ class ApkEngine(PackageManagerEngine):
         return (command, Command())
 
     def path_to_package(self, path: FileSystemPath) -> Package:
-        """
-        Find a package providing given filesystem path.
+        """Find a package providing given filesystem path.
 
         This is not easily possible in Alpine. There is `apk-file` utility
         available but it seems unrealiable. Support only a fixed set
         of mappings until a better solution is available.
         """
-
         if path in PACKAGE_PATH:
             return Package(PACKAGE_PATH[path])
 

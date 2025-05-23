@@ -5,15 +5,13 @@ from tmt.__main__ import run_cli
 
 
 def _run_precommit() -> None:  # pyright: ignore[reportUnusedFunction] (used by project.scripts)
-    """
-    A simple wrapper that re-orders cli arguments before :py:func:`run_cli`.
+    """A simple wrapper that re-orders cli arguments before :py:func:`run_cli`.
 
     This utility is needed in order to move arguments like ``--root`` before
     the ``lint`` keyword when run by ``pre-commit``.
 
     Only a limited number of arguments are reordered.
     """
-
     # Only re-ordering a few known/necessary cli arguments of `main` command
     # Could be improved if the click commands can be introspected like with
     # `attrs.fields`

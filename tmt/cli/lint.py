@@ -1,6 +1,4 @@
-"""
-``tmt lint`` and ``tmt * lint`` implementation
-"""
+"""``tmt lint`` and ``tmt * lint`` implementation."""
 
 from typing import Any, Optional, Union
 
@@ -34,10 +32,7 @@ def _apply_linters(
     enforce_checks: list[str],
     outcomes: list[tmt.lint.LinterOutcome],
 ) -> tuple[bool, Optional[list[tmt.lint.LinterRuling]]]:
-    """
-    Apply linters on a lintable and filter out disallowed outcomes.
-    """
-
+    """Apply linters on a lintable and filter out disallowed outcomes."""
     valid, rulings = lintable.lint(linters=linters, enforce_checks=enforce_checks or None)
 
     # If the object pass the checks, and we're asked to show only the failed
@@ -67,10 +62,7 @@ def _lint_class(
     outcomes: list[tmt.lint.LinterOutcome],
     **kwargs: Any,
 ) -> int:
-    """
-    Lint a single class of objects
-    """
-
+    """Lint a single class of objects."""
     # FIXME: Workaround https://github.com/pallets/click/pull/1840 for click 7
     context.params.update(**kwargs)
     klass.store_cli_invocation(context)
@@ -111,10 +103,7 @@ def _lint_collection(
     outcomes: list[tmt.lint.LinterOutcome],
     **kwargs: Any,
 ) -> int:
-    """
-    Lint a collection of objects
-    """
-
+    """Lint a collection of objects."""
     # FIXME: Workaround https://github.com/pallets/click/pull/1840 for click 7
     context.params.update(**kwargs)
 
@@ -157,10 +146,7 @@ def do_lint(
     outcomes: list[tmt.lint.LinterOutcome],
     **kwargs: Any,
 ) -> int:
-    """
-    Core of all ``lint`` commands
-    """
-
+    """Core of all ``lint`` commands."""
     if list_checks:
         for klass in klasses:
             klass_label = 'stories' if klass is tmt.base.Story else f'{klass.__name__.lower()}s'
@@ -216,13 +202,11 @@ def tests_lint(
     outcome_only: tuple[str, ...],
     **kwargs: Any,
 ) -> None:
-    """
-    Check tests against the L1 metadata specification.
+    """Check tests against the L1 metadata specification.
 
     Regular expression can be used to filter tests for linting.
     Use '.' to select tests under the current working directory.
     """
-
     exit_code = do_lint(
         context,
         [tmt.base.Test],
@@ -256,13 +240,11 @@ def plans_lint(
     outcome_only: tuple[str, ...],
     **kwargs: Any,
 ) -> None:
-    """
-    Check plans against the L2 metadata specification.
+    """Check plans against the L2 metadata specification.
 
     Regular expression can be used to filter plans by name.
     Use '.' to select plans under the current working directory.
     """
-
     exit_code = do_lint(
         context,
         [tmt.base.Plan],
@@ -296,13 +278,11 @@ def stories_lint(
     outcome_only: tuple[str, ...],
     **kwargs: Any,
 ) -> None:
-    """
-    Check stories against the L3 metadata specification.
+    """Check stories against the L3 metadata specification.
 
     Regular expression can be used to filter stories by name.
     Use '.' to select stories under the current working directory.
     """
-
     exit_code = do_lint(
         context,
         [tmt.base.Story],
@@ -336,8 +316,7 @@ def lint(
     outcome_only: tuple[str, ...],
     **kwargs: Any,
 ) -> None:
-    """
-    Check all the present metadata against the specification.
+    """Check all the present metadata against the specification.
 
     Combines all the partial linting (tests, plans and stories)
     into one command. Options are applied to all parts of the lint.
@@ -346,7 +325,6 @@ def lint(
     Use '.' to select tests, plans and stories under the current
     working directory.
     """
-
     exit_code = do_lint(
         context,
         [tmt.base.Test, tmt.base.Plan, tmt.base.Story],

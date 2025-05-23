@@ -57,10 +57,7 @@ TPMConfiguration: Any
 
 
 def import_testcloud(logger: tmt.log.Logger) -> None:
-    """
-    Import testcloud module only when needed
-    """
-
+    """Import testcloud module only when needed."""
     global testcloud
     global libvirt
     global Workarounds
@@ -218,12 +215,10 @@ def normalize_memory_size(
     value: Any,
     logger: tmt.log.Logger,
 ) -> Optional['Size']:
-    """
-    Normalize memory size.
+    """Normalize memory size.
 
     As of now, it's just a simple integer with implicit unit, ``MB``.
     """
-
     if value is None:
         return None
 
@@ -246,12 +241,10 @@ def normalize_memory_size(
 
 
 def normalize_disk_size(key_address: str, value: Any, logger: tmt.log.Logger) -> Optional['Size']:
-    """
-    Normalize disk size.
+    """Normalize disk size.
 
     As of now, it's just a simple integer with implicit unit, ``GB``.
     """
-
     if value is None:
         return None
 
@@ -435,10 +428,7 @@ def _apply_hw_tpm(
     domain: 'DomainConfiguration',
     logger: tmt.log.Logger,
 ) -> None:
-    """
-    Apply ``tpm`` constraint to given VM domain
-    """
-
+    """Apply ``tpm`` constraint to given VM domain."""
     domain.tpm_configuration = None
 
     if not hardware or not hardware.constraint:
@@ -457,9 +447,7 @@ def _apply_hw_tpm(
     ]
 
     if not tpm_constraints:
-        logger.debug(
-            'tpm.version', "not included because of no 'tpm.version' constraints", level=4
-        )
+        logger.debug('tpm.version', "not included because of no 'tpm.version' constraints", level=4)
 
         return
 
@@ -492,17 +480,11 @@ def _apply_hw_disk_size(
     domain: 'DomainConfiguration',
     logger: tmt.log.Logger,
 ) -> None:
-    """
-    Apply ``disk`` constraint to given VM domain
-    """
-
+    """Apply ``disk`` constraint to given VM domain."""
     final_size: Size = DEFAULT_DISK
 
     def _generate_disk_filepaths() -> Iterator[Path]:
-        """
-        Generate paths to use for files representing VM storage
-        """
-
+        """Generate paths to use for files representing VM storage."""
         # Start with the path already decided by testcloud...
         yield Path(domain.local_disk)
 
@@ -594,10 +576,7 @@ def _apply_hw_cpu_processors(
     domain: 'DomainConfiguration',
     logger: tmt.log.Logger,
 ) -> None:
-    """
-    Apply ``cpu.processors`` constraint to given VM domain
-    """
-
+    """Apply ``cpu.processors`` constraint to given VM domain."""
     domain.cpu_count = DEFAULT_CPU_COUNT
 
     if not hardware or not hardware.constraint:
@@ -669,8 +648,7 @@ def _apply_hw_cpu_processors(
 
 
 class GuestTestcloud(tmt.GuestSsh):
-    """
-    Testcloud Instance
+    """Testcloud Instance.
 
     The following keys are expected in the 'data' dictionary::
 
@@ -752,9 +730,7 @@ class GuestTestcloud(tmt.GuestSsh):
         return bool(re.search('coreos|rhcos', self.image.lower()))
 
     def _get_url(self, url: str, message: str) -> requests.Response:
-        """
-        Get url, retry when fails, return response
-        """
+        """Get url, retry when fails, return response."""
 
         def try_get_url() -> requests.Response:
             try:
@@ -778,10 +754,7 @@ class GuestTestcloud(tmt.GuestSsh):
             raise ProvisionError(f'Failed to {message} in {CONNECT_TIMEOUT}s.')
 
     def _guess_image_url(self, name: str) -> str:
-        """
-        Guess image url for given name
-        """
-
+        """Guess image url for given name."""
         # Try to check if given url is a local file
         name_as_path = Path(name)
         if name_as_path.is_absolute() and name_as_path.is_file():
@@ -801,10 +774,7 @@ class GuestTestcloud(tmt.GuestSsh):
         return url
 
     def wake(self) -> None:
-        """
-        Wake up the guest
-        """
-
+        """Wake up the guest."""
         self.debug(f"Waking up testcloud instance '{self.instance_name}'.", level=2, shift=0)
         self.prepare_config()
         assert testcloud is not None
@@ -826,10 +796,7 @@ class GuestTestcloud(tmt.GuestSsh):
         )
 
     def prepare_ssh_key(self, key_type: Optional[str] = None) -> str:
-        """
-        Prepare ssh key for authentication
-        """
-
+        """Prepare ssh key for authentication."""
         assert self.workdir is not None
 
         # Use existing key
@@ -853,10 +820,7 @@ class GuestTestcloud(tmt.GuestSsh):
         return public_key
 
     def prepare_config(self) -> None:
-        """
-        Prepare common configuration
-        """
-
+        """Prepare common configuration."""
         import_testcloud(self._logger)
 
         # Get configuration
@@ -883,10 +847,7 @@ class GuestTestcloud(tmt.GuestSsh):
         self.config.STOP_RETRY_WAIT = self.stop_retry_delay
 
     def _combine_hw_memory(self) -> None:
-        """
-        Combine ``hardware`` with ``--memory`` option
-        """
-
+        """Combine ``hardware`` with ``--memory`` option."""
         if not self.hardware:
             self.hardware = tmt.hardware.Hardware.from_spec({})
 
@@ -900,10 +861,7 @@ class GuestTestcloud(tmt.GuestSsh):
         self.hardware.and_(memory_constraint)
 
     def _combine_hw_disk_size(self) -> None:
-        """
-        Combine ``hardware`` with ``--disk`` option
-        """
-
+        """Combine ``hardware`` with ``--disk`` option."""
         if not self.hardware:
             self.hardware = tmt.hardware.Hardware.from_spec({})
 
@@ -917,10 +875,7 @@ class GuestTestcloud(tmt.GuestSsh):
         self.hardware.and_(disk_size_constraint)
 
     def _apply_hw_memory(self, domain: 'DomainConfiguration') -> None:
-        """
-        Apply ``memory`` constraint to given VM domain
-        """
-
+        """Apply ``memory`` constraint to given VM domain."""
         if not self.hardware or not self.hardware.constraint:
             self.debug('memory', f"set to '{DEFAULT_MEMORY}' because of no constraints", level=4)
 
@@ -989,10 +944,7 @@ class GuestTestcloud(tmt.GuestSsh):
             raise tmt.utils.ProvisionError("Unknown architecture requested.")
 
     def start(self) -> None:
-        """
-        Start provisioned guest
-        """
-
+        """Start provisioned guest."""
         if self.is_dry_run:
             return
 
@@ -1082,9 +1034,7 @@ class GuestTestcloud(tmt.GuestSsh):
 
         mac_address = testcloud.util.generate_mac_address()
         if f"qemu:///{self.connection}" == "qemu:///system":
-            self._domain.network_configuration = SystemNetworkConfiguration(
-                mac_address=mac_address
-            )
+            self._domain.network_configuration = SystemNetworkConfiguration(mac_address=mac_address)
         elif f"qemu:///{self.connection}" == "qemu:///session":
             device_type = "virtio-net-pci" if not self.is_legacy_os else "e1000"
             with GuestTestcloud._testcloud_lock:
@@ -1146,16 +1096,11 @@ class GuestTestcloud(tmt.GuestSsh):
         self._instance.create_ip_file(self.primary_address)
 
         # Wait a bit until the box is up
-        if not self.reconnect(
-            Waiting(Deadline.from_seconds(CONNECT_TIMEOUT * time_coeff), tick=1)
-        ):
+        if not self.reconnect(Waiting(Deadline.from_seconds(CONNECT_TIMEOUT * time_coeff), tick=1)):
             raise ProvisionError(f"Failed to connect in {CONNECT_TIMEOUT * time_coeff}s.")
 
     def stop(self) -> None:
-        """
-        Stop provisioned guest
-        """
-
+        """Stop provisioned guest."""
         super().stop()
         # Stop only if the instance successfully booted
         if self._instance and self.primary_address:
@@ -1169,10 +1114,7 @@ class GuestTestcloud(tmt.GuestSsh):
             self.info('guest', 'stopped', 'green')
 
     def remove(self) -> None:
-        """
-        Remove the guest (disk cleanup)
-        """
-
+        """Remove the guest (disk cleanup)."""
         if self._instance:
             self.debug(f"Removing testcloud instance '{self.instance_name}'.")
             try:
@@ -1188,29 +1130,29 @@ class GuestTestcloud(tmt.GuestSsh):
         command: Optional[Union[Command, ShellScript]] = None,
         waiting: Optional[Waiting] = None,
     ) -> bool:
+        """Reboot the guest, and wait for the guest to recover.
+
+        Note:
+            Custom reboot command can be used only in combination with a
+            soft reboot. If both ``hard`` and ``command`` are set, a hard
+            reboot will be requested, and ``command`` will be ignored.
+
+        Args:
+            hard: if set, force the reboot. This may result in a loss of
+                data. The default of ``False`` will attempt a graceful
+                reboot.
+            command: a command to run on the guest to trigger the
+                reboot. If ``hard`` is also set, ``command`` is ignored.
+            timeout: amount of time in which the guest must become
+                available again.
+            tick: how many seconds to wait between two consecutive
+                attempts of contacting the guest.
+            tick_increase: a multiplier applied to ``tick`` after every
+                attempt.
+
+        Returns:
+            ``True`` if the reboot succeeded, ``False`` otherwise.
         """
-        Reboot the guest, and wait for the guest to recover.
-
-        .. note::
-
-           Custom reboot command can be used only in combination with a
-           soft reboot. If both ``hard`` and ``command`` are set, a hard
-           reboot will be requested, and ``command`` will be ignored.
-
-        :param hard: if set, force the reboot. This may result in a loss
-            of data. The default of ``False`` will attempt a graceful
-            reboot.
-        :param command: a command to run on the guest to trigger the
-            reboot. If ``hard`` is also set, ``command`` is ignored.
-        :param timeout: amount of time in which the guest must become available
-            again.
-        :param tick: how many seconds to wait between two consecutive attempts
-            of contacting the guest.
-        :param tick_increase: a multiplier applied to ``tick`` after every
-            attempt.
-        :returns: ``True`` if the reboot succeeded, ``False`` otherwise.
-        """
-
         waiting = waiting or tmt.steps.provision.default_reboot_waiting()
 
         if hard:
@@ -1259,8 +1201,8 @@ class GuestTestcloud(tmt.GuestSsh):
     """,
 )
 class ProvisionTestcloud(tmt.steps.provision.ProvisionPlugin[ProvisionTestcloudData]):
-    """
-    Local virtual machine using ``testcloud`` library.
+    """Local virtual machine using ``testcloud`` library.
+
     Testcloud takes care of downloading an image and
     making necessary changes to it for optimal experience
     (such as disabling ``UseDNS`` and ``GSSAPI`` for SSH).
@@ -1300,8 +1242,7 @@ class ProvisionTestcloud(tmt.steps.provision.ProvisionPlugin[ProvisionTestcloudD
     Short names are also provided for ``centos``, ``centos-stream``, ``alma``,
     ``rocky``, ``oracle``, ``debian`` and ``ubuntu`` (e.g. ``centos-8`` or ``c8``).
 
-    .. note::
-
+    Note:
         The non-rpm distros are not fully supported yet in tmt as
         the package installation is performed solely using ``dnf``/``yum``
         and ``rpm``.
@@ -1351,10 +1292,7 @@ class ProvisionTestcloud(tmt.steps.provision.ProvisionPlugin[ProvisionTestcloudD
     _guest = None
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Provision the testcloud instance
-        """
-
+        """Provision the testcloud instance."""
         super().go(logger=logger)
 
         if self.data.list_local_images:
@@ -1416,10 +1354,7 @@ class ProvisionTestcloud(tmt.steps.provision.ProvisionPlugin[ProvisionTestcloudD
         self._guest.setup()
 
     def _print_local_images(self) -> None:
-        """
-        Print images which are already cached
-        """
-
+        """Print images which are already cached."""
         store_dir = self.workdir_root / 'testcloud/images'
         self.info("Locally available images")
         for filename in sorted(store_dir.glob('*.qcow2')):
@@ -1428,10 +1363,7 @@ class ProvisionTestcloud(tmt.steps.provision.ProvisionPlugin[ProvisionTestcloudD
 
     @classmethod
     def clean_images(cls, clean: 'tmt.base.Clean', dry: bool, workdir_root: Path) -> bool:
-        """
-        Remove the testcloud images
-        """
-
+        """Remove the testcloud images."""
         testcloud_images = workdir_root / 'testcloud/images'
         clean.info('testcloud', shift=1, color='green')
         if not testcloud_images.exists():
@@ -1460,13 +1392,11 @@ class ConsoleLog(tmt.steps.provision.GuestLog):
     exchange_directory: Optional[Path] = None
 
     def prepare(self, logger: tmt.log.Logger) -> None:
-        """
-        Prepare temporary directory for the console log.
+        """Prepare temporary directory for the console log.
 
         Special directory is needed for console logs with the right
         selinux context so that virtlogd is able to write there.
         """
-
         self.exchange_directory = Path(tempfile.mkdtemp(prefix="testcloud-"))
         logger.debug(f"Created console log directory '{self.exchange_directory}'.", level=3)
 
@@ -1476,10 +1406,7 @@ class ConsoleLog(tmt.steps.provision.GuestLog):
         )
 
     def cleanup(self, logger: tmt.log.Logger) -> None:
-        """
-        Remove the temporary directory.
-        """
-
+        """Remove the temporary directory."""
         if self.exchange_directory is None:
             return
 
@@ -1494,10 +1421,7 @@ class ConsoleLog(tmt.steps.provision.GuestLog):
             )
 
     def fetch(self, logger: tmt.log.Logger) -> Optional[str]:
-        """
-        Read the content of the symlink target prepared by testcloud.
-        """
-
+        """Read the content of the symlink target prepared by testcloud."""
         text = None
 
         try:

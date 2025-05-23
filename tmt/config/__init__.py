@@ -22,13 +22,11 @@ DEFAULT_CONFIG_DIR = Path('~/.config/tmt')
 
 
 def effective_config_dir() -> Path:
-    """
-    Find out what the actual config directory is.
+    """Find out what the actual config directory is.
 
     If ``TMT_CONFIG_DIR`` variable is set, it is used. Otherwise,
     :py:const:`DEFAULT_CONFIG_DIR` is picked.
     """
-
     if 'TMT_CONFIG_DIR' in os.environ:
         return Path(os.environ['TMT_CONFIG_DIR']).expanduser()
 
@@ -36,15 +34,10 @@ def effective_config_dir() -> Path:
 
 
 class Config:
-    """
-    User configuration
-    """
+    """User configuration."""
 
     def __init__(self, logger: tmt.log.Logger) -> None:
-        """
-        Initialize config directory path
-        """
-
+        """Initialize config directory path."""
         self.path = effective_config_dir()
         self.logger = logger
 
@@ -59,18 +52,12 @@ class Config:
 
     @property
     def last_run(self) -> Optional[Path]:
-        """
-        Get the last run workdir path
-        """
-
+        """Get the last run workdir path."""
         return self._last_run_symlink.resolve() if self._last_run_symlink.is_symlink() else None
 
     @last_run.setter
     def last_run(self, workdir: Path) -> None:
-        """
-        Set the last run to the given run workdir
-        """
-
+        """Set the last run to the given run workdir."""
         with suppress(OSError):
             self._last_run_symlink.unlink()
 
@@ -87,10 +74,7 @@ class Config:
 
     @functools.cached_property
     def fmf_tree(self) -> Optional[fmf.Tree]:
-        """
-        Return the configuration tree
-        """
-
+        """Return the configuration tree."""
         try:
             return fmf.Tree(self.path)
         except fmf.utils.RootError:
@@ -121,10 +105,7 @@ class Config:
 
     @functools.cached_property
     def link(self) -> Optional[LinkConfig]:
-        """
-        Return the link configuration, if present.
-        """
-
+        """Return the link configuration, if present."""
         return self._parse_config_subtree('/link', LinkConfig)
 
     @functools.cached_property
@@ -138,8 +119,5 @@ class Config:
 
     @property
     def hardware(self) -> Optional[HardwareConfig]:
-        """
-        Return the hardware configuration, if present.
-        """
-
+        """Return the hardware configuration, if present."""
         return self._parse_config_subtree('/hardware', HardwareConfig)

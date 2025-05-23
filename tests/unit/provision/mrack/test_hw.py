@@ -446,17 +446,13 @@ def test_zcrypt_mode(root_logger: Logger) -> None:
         'system': {'key_value': {'_key': 'ZCRYPT_MODE', '_op': '==', '_value': 'CCA'}}
     }
 
-    result = _CONSTRAINT_TRANSFORMERS['zcrypt.mode'](
-        _parse_zcrypt({'mode': '!= CCA'}), root_logger
-    )
+    result = _CONSTRAINT_TRANSFORMERS['zcrypt.mode'](_parse_zcrypt({'mode': '!= CCA'}), root_logger)
 
     assert result.to_mrack() == {
         'system': {'key_value': {'_key': 'ZCRYPT_MODE', '_op': '!=', '_value': 'CCA'}}
     }
 
-    result = _CONSTRAINT_TRANSFORMERS['zcrypt.mode'](
-        _parse_zcrypt({'mode': '~ C.*A'}), root_logger
-    )
+    result = _CONSTRAINT_TRANSFORMERS['zcrypt.mode'](_parse_zcrypt({'mode': '~ C.*A'}), root_logger)
 
     assert result.to_mrack() == {
         'system': {'key_value': {'_key': 'ZCRYPT_MODE', '_op': 'like', '_value': 'C%A'}}
@@ -501,9 +497,7 @@ def test_tpm_version(root_logger: Logger) -> None:
 
     assert result.to_mrack() == {'key_value': {'_key': 'TPM', '_op': '==', '_value': '2.0'}}
 
-    result = _CONSTRAINT_TRANSFORMERS['tpm.version'](
-        _parse_tpm({'version': '!= 2.0'}), root_logger
-    )
+    result = _CONSTRAINT_TRANSFORMERS['tpm.version'](_parse_tpm({'version': '!= 2.0'}), root_logger)
 
     assert result.to_mrack() == {'key_value': {'_key': 'TPM', '_op': '!=', '_value': '2.0'}}
 

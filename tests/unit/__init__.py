@@ -22,8 +22,7 @@ class PatternMatching:
 
 
 class MATCH(PatternMatching):
-    """
-    Wrap a string with this class, to use it as a regular expression when matching log records.
+    """Wrap a string with this class, to use it as a regular expression when matching log records.
 
     :py:class:`SEARCH` applies to any place within the string, while ``MATCH`` must match from the
     beginning of the string.
@@ -38,9 +37,9 @@ class MATCH(PatternMatching):
 
 
 class SEARCH(PatternMatching):
-    """
-    Wrap a string with this class, to use it as a regular expression when searching for log
-    records.
+    """Wrap a string with this class.
+
+    To use it as a regular expression when searching for log records.
 
     ``SEARCH`` applies to any place within the string, while :py:class:`MATCH` must match from the
     beginning of the string.
@@ -61,10 +60,10 @@ def _assert_log(
     not_present: bool = False,
     **tests: Any,
 ) -> None:
-    """
-    Assert log contains a record - logged message - with given properties. Those are specified as
-    keyword parameters: :py:class:`logging.LogRecords` properties are allowed names, parameter
-    values are the expected values.
+    """Assert log contains a record - logged message - with given properties.
+
+    Those are specified as keyword parameters: :py:class:`logging.LogRecords`
+    properties are allowed names, parameter values are the expected values.
 
     .. code-block:: python
 
@@ -72,13 +71,14 @@ def _assert_log(
        assert_log(message='things broke down', levelno=logging.ERROR)
        assert_log(message=MATCH('user .+ logged in'), levelno=logging.INFO)
 
-    :param caplog: Pytest's `caplog` fixture.
-    :param evaluator: a callable reducing a given list of booleans into a single boolean. It is
-        used to evaluate whether the search for matching record was successful: each record is
-        tested, and results of these per-record tests are passed to `evaluator` for the final
-        decision.
+    Args:
+        caplog: Pytest's `caplog` fixture.
+        evaluator: a callable reducing a given list of booleans into a
+            single boolean. It is used to evaluate whether the search
+            for matching record was successful: each record is tested,
+            and results of these per-record tests are passed to
+            `evaluator` for the final decision.
     """
-
     # We are given field_name=expected_value pairs, but we also want to be open to other binary
     # operators, like "field_name matches pattern". To protect the actual matching from aspects of
     # different possible operators, we will convert the "tests" into basic building blocks: a
@@ -184,9 +184,7 @@ def assert_not_log(
     remove_colors: bool = False,
     **tests: Any,
 ) -> None:
-    _assert_log(
-        caplog, evaluator=evaluator, remove_colors=remove_colors, not_present=True, **tests
-    )
+    _assert_log(caplog, evaluator=evaluator, remove_colors=remove_colors, not_present=True, **tests)
 
 
 # Local images created via `make images/test`, reference to local registry

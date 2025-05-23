@@ -17,19 +17,14 @@ class ProvisionLocalData(tmt.steps.provision.GuestData, tmt.steps.provision.Prov
 
 
 class GuestLocal(tmt.Guest):
-    """
-    Local Host
-    """
+    """Local Host."""
 
     localhost = True
     parent: Optional[tmt.steps.Step]
 
     @property
     def is_ready(self) -> bool:
-        """
-        Local is always ready
-        """
-
+        """Local is always ready."""
         return True
 
     def _run_ansible(
@@ -41,25 +36,25 @@ class GuestLocal(tmt.Guest):
         log: Optional[tmt.log.LoggingFunction] = None,
         silent: bool = False,
     ) -> tmt.utils.CommandOutput:
-        """
-        Run an Ansible playbook on the guest.
+        """Run an Ansible playbook on the guest.
 
         This is a main workhorse for :py:meth:`ansible`. It shall run the
         playbook in whatever way is fitting for the guest and infrastructure.
 
-        :param playbook: path to the playbook to run.
-        :param playbook_root: if set, ``playbook`` path must be located
-            under the given root path.
-        :param extra_args: additional arguments to be passed to ``ansible-playbook``
-            via ``--extra-args``.
-        :param friendly_command: if set, it would be logged instead of the
-            command itself, to improve visibility of the command in logging output.
-        :param log: a logging function to use for logging of command output. By
-            default, ``logger.debug`` is used.
-        :param silent: if set, logging of steps taken by this function would be
-            reduced.
+        Args:
+            playbook: path to the playbook to run.
+            playbook_root: if set, ``playbook`` path must be located
+                under the given root path.
+            extra_args: additional arguments to be passed to ``ansible-
+                playbook`` via ``--extra-args``.
+            friendly_command: if set, it would be logged instead of the
+                command itself, to improve visibility of the command in
+                logging output.
+            log: a logging function to use for logging of command
+                output. By default, ``logger.debug`` is used.
+            silent: if set, logging of steps taken by this function
+                would be reduced.
         """
-
         playbook = self._sanitize_ansible_playbook_path(playbook, playbook_root)
 
         try:
@@ -101,10 +96,7 @@ class GuestLocal(tmt.Guest):
         on_process_start: Optional[OnProcessStartCallback] = None,
         **kwargs: Any,
     ) -> tmt.utils.CommandOutput:
-        """
-        Execute command on localhost
-        """
-
+        """Execute command on localhost."""
         # Prepare the environment (plan/cli variables override)
         environment = tmt.utils.Environment()
         environment.update(env or {})
@@ -130,20 +122,14 @@ class GuestLocal(tmt.Guest):
         )
 
     def start(self) -> None:
-        """
-        Start the guest
-        """
-
+        """Start the guest."""
         self.debug(f"Doing nothing to start guest '{self.primary_address}'.")
 
         self.verbose('primary address', self.primary_address, 'green')
         self.verbose('topology address', self.topology_address, 'green')
 
     def stop(self) -> None:
-        """
-        Stop the guest
-        """
-
+        """Stop the guest."""
         self.debug(f"Doing nothing to stop guest '{self.primary_address}'.")
 
     def reboot(
@@ -164,9 +150,7 @@ class GuestLocal(tmt.Guest):
         options: Optional[list[str]] = None,
         superuser: bool = False,
     ) -> None:
-        """
-        Nothing to be done to push workdir
-        """
+        """Nothing to be done to push workdir."""
 
     def pull(
         self,
@@ -175,23 +159,19 @@ class GuestLocal(tmt.Guest):
         options: Optional[list[str]] = None,
         extend_options: Optional[list[str]] = None,
     ) -> None:
-        """
-        Nothing to be done to pull workdir
-        """
+        """Nothing to be done to pull workdir."""
 
 
 @tmt.steps.provides_method('local')
 class ProvisionLocal(tmt.steps.provision.ProvisionPlugin[ProvisionLocalData]):
-    """
-    Use local host for test execution.
+    """Use local host for test execution.
 
     Do not provision any system. Tests will be executed
     directly on the localhost. Note that for some actions like
     installing additional packages you need root permission or
     enabled sudo.
 
-    .. warning::
-
+    Warning:
         In general, it is not recommended to run tests on your local machine
         as there might be security risks. Run only those tests which you
         know are safe so that you don't destroy your laptop ;-)
@@ -211,8 +191,7 @@ class ProvisionLocal(tmt.steps.provision.ProvisionPlugin[ProvisionLocalData]):
     If there are admin rights required (for example in the prepare step)
     you might be asked for a ``sudo`` password.
 
-    .. note::
-
+    Note:
         Neither hard nor soft reboot is supported.
     """
 
@@ -225,10 +204,7 @@ class ProvisionLocal(tmt.steps.provision.ProvisionPlugin[ProvisionLocalData]):
     _guest = None
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Provision the container
-        """
-
+        """Provision the container."""
         super().go(logger=logger)
 
         # Create a GuestLocal instance

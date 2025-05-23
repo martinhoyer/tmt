@@ -138,10 +138,7 @@ _test_public_git_url_input = [
     ids=[f'{original} => {expected}' for original, expected in _test_public_git_url_input],
 )
 def test_public_git_url(original: str, expected: str) -> None:
-    """
-    Verify url conversion
-    """
-
+    """Verify url conversion."""
     assert public_git_url(original) == expected
 
 
@@ -158,10 +155,7 @@ def test_clonable_git_url():
 
 
 def test_inject_auth_git_url(monkeypatch) -> None:
-    """
-    Verify injecting tokens
-    """
-
+    """Verify injecting tokens."""
     # empty environment
     monkeypatch.setattr('os.environ', {})
     assert inject_auth_git_url('input_text') == 'input_text'
@@ -210,10 +204,7 @@ def test_inject_auth_git_url(monkeypatch) -> None:
 
 
 def test_workdir_env_var(tmppath: Path, monkeypatch, root_logger):
-    """
-    Test TMT_WORKDIR_ROOT environment variable
-    """
-
+    """Test TMT_WORKDIR_ROOT environment variable."""
     # Cannot use monkeypatch.context() as it is not present for CentOS Stream 8
     monkeypatch.setenv('TMT_WORKDIR_ROOT', str(tmppath))
     common = Common(logger=root_logger)
@@ -223,10 +214,7 @@ def test_workdir_env_var(tmppath: Path, monkeypatch, root_logger):
 
 
 def test_workdir_root_full(tmppath, monkeypatch, root_logger):
-    """
-    Raise if all ids lower than WORKDIR_MAX are exceeded
-    """
-
+    """Raise if all ids lower than WORKDIR_MAX are exceeded."""
     monkeypatch.setenv('TMT_WORKDIR_ROOT', str(tmppath))
     monkeypatch.setattr(tmt.utils, 'WORKDIR_MAX', 1)
     possible_workdir = tmppath / 'run-001'
@@ -246,10 +234,7 @@ def test_workdir_root_full(tmppath, monkeypatch, root_logger):
 
 
 def test_workdir_root_race(tmppath, monkeypatch, root_logger):
-    """
-    Avoid race in workdir creation
-    """
-
+    """Avoid race in workdir creation."""
     monkeypatch.setattr(tmt.utils, 'WORKDIR_ROOT', tmppath)
     results = queue.Queue()
     threads = []
@@ -284,10 +269,7 @@ def test_workdir_root_race(tmppath, monkeypatch, root_logger):
 
 
 def test_duration_to_seconds():
-    """
-    Check conversion from extended sleep time format to seconds
-    """
-
+    """Check conversion from extended sleep time format to seconds."""
     assert duration_to_seconds(5) == 5
     assert duration_to_seconds('5') == 5
     assert duration_to_seconds('5s') == 5
@@ -328,26 +310,19 @@ def test_duration_to_seconds():
     ],
 )
 def test_duration_to_seconds_invalid(duration):
-    """
-    Catch invalid input duration string
-    """
-
+    """Catch invalid input duration string."""
     with pytest.raises(tmt.utils.SpecificationError):
         duration_to_seconds(duration)
 
 
 class TestStructuredField(unittest.TestCase):
-    """
-    Self Test
-    """
+    """Self Test."""
 
     def setUp(self):
         self.header = "This is a header.\n"
         self.footer = "This is a footer.\n"
         self.start = (
-            "[structured-field-start]\n"
-            "This is StructuredField version 1. "
-            "Please, edit with care.\n"
+            "[structured-field-start]\nThis is StructuredField version 1. Please, edit with care.\n"
         )
         self.end = "[structured-field-end]\n"
         self.zeroend = "[end]\n"
@@ -357,10 +332,7 @@ class TestStructuredField(unittest.TestCase):
         self.sections = "\n".join([self.one, self.two, self.three])
 
     def test_everything(self):
-        """
-        Everything
-        """
-
+        """Everything."""
         # Version 0
         text0 = "\n".join([self.header, self.sections, self.zeroend, self.footer])
         inited0 = StructuredField(text0, version=0)
@@ -385,10 +357,7 @@ class TestStructuredField(unittest.TestCase):
             assert field.get('three') == '3\n'
 
     def test_no_header(self):
-        """
-        No header
-        """
-
+        """No header."""
         # Version 0
         text0 = "\n".join([self.sections, self.zeroend, self.footer])
         field0 = StructuredField(text0, version=0)
@@ -406,10 +375,7 @@ class TestStructuredField(unittest.TestCase):
             assert field.get('three') == '3\n'
 
     def test_no_footer(self):
-        """
-        No footer
-        """
-
+        """No footer."""
         # Version 0
         text0 = "\n".join([self.header, self.sections, self.zeroend])
         field0 = StructuredField(text0, version=0)
@@ -427,10 +393,7 @@ class TestStructuredField(unittest.TestCase):
             assert field.get('three') == '3\n'
 
     def test_just_sections(self):
-        """
-        Just sections
-        """
-
+        """Just sections."""
         # Version 0
         text0 = "\n".join([self.sections, self.zeroend])
         field0 = StructuredField(text0, version=0)
@@ -448,10 +411,7 @@ class TestStructuredField(unittest.TestCase):
             assert field.get('three') == '3\n'
 
     def test_plain_text(self):
-        """
-        Plain text
-        """
-
+        """Plain text."""
         text = "Some plain text.\n"
         field0 = StructuredField(text, version=0)
         field1 = StructuredField(text)
@@ -463,26 +423,17 @@ class TestStructuredField(unittest.TestCase):
             assert bool(field) is False
 
     def test_missing_end_tag(self):
-        """
-        Missing end tag
-        """
-
+        """Missing end tag."""
         text = "\n".join([self.header, self.sections, self.footer])
         pytest.raises(StructuredFieldError, StructuredField, text, 0)
 
     def test_broken_field(self):
-        """
-        Broken field
-        """
-
+        """Broken field."""
         text = "[structured-field-start]"
         pytest.raises(StructuredFieldError, StructuredField, text)
 
     def test_set_content(self):
-        """
-        Set section content
-        """
-
+        """Set section content."""
         field0 = StructuredField(version=0)
         field1 = StructuredField()
         for field in [field0, field1]:
@@ -496,10 +447,7 @@ class TestStructuredField(unittest.TestCase):
         assert field1.save() == '\n'.join([self.start, self.sections, self.end])
 
     def test_remove_section(self):
-        """
-        Remove section
-        """
-
+        """Remove section."""
         field0 = StructuredField("\n".join([self.sections, self.zeroend]), version=0)
         field1 = StructuredField("\n".join([self.start, self.sections, self.end]))
         for field in [field0, field1]:
@@ -509,10 +457,7 @@ class TestStructuredField(unittest.TestCase):
         assert field1.save() == '\n'.join([self.start, self.three, self.end])
 
     def test_section_tag_escaping(self):
-        """
-        Section tag escaping
-        """
-
+        """Section tag escaping."""
         field = StructuredField()
         field.set("section", "\n[content]\n")
         reloaded = StructuredField(field.save())
@@ -521,10 +466,7 @@ class TestStructuredField(unittest.TestCase):
         assert reloaded.get('section') == '\n[content]\n'
 
     def test_nesting(self):
-        """
-        Nesting
-        """
-
+        """Nesting."""
         # Prepare structure parent -> child -> grandchild
         grandchild = StructuredField()
         grandchild.set('name', "Grand Child\n")
@@ -543,89 +485,62 @@ class TestStructuredField(unittest.TestCase):
         assert grandchild.get('name') == 'Grand Child\n'
 
     def test_section_tags_in_header(self):
-        """
-        Section tags in header
-        """
-
+        """Section tags in header."""
         field = StructuredField("\n".join(["[something]", self.start, self.one, self.end]))
         assert 'something' not in field
         assert 'one' in field
         assert field.get('one') == '1\n'
 
     def test_empty_section(self):
-        """
-        Empty section
-        """
-
+        """Empty section."""
         field = StructuredField()
         field.set("section", "")
         reloaded = StructuredField(field.save())
         assert reloaded.get('section') == ''
 
     def test_section_item_get(self):
-        """
-        Get section item
-        """
-
+        """Get section item."""
         text = "\n".join([self.start, "[section]\nx = 3\n", self.end])
         field = StructuredField(text)
         assert field.get('section', 'x') == '3'
 
     def test_section_item_set(self):
-        """
-        Set section item
-        """
-
+        """Set section item."""
         text = "\n".join([self.start, "[section]\nx = 3\n", self.end])
         field = StructuredField()
         field.set("section", "3", "x")
         assert field.save() == text
 
     def test_section_item_remove(self):
-        """
-        Remove section item
-        """
-
+        """Remove section item."""
         text = "\n".join([self.start, "[section]\nx = 3\ny = 7\n", self.end])
         field = StructuredField(text)
         field.remove("section", "x")
         assert field.save() == '\n'.join([self.start, '[section]\ny = 7\n', self.end])
 
     def test_unicode_header(self):
-        """
-        Unicode text in header
-        """
-
+        """Unicode text in header."""
         text = "Už abychom měli unicode jako defaultní kódování!"
         field = StructuredField(text)
         field.set("section", "content")
         assert text in field.save()
 
     def test_unicode_section_content(self):
-        """
-        Unicode in section content
-        """
-
+        """Unicode in section content."""
         chars = "ěščřžýáíéů"
         text = "\n".join([self.start, "[section]", chars, self.end])
         field = StructuredField(text)
         assert field.get('section').strip() == chars
 
     def test_unicode_section_name(self):
-        """
-        Unicode in section name
-        """
-
+        """Unicode in section name."""
         chars = "ěščřžýáíéů"
         text = "\n".join([self.start, f"[{chars}]\nx", self.end])
         field = StructuredField(text)
         assert field.get(chars).strip() == 'x'
 
     def test_header_footer_modify(self):
-        """
-        Modify header & footer
-        """
-
+        """Modify header & footer."""
         original = StructuredField()
         original.set("field", "field-content")
         original.header("header-content\n")
@@ -635,10 +550,7 @@ class TestStructuredField(unittest.TestCase):
         assert copy.footer() == 'footer-content\n'
 
     def test_trailing_whitespace(self):
-        """
-        Trailing whitespace
-        """
-
+        """Trailing whitespace."""
         original = StructuredField()
         original.set("name", "value")
         # Test with both space and tab appended after the section tag
@@ -648,10 +560,7 @@ class TestStructuredField(unittest.TestCase):
             assert original.get('name') == copy.get('name')
 
     def test_carriage_returns(self):
-        """
-        Carriage returns
-        """
-
+        """Carriage returns."""
         text1 = "\n".join([self.start, self.sections, self.end])
         text2 = re.sub(r"\n", "\r\n", text1)
         field1 = StructuredField(text1)
@@ -659,10 +568,7 @@ class TestStructuredField(unittest.TestCase):
         assert field1.save() == field2.save()
 
     def test_multiple_values(self):
-        """
-        Multiple values
-        """
-
+        """Multiple values."""
         # Reading multiple values
         section = "[section]\nkey=val1 # comment\nkey = val2\n key = val3 "
         text = "\n".join([self.start, section, self.end])
@@ -845,9 +751,7 @@ class TestValidateGitStatus:
         fmf_root = mine / 'fmf_root' if use_path else mine
         tmt.Tree.init(logger=root_logger, path=fmf_root, template=None, force=None)
         fmf_root.joinpath('main.fmf').write_text('test: echo')
-        run(
-            ShellScript(f'git add {fmf_root} {fmf_root / "main.fmf"}').to_shell_command(), cwd=mine
-        )
+        run(ShellScript(f'git add {fmf_root} {fmf_root / "main.fmf"}').to_shell_command(), cwd=mine)
         run(ShellScript('git commit -m add_test').to_shell_command(), cwd=mine)
         run(ShellScript('git push').to_shell_command(), cwd=mine)
         test = tmt.Tree(logger=root_logger, path=fmf_root).tests()[0]
@@ -1008,11 +912,7 @@ class TestGitAdd:
 # tmt.utils.wait & waiting for things to happen
 #
 def test_wait_deadline_already_passed(root_logger):
-    """
-    :py:func:`wait` shall not call ``check`` if the given timeout leads to
-    already expired deadline.
-    """
-
+    """:py:func:`wait` shall not call ``check`` if the timeout leads to already expired deadline."""
     ticks = []
 
     with pytest.raises(WaitingTimedOutError):
@@ -1023,11 +923,7 @@ def test_wait_deadline_already_passed(root_logger):
 
 
 def test_wait(root_logger):
-    """
-    :py:func:`wait` shall call ``check`` multiple times until ``check`` returns
-    successfully.
-    """
-
+    """:py:func:`wait` shall call ``check`` multiple times until ``check`` returns successfully."""
     # Every tick of wait()'s loop, pop one item. Once we get to the end,
     # consider the condition to be fulfilled.
     ticks = list(range(1, 10))
@@ -1051,11 +947,7 @@ def test_wait(root_logger):
 
 
 def test_wait_timeout(root_logger):
-    """
-    :py:func:`wait` shall call ``check`` multiple times until ``check`` running
-    out of time.
-    """
-
+    """:py:func:`wait` shall call ``check`` multiple times until ``check`` running out of time."""
     check = unittest.mock.MagicMock(__name__='mock_check', side_effect=WaitingIncompleteError)
 
     # We want to reach end of time budget before reaching end of the list.
@@ -1072,10 +964,7 @@ def test_wait_timeout(root_logger):
 
 
 def test_wait_success_but_too_late(root_logger):
-    """
-    :py:func:`wait` shall report failure even when ``check`` succeeds but runs
-    out of time.
-    """
+    """:py:func:`wait` shall report failure even when ``check`` succeeds but runs out of time."""
 
     def check():
         time.sleep(5)
@@ -1114,9 +1003,7 @@ def test_import_member_no_such_class(root_logger):
 
 
 def test_common_base_inheritance(root_logger):
-    """
-    Make sure multiple inheritance of ``Common`` works across all branches
-    """
+    """Make sure multiple inheritance of ``Common`` works across all branches."""
 
     class Mixin(_CommonBase):
         def __init__(self, **kwargs):
@@ -1197,10 +1084,7 @@ def test_format_duration(duration, expected):
 
 
 def test_filter_paths(source_dir):
-    """
-    Test if path filtering works correctly
-    """
-
+    """Test if path filtering works correctly."""
     paths = filter_paths(source_dir, ['/library'])
     assert len(paths) == 1
     assert paths[0] == source_dir / 'library'
@@ -1670,9 +1554,7 @@ class TestJiraLink(unittest.TestCase):
         tmt.base.Test.create(
             names=['tmp/test'], template='shell', path=self.tmp, logger=self.logger
         )
-        tmt.base.Plan.create(
-            names=['tmp/plan'], template='mini', path=self.tmp, logger=self.logger
-        )
+        tmt.base.Plan.create(names=['tmp/plan'], template='mini', path=self.tmp, logger=self.logger)
         tmt.base.Story.create(
             names=['tmp/story'], template='mini', path=self.tmp, logger=self.logger
         )

@@ -1,6 +1,4 @@
-"""
-Container decorators and helpers.
-"""
+"""Container decorators and helpers."""
 
 import dataclasses
 import functools
@@ -69,25 +67,18 @@ Container: 'TypeAlias' = Union[ContainerClass, ContainerInstance]
 
 
 def key_to_option(key: str) -> str:
-    """
-    Convert a key name to corresponding option name
-    """
-
+    """Convert a key name to corresponding option name."""
     return key.replace('_', '-')
 
 
 def option_to_key(option: str) -> str:
-    """
-    Convert an option name to corresponding key name
-    """
-
+    """Convert an option name to corresponding key name."""
     return option.replace('-', '_')
 
 
 @container
 class FieldMetadata(Generic[T]):
-    """
-    A dataclass metadata container used by our custom dataclass field management.
+    """A dataclass metadata container used by our custom dataclass field management.
 
     Attached to fields defined with :py:func:`field`
     """
@@ -161,10 +152,7 @@ class FieldMetadata(Generic[T]):
 
     @functools.cached_property
     def choices(self) -> Optional[Sequence[str]]:
-        """
-        A list of allowed values the field can take
-        """
-
+        """A list of allowed values the field can take."""
         if isinstance(self._choices, (list, tuple)):
             return list(cast(Sequence[str], self._choices))
 
@@ -175,10 +163,7 @@ class FieldMetadata(Generic[T]):
 
     @functools.cached_property
     def metavar(self) -> Optional[str]:
-        """
-        Placeholder for field's value in documentation and help
-        """
-
+        """Placeholder for field's value in documentation and help."""
         if self._metavar:
             return self._metavar
 
@@ -189,18 +174,12 @@ class FieldMetadata(Generic[T]):
 
     @property
     def has_default(self) -> bool:
-        """
-        Whether the field has a default value
-        """
-
+        """Whether the field has a default value."""
         return self.default_factory is not None or self.default is not dataclasses.MISSING
 
     @property
     def materialized_default(self) -> Optional[T]:
-        """
-        Returns the actual default value of the field
-        """
-
+        """Returns the actual default value of the field."""
         if self.default_factory is not None:
             return self.default_factory()
 
@@ -248,28 +227,19 @@ def container_has_field(container: Container, key: str) -> bool:
 
 
 def container_keys(container: Container) -> Iterator[str]:
-    """
-    Iterate over key names in a container
-    """
-
+    """Iterate over key names in a container."""
     for field in container_fields(container):
         yield field.name
 
 
 def container_values(container: ContainerInstance) -> Iterator[Any]:
-    """
-    Iterate over values in a container
-    """
-
+    """Iterate over values in a container."""
     for field in container_fields(container):
         yield container.__dict__[field.name]
 
 
 def container_items(container: ContainerInstance) -> Iterator[tuple[str, Any]]:
-    """
-    Iterate over key/value pairs in a container
-    """
-
+    """Iterate over key/value pairs in a container."""
     for field in container_fields(container):
         yield field.name, container.__dict__[field.name]
 
@@ -277,16 +247,18 @@ def container_items(container: ContainerInstance) -> Iterator[tuple[str, Any]]:
 def container_field(
     container: Container, key: str
 ) -> tuple[str, str, Any, dataclasses.Field[Any], 'FieldMetadata[Any]']:
-    """
-    Return a dataclass/data container field info by the field's name.
+    """Return a dataclass/data container field info by the field's name.
 
     Surprisingly, :py:mod:`dataclasses` package does not have a helper for
     this. One can iterate over fields, but there's no *public* API for
     retrieving a field when one knows its name.
 
-    :param cls: a dataclass/data container class whose fields to search.
-    :param key: field name to retrieve.
-    :raises GeneralError: when the field does not exist.
+    Args:
+        cls: a dataclass/data container class whose fields to search.
+        key: field name to retrieve.
+
+    Raises:
+        GeneralError: when the field does not exist.
     """
     import tmt.utils
 
@@ -320,28 +292,22 @@ def container_field(
 
 @container
 class DataContainer:
-    """
-    A base class for objects that have keys and values
-    """
+    """A base class for objects that have keys and values."""
 
     def to_dict(self) -> dict[str, Any]:
-        """
-        Convert to a mapping.
+        """Convert to a mapping.
 
         See https://tmt.readthedocs.io/en/stable/code/classes.html#class-conversions
         for more details.
         """
-
         return dict(self.items())
 
     def to_minimal_dict(self) -> dict[str, Any]:
-        """
-        Convert to a mapping with unset keys omitted.
+        """Convert to a mapping with unset keys omitted.
 
         See https://tmt.readthedocs.io/en/stable/code/classes.html#class-conversions
         for more details.
         """
-
         return {key: value for key, value in self.items() if value is not None}
 
     # This method should remain a class-method: 1. list of keys is known
@@ -349,40 +315,33 @@ class DataContainer:
     # 2. some functionality makes use of this knowledge.
     @classmethod
     def keys(cls) -> Iterator[str]:
-        """
-        Iterate over key names
-        """
-
+        """Iterate over key names."""
         yield from container_keys(cls)
 
     def values(self) -> Iterator[Any]:
-        """
-        Iterate over key values
-        """
-
+        """Iterate over key values."""
         yield from container_values(self)
 
     def items(self) -> Iterator[tuple[str, Any]]:
-        """
-        Iterate over key/value pairs
-        """
-
+        """Iterate over key/value pairs."""
         yield from container_items(self)
 
     @classmethod
     def _default(cls, key: str, default: Any = None) -> Any:
-        """
-        Return a default value for a given key.
+        """Return a default value for a given key.
 
         Keys may have a default value, or a default *factory* has been specified.
 
-        :param key: key to look for.
-        :param default: when key has no default value, ``default`` is returned.
-        :returns: a default value defined for the key, or its ``default_factory``'s
-            return value of ``default_factory``, or ``default`` when key has no
-            default value.
-        """
+        Args:
+            key: key to look for.
+            default: when key has no default value, ``default`` is
+                returned.
 
+        Returns:
+            a default value defined for the key, or its
+            ``default_factory``'s return value of ``default_factory``,
+            or ``default`` when key has no default value.
+        """
         for field in container_fields(cls):
             if key != field.name:
                 continue
@@ -398,13 +357,12 @@ class DataContainer:
 
     @property
     def is_bare(self) -> bool:
-        """
-        Check whether all keys are either unset or have their default value.
+        """Check whether all keys are either unset or have their default value.
 
-        :returns: ``True`` if all keys either hold their default value
-            or are not set at all, ``False`` otherwise.
+        Returns:
+            ``True`` if all keys either hold their default value or are
+            not set at all, ``False`` otherwise.
         """
-
         for field in container_fields(self):
             value = getattr(self, field.name)
 
@@ -450,39 +408,33 @@ SpecOutT = TypeVar('SpecOutT')
 class SpecBasedContainer(Generic[SpecInT, SpecOutT], DataContainer):
     @classmethod
     def from_spec(cls, spec: SpecInT) -> Self:
-        """
-        Convert from a specification file or from a CLI option
+        """Convert from a specification file or from a CLI option.
 
         See https://tmt.readthedocs.io/en/stable/code/classes.html#class-conversions
         for more details.
 
         See :py:meth:`to_spec` for its counterpart.
         """
-
         raise NotImplementedError
 
     def to_spec(self) -> SpecOutT:
-        """
-        Convert to a form suitable for saving in a specification file
+        """Convert to a form suitable for saving in a specification file.
 
         See https://tmt.readthedocs.io/en/stable/code/classes.html#class-conversions
         for more details.
 
         See :py:meth:`from_spec` for its counterpart.
         """
-
         return cast(SpecOutT, self.to_dict())
 
     def to_minimal_spec(self) -> SpecOutT:
-        """
-        Convert to specification, skip default values
+        """Convert to specification, skip default values.
 
         See https://tmt.readthedocs.io/en/stable/code/classes.html#class-conversions
         for more details.
 
         See :py:meth:`from_spec` for its counterpart.
         """
-
         return cast(SpecOutT, self.to_minimal_dict())
 
 
@@ -493,9 +445,7 @@ SerializableContainerDerivedType = TypeVar(
 
 @container
 class SerializableContainer(DataContainer):
-    """
-    A mixin class for saving and loading objects
-    """
+    """A mixin class for saving and loading objects."""
 
     @classmethod
     def default(cls, key: str, default: Any = None) -> Any:
@@ -506,19 +456,13 @@ class SerializableContainer(DataContainer):
     #
 
     def inject_to(self, obj: Any) -> None:
-        """
-        Inject keys from this container into attributes of a given object
-        """
-
+        """Inject keys from this container into attributes of a given object."""
         for name, value in self.items():
             setattr(obj, name, value)
 
     @classmethod
     def extract_from(cls, obj: Any) -> Self:
-        """
-        Extract keys from given object, and save them in a container
-        """
-
+        """Extract keys from given object, and save them in a container."""
         data = cls()
         # SIM118: Use `{key} in {dict}` instead of `{key} in {dict}.keys()`
         # "NormalizeKeysMixin" has no attribute "__iter__" (not iterable)
@@ -535,8 +479,7 @@ class SerializableContainer(DataContainer):
     #
 
     def to_serialized(self) -> dict[str, Any]:
-        """
-        Convert to a form suitable for saving in a file.
+        """Convert to a form suitable for saving in a file.
 
         See https://tmt.readthedocs.io/en/stable/code/classes.html#class-conversions
         for more details.
@@ -566,15 +509,13 @@ class SerializableContainer(DataContainer):
 
     @classmethod
     def from_serialized(cls, serialized: dict[str, Any]) -> Self:
-        """
-        Convert from a serialized form loaded from a file.
+        """Convert from a serialized form loaded from a file.
 
         See https://tmt.readthedocs.io/en/stable/code/classes.html#class-conversions
         for more details.
 
         See :py:meth:`to_serialized` for its counterpart.
         """
-
         # Our special key may or may not be present, depending on who
         # calls this method.  In any case, it is not needed, because we
         # already know what class to restore: this one.
@@ -609,8 +550,7 @@ class SerializableContainer(DataContainer):
     def unserialize(
         serialized: dict[str, Any], logger: 'tmt.log.Logger'
     ) -> SerializableContainerDerivedType:  # type: ignore[misc,type-var]
-        """
-        Convert from a serialized form loaded from a file.
+        """Convert from a serialized form loaded from a file.
 
         Similar to :py:meth:`from_serialized`, but this method knows
         nothing about container's class, and will locate the correct
@@ -628,7 +568,6 @@ class SerializableContainer(DataContainer):
 
         See :py:meth:`to_serialized` for its counterpart.
         """
-
         import tmt.utils
         from tmt.plugins import import_member
 
@@ -786,54 +725,56 @@ def field(
     # Custom exporter
     exporter: Optional[FieldExporter[T]] = None,
 ) -> Any:
-    """
-    Define a :py:class:`DataContainer` field.
+    """Define a :py:class:`DataContainer` field.
 
     Effectively a fancy wrapper over :py:func:`dataclasses.field`, tailored for
     tmt code needs and simplification of various common tasks.
 
-    :param default: if provided, this will be the default value for this field.
-        Passed directly to :py:func:`dataclass.field`.
-        It is an error to specify both ``default`` and ``default_factory``.
-    :param default_factory: if provided, it must be a zero-argument callable
-        that will be called when a default value is needed for this field.
-        Passed directly to :py:func:`dataclass.field`.
-        It is an error to specify both ``default`` and ``default_factory``.
-    :param option: one or more command-line option names.
-        Passed directly to :py:func:`click.option`.
-    :param is_flag: marks this option as a flag.
-        Passed directly to :py:func:`click.option`.
-    :param choices: if provided, the command-line option would accept only
-        the listed input values.
-        Passed to :py:func:`click.option` as a :py:class:`click.Choice` instance.
-    :param multiple: accept multiple arguments of the same name.
-        Passed directly to :py:func:`click.option`.
-    :param metavar: how the input value is represented in the help page.
-        Passed directly to :py:func:`click.option`.
-    :param envvar: environment variable used for this option.
-        Passed directly to :py:func:`click.option`.
-    :param deprecated: mark the option as deprecated
-        Provide an instance of Deprecated() with version in which the
-        option was obsoleted and an optional hint with the recommended
-        alternative. A warning message will be added to the option help.
-    :param help: the help string for the command-line option. Multiline strings
-        can be used, :py:func:`textwrap.dedent` is applied before passing
-        ``help`` to :py:func:`click.option`.
-    :param help_example_values: Specific values that should be shown in
-        the documentation as interesting examples of the field usage.
-    :param show_default: show default value
-        Passed directly to :py:func:`click.option`.
-    :param internal: if set, the field is treated as internal-only, and will not
-        appear when showing objects via ``show()`` method, or in export created
-        by :py:meth:`Core._export`.
-    :param normalize: a callback for normalizing the input value. Consumed by
-        :py:class:`NormalizeKeysMixin`.
-    :param serialize: a callback for custom serialization of the field value.
-        Consumed by :py:class:`SerializableKeysMixin`.
-    :param unserialize: a callback for custom unserialization of the field value.
-        Consumed by :py:class:`SerializableKeysMixin`.
-    :param exporter: a callback for custom export of the field value.
-        Consumed by :py:class:`tmt.export.Exportable`.
+    Args:
+        default: if provided, this will be the default value for this
+            field. Passed directly to :py:func:`dataclass.field`. It is
+            an error to specify both ``default`` and
+            ``default_factory``.
+        default_factory: if provided, it must be a zero-argument
+            callable that will be called when a default value is needed
+            for this field. Passed directly to
+            :py:func:`dataclass.field`. It is an error to specify both
+            ``default`` and ``default_factory``.
+        option: one or more command-line option names. Passed directly
+            to :py:func:`click.option`.
+        is_flag: marks this option as a flag. Passed directly to
+            :py:func:`click.option`.
+        choices: if provided, the command-line option would accept only
+            the listed input values. Passed to :py:func:`click.option`
+            as a :py:class:`click.Choice` instance.
+        multiple: accept multiple arguments of the same name. Passed
+            directly to :py:func:`click.option`.
+        metavar: how the input value is represented in the help page.
+            Passed directly to :py:func:`click.option`.
+        envvar: environment variable used for this option. Passed
+            directly to :py:func:`click.option`.
+        deprecated: mark the option as deprecated Provide an instance of
+            Deprecated() with version in which the option was obsoleted
+            and an optional hint with the recommended alternative. A
+            warning message will be added to the option help.
+        help: the help string for the command-line option. Multiline
+            strings can be used, :py:func:`textwrap.dedent` is applied
+            before passing ``help`` to :py:func:`click.option`.
+        help_example_values: Specific values that should be shown in the
+            documentation as interesting examples of the field usage.
+        show_default: show default value Passed directly to
+            :py:func:`click.option`.
+        internal: if set, the field is treated as internal-only, and
+            will not appear when showing objects via ``show()`` method,
+            or in export created by :py:meth:`Core._export`.
+        normalize: a callback for normalizing the input value. Consumed
+            by :py:class:`NormalizeKeysMixin`.
+        serialize: a callback for custom serialization of the field
+            value. Consumed by :py:class:`SerializableKeysMixin`.
+        unserialize: a callback for custom unserialization of the field
+            value. Consumed by :py:class:`SerializableKeysMixin`.
+        exporter: a callback for custom export of the field value.
+            Consumed by :py:class:`tmt.export.Exportable`.
     """
     import tmt.utils
 
@@ -889,7 +830,7 @@ def field(
 # of various kinds.
 #
 # Note: this is a work in progress! We would like to reduce the amount
-# of custom code implementing validation, normalization and srialization,
+# of custom code implementing validation, normalization and serialization,
 # and use existing and well-equipped libraries like attrs and Pydantic.
 # Not all containers are converted, not all features are ready, do not
 # be surprised if there are containers still using `DataContainer`
@@ -905,11 +846,11 @@ MetadataContainerT = TypeVar(
 
 
 class MetadataContainer(BaseModel):
-    """
-    A base class of containers backed by fmf nodes.
-    """
+    """A base class of containers backed by fmf nodes."""
 
     class Config:
+        """Configuration for Pydantic model."""
+
         # Accept only keys with dashes instead of underscores
         alias_generator = key_to_option
         extra = Extra.forbid

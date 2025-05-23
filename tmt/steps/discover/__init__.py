@@ -23,9 +23,7 @@ from tmt.utils import GeneralError, Path
 
 @container
 class TestOrigin:
-    """
-    Describes the origin of a test.
-    """
+    """Describes the origin of a test."""
 
     #: Name of the ``discover`` phase that added the test.
     phase: str
@@ -95,9 +93,7 @@ DiscoverStepDataT = TypeVar('DiscoverStepDataT', bound=DiscoverStepData)
 
 
 class DiscoverPlugin(tmt.steps.GuestlessPlugin[DiscoverStepDataT, None]):
-    """
-    Common parent of discover plugins
-    """
+    """Common parent of discover plugins."""
 
     # ignore[assignment]: as a base class, DiscoverStepData is not included in
     # DiscoverStepDataT.
@@ -112,10 +108,7 @@ class DiscoverPlugin(tmt.steps.GuestlessPlugin[DiscoverStepDataT, None]):
         usage: str,
         method_class: Optional[type[click.Command]] = None,
     ) -> click.Command:
-        """
-        Create base click command (common for all discover plugins)
-        """
-
+        """Create base click command (common for all discover plugins)."""
         # Prepare general usage message for the step
         if method_class:
             usage = Discover.usage(method_overview=usage)
@@ -132,40 +125,38 @@ class DiscoverPlugin(tmt.steps.GuestlessPlugin[DiscoverStepDataT, None]):
         return discover
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Perform actions shared among plugins when beginning their tasks
-        """
-
+        """Perform actions shared among plugins when beginning their tasks."""
         self.go_prolog(logger or self._logger)
 
     def tests(
         self, *, phase_name: Optional[str] = None, enabled: Optional[bool] = None
     ) -> list['TestOrigin']:
+        """Return discovered tests.
+
+        Args:
+            phase_name: if set, return only tests discovered by the
+                phase of this name. Otherwise, all tests discovered by
+                the phase are returned.
+
+                .. note::
+
+                   This parameter exists to present unified interface with
+                   :py:meth:`tmt.steps.discover.Discover.tests` API, but it
+                   has no interesting effect in case of individual phases:
+
+                   * left unset, all tests discovered by the phase are
+                     returned,
+                   * set to a phase name, tests discovered by that phase
+                     should be returned. But a phase does not have access to
+                     other phases' tests, therefore setting it to anything
+                     but this phase name would produce an empty list.
+            enabled: if set, return only tests that are enabled
+                (``enabled=True``) or disabled (``enabled=False``).
+                Otherwise, all tests are returned.
+
+        Returns:
+            a list of phase name and test pairs.
         """
-        Return discovered tests.
-
-        :param phase_name: if set, return only tests discovered by the
-            phase of this name. Otherwise, all tests discovered by the
-            phase are returned.
-
-            .. note::
-
-               This parameter exists to present unified interface with
-               :py:meth:`tmt.steps.discover.Discover.tests` API, but it
-               has no interesting effect in case of individual phases:
-
-               * left unset, all tests discovered by the phase are
-                 returned,
-               * set to a phase name, tests discovered by that phase
-                 should be returned. But a phase does not have access to
-                 other phases' tests, therefore setting it to anything
-                 but this phase name would produce an empty list.
-        :param enabled: if set, return only tests that are enabled
-            (``enabled=True``) or disabled (``enabled=False``). Otherwise,
-            all tests are returned.
-        :returns: a list of phase name and test pairs.
-        """
-
         raise NotImplementedError
 
     def download_distgit_source(
@@ -174,12 +165,10 @@ class DiscoverPlugin(tmt.steps.GuestlessPlugin[DiscoverStepDataT, None]):
         target_dir: Path,
         handler_name: Optional[str] = None,
     ) -> None:
-        """
-        Download sources to the target_dir
+        """Download sources to the target_dir.
 
         distgit_dir is path to the DistGit repository
         """
-
         tmt.utils.git.distgit_download(
             distgit_dir=distgit_dir,
             target_dir=target_dir,
@@ -189,10 +178,7 @@ class DiscoverPlugin(tmt.steps.GuestlessPlugin[DiscoverStepDataT, None]):
         )
 
     def log_import_plan_details(self) -> None:
-        """
-        Log details about the imported plan
-        """
-
+        """Log details about the imported plan."""
         parent = cast(Optional[Discover], self.parent)
         if (
             parent
@@ -207,15 +193,11 @@ class DiscoverPlugin(tmt.steps.GuestlessPlugin[DiscoverStepDataT, None]):
                     self.verbose(f'import {key}', value, 'green')
 
     def post_dist_git(self, created_content: list[Path]) -> None:
-        """
-        Discover tests after dist-git applied patches
-        """
+        """Discover tests after dist-git applied patches."""
 
 
 class Discover(tmt.steps.Step):
-    """
-    Gather information about test cases to be executed.
-    """
+    """Gather information about test cases to be executed."""
 
     _plugin_base_class = DiscoverPlugin
 
@@ -226,10 +208,7 @@ class Discover(tmt.steps.Step):
         data: tmt.steps.RawStepDataArgument,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Store supported attributes, check for sanity
-        """
-
+        """Store supported attributes, check for sanity."""
         super().__init__(plan=plan, data=data, logger=logger)
 
         # Collection of discovered tests
@@ -241,17 +220,11 @@ class Discover(tmt.steps.Step):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         return {*super()._preserved_workdir_members, 'tests.yaml'}
 
     def load(self) -> None:
-        """
-        Load step data from the workdir
-        """
-
+        """Load step data from the workdir."""
         if self.should_run_again:
             self.debug('Run discover again when reexecuting to capture changes in plans')
         else:
@@ -271,9 +244,7 @@ class Discover(tmt.steps.Step):
                 # what the phase could be.
                 if key_to_option('discover_phase') not in raw_test_datum:
                     # TODO: there should be a method for creating workdir-aware paths...
-                    path = (
-                        self.workdir / Path('tests.yaml') if self.workdir else Path('tests.yaml')
-                    )
+                    path = self.workdir / Path('tests.yaml') if self.workdir else Path('tests.yaml')
 
                     raise tmt.utils.BackwardIncompatibleDataError(
                         f"Could not load '{path}' whose format is not compatible "
@@ -298,10 +269,7 @@ class Discover(tmt.steps.Step):
             self.debug('Discovered tests not found.', level=2)
 
     def save(self) -> None:
-        """
-        Save step data to the workdir
-        """
-
+        """Save step data to the workdir."""
         super().save()
 
         # Create tests.yaml with the full test data
@@ -320,10 +288,7 @@ class Discover(tmt.steps.Step):
         self.write(Path('tests.yaml'), tmt.utils.dict_to_yaml(raw_test_data))
 
     def _discover_from_execute(self) -> None:
-        """
-        Check the execute step for possible shell script tests
-        """
-
+        """Check the execute step for possible shell script tests."""
         # Check scripts for command line and data, convert to list if needed
         scripts = self.plan.execute.opt('script')
         if not scripts:
@@ -369,10 +334,7 @@ class Discover(tmt.steps.Step):
             )
 
     def wake(self) -> None:
-        """
-        Wake up the step (process workdir and command line)
-        """
-
+        """Wake up the step (process workdir and command line)."""
         super().wake()
 
         # Check execute step for possible tests (unless already done)
@@ -397,10 +359,7 @@ class Discover(tmt.steps.Step):
             self.save()
 
     def summary(self) -> None:
-        """
-        Give a concise summary of the discovery
-        """
-
+        """Give a concise summary of the discovery."""
         # Summary of selected tests
         text = listed(len(self.tests(enabled=True)), 'test') + ' selected'
         self.info('summary', text, 'green', shift=1)
@@ -409,10 +368,7 @@ class Discover(tmt.steps.Step):
             self.verbose(test_origin.test.name, color='red', shift=2)
 
     def go(self, force: bool = False) -> None:
-        """
-        Discover all tests
-        """
-
+        """Discover all tests."""
         super().go(force=force)
 
         # Nothing more to do if already done
@@ -507,18 +463,19 @@ class Discover(tmt.steps.Step):
     def tests(
         self, *, phase_name: Optional[str] = None, enabled: Optional[bool] = None
     ) -> list['TestOrigin']:
-        """
-        Return discovered tests.
+        """Return discovered tests.
 
-        :param phase_name: if set, return only tests discovered by the
-            phase of this name. Otherwise, tests discovered by all
-            phases are returned.
-        :param enabled: if set, return only tests that are enabled
-            (``enabled=True``) or disabled (``enabled=False``). Otherwise,
-            all tests are returned.
-        :returns: a list of phase name and test pairs.
-        """
+        Args:
+            phase_name: if set, return only tests discovered by the
+                phase of this name. Otherwise, tests discovered by all
+                phases are returned.
+            enabled: if set, return only tests that are enabled
+                (``enabled=True``) or disabled (``enabled=False``).
+                Otherwise, all tests are returned.
 
+        Returns:
+            a list of phase name and test pairs.
+        """
         from tmt.steps.discover import TestOrigin
 
         suitable_tests = self._failed_tests if self._failed_tests else self._tests
@@ -537,6 +494,4 @@ class Discover(tmt.steps.Step):
         if enabled is None:
             return list(_iter_tests())
 
-        return [
-            test_origin for test_origin in _iter_tests() if test_origin.test.enabled is enabled
-        ]
+        return [test_origin for test_origin in _iter_tests() if test_origin.test.enabled is enabled]

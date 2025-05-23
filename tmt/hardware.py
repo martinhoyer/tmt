@@ -1,5 +1,4 @@
-"""
-Guest hardware requirements specification and helpers.
+"""Guest hardware requirements specification and helpers.
 
 tmt metadata allow to describe various HW requirements a guest needs to satisfy.
 This package provides useful functions and classes for core functionality and
@@ -67,9 +66,7 @@ UNITS.default_format = '~'
 
 
 class Operator(enum.Enum):
-    """
-    Binary operators defined by specification
-    """
+    """Binary operators defined by specification."""
 
     EQ = '=='
     NEQ = '!='
@@ -193,9 +190,7 @@ ConstraintValue = Union[int, 'Size', str, bool, float]
 
 
 class ConstraintNameComponents(NamedTuple):
-    """
-    Components of a constraint name
-    """
+    """Components of a constraint name."""
 
     #: ``disk`` of ``disk[1].size``
     name: str
@@ -207,9 +202,7 @@ class ConstraintNameComponents(NamedTuple):
 
 @container
 class ConstraintComponents:
-    """
-    Components of a constraint
-    """
+    """Components of a constraint."""
 
     name: str
     peer_index: Optional[int]
@@ -236,42 +229,44 @@ class ConstraintComponents:
 
 
 def match(text: str, pattern: str) -> bool:
-    """
-    Match a text against a given regular expression.
+    """Match a text against a given regular expression.
 
-    :param text: string to examine.
-    :param pattern: regular expression.
-    :returns: ``True`` if pattern matches the string.
-    """
+    Args:
+        text: string to examine.
+        pattern: regular expression.
 
+    Returns:
+        ``True`` if pattern matches the string.
+    """
     return re.match(pattern, text) is not None
 
 
 def not_match(text: str, pattern: str) -> bool:
-    """
-    Match a text against a given regular expression.
+    """Match a text against a given regular expression.
 
-    :param text: string to examine.
-    :param pattern: regular expression.
-    :returns: ``True`` if pattern does not matche the string.
-    """
+    Args:
+        text: string to examine.
+        pattern: regular expression.
 
+    Returns:
+        ``True`` if pattern does not matche the string.
+    """
     return re.match(pattern, text) is None
 
 
 def not_contains(haystack: list[str], needle: str) -> bool:
+    """Find out whether an item is in the given list.
+
+    Note:
+        Opposite of :py:func:`operator.contains`.
+
+    Args:
+        haystack: container to examine.
+        needle: item to look for in ``haystack``.
+
+    Returns:
+        ``True`` if ``needle`` is **not** in ``haystack``.
     """
-    Find out whether an item is in the given list.
-
-    .. note::
-
-       Opposite of :py:func:`operator.contains`.
-
-    :param haystack: container to examine.
-    :param needle: item to look for in ``haystack``.
-    :returns: ``True`` if ``needle`` is **not** in ``haystack``.
-    """
-
     return needle not in haystack
 
 
@@ -312,21 +307,16 @@ ReducerType = Callable[[Iterable[bool]], bool]
 
 
 class ParseError(tmt.utils.MetadataError):
-    """
-    Raised when HW requirement parsing fails
-    """
+    """Raised when HW requirement parsing fails."""
 
-    def __init__(
-        self, constraint_name: str, raw_value: str, message: Optional[str] = None
-    ) -> None:
+    def __init__(self, constraint_name: str, raw_value: str, message: Optional[str] = None) -> None:
+        """Raise when HW requirement parsing fails.
+
+        Args:
+            constraint_name: name of the constraint that caused issues.
+            raw_value: original raw value.
+            message: optional error message.
         """
-        Raise when HW requirement parsing fails.
-
-        :param constraint_name: name of the constraint that caused issues.
-        :param raw_value: original raw value.
-        :param message: optional error message.
-        """
-
         super().__init__(message or 'Failed to parse a hardware constraint.')
 
         self.constraint_name = constraint_name
@@ -340,9 +330,7 @@ class ParseError(tmt.utils.MetadataError):
 
 @container(repr=False)
 class BaseConstraint(SpecBasedContainer[Spec, Spec]):
-    """
-    Base class for all classes representing one or more constraints
-    """
+    """Base class for all classes representing one or more constraints."""
 
     @classmethod
     def from_spec(cls, spec: Any) -> 'BaseConstraint':
@@ -355,37 +343,36 @@ class BaseConstraint(SpecBasedContainer[Spec, Spec]):
         return self.to_spec()
 
     def uses_constraint(self, constraint_name: str, logger: tmt.log.Logger) -> bool:
-        """
-        Inspect constraint whether the constraint or one of its children use a constraint of
-        a given name.
+        """Inspect whether the constraint or its children use a constraint of a given name.
 
-        :param constraint_name: constraint name to look for.
-        :param logger: logger to use for logging.
-        :raises NotImplementedError: method is left for child classes to implement.
-        """
+        Args:
+            constraint_name: constraint name to look for.
+            logger: logger to use for logging.
 
+        Raises:
+            NotImplementedError: method is left for child classes to
+                implement.
+        """
         raise NotImplementedError
 
     def variants(
         self, members: Optional[list['Constraint']] = None
     ) -> Iterator[list['Constraint']]:
-        """
-        Generate all distinct variants of constraints covered by this one.
+        """Generate all distinct variants of constraints covered by this one.
 
         For a trivial constraint, there is only one variant, and that is the
         constraint itself. In the case of compound constraints, the number of
         variants would be bigger, depending on the constraint's ``reducer``.
 
-        :param members: if specified, each variant generated by this method is
-            prepended with this list.
+        Args:
+            members: if specified, each variant generated by this method
+                is prepended with this list.
         :yields: iterator over all variants.
         """
-
         raise NotImplementedError
 
     def variant(self) -> list['Constraint']:
-        """
-        Pick one of the available variants of this constraints.
+        """Pick one of the available variants of this constraints.
 
         As the constraint can yield many variants, often there's an interest in
         just one. There can be many different ways for picking the best one,
@@ -393,7 +380,6 @@ class BaseConstraint(SpecBasedContainer[Spec, Spec]):
         this method is provided. In the future, provision plugins would probably
         use their own guessing to pick the most suitable variant.
         """
-
         variants = list(self.variants())
 
         if not variants:
@@ -404,21 +390,18 @@ class BaseConstraint(SpecBasedContainer[Spec, Spec]):
 
 @container(repr=False)
 class CompoundConstraint(BaseConstraint):
-    """
-    Base class for all *compound* constraints
-    """
+    """Base class for all *compound* constraints."""
 
     def __init__(
         self, reducer: ReducerType = any, constraints: Optional[list[BaseConstraint]] = None
     ) -> None:
-        """
-        Construct a compound constraint, constraint imposed to more than one dimension.
+        """Construct a compound constraint, constraint imposed to more than one dimension.
 
-        :param reducer: a callable reducing a list of results from child constraints into the final
-            answer.
-        :param constraints: child constraints.
+        Args:
+            reducer: a callable reducing a list of results from child
+                constraints into the final answer.
+            constraints: child constraints.
         """
-
         self.reducer = reducer
         self.constraints = constraints or []
 
@@ -434,14 +417,16 @@ class CompoundConstraint(BaseConstraint):
         }
 
     def uses_constraint(self, constraint_name: str, logger: tmt.log.Logger) -> bool:
-        """
-        Inspect constraint whether it or its children use a constraint of a given name.
+        """Inspect constraint whether it or its children use a constraint of a given name.
 
-        :param constraint_name: constraint name to look for.
-        :param logger: logger to use for logging.
-        :returns: ``True`` if the given constraint or its children use given constraint name.
-        """
+        Args:
+            constraint_name: constraint name to look for.
+            logger: logger to use for logging.
 
+        Returns:
+            ``True`` if the given constraint or its children use given
+            constraint name.
+        """
         # Using "any" on purpose: we cannot use the reducer belonging to this constraint,
         # because that one may yield result based on validity of all child constraints.
         # But we want to answer the question "is *any* of child constraints using the given
@@ -453,29 +438,28 @@ class CompoundConstraint(BaseConstraint):
     def variants(
         self, members: Optional[list['Constraint']] = None
     ) -> Iterator[list['Constraint']]:
-        """
-        Generate all distinct variants of constraints covered by this one.
+        """Generate all distinct variants of constraints covered by this one.
 
         Since the ``and`` reducer demands all child constraints must be
         satisfied, and some of these constraints can also be compound
         constraints, we need to construct a cartesian product of variants
         yielded by child constraints to include all possible combinations.
 
-        :param members: if specified, each variant generated by this method is
-            prepended with this list.
+        Args:
+            members: if specified, each variant generated by this method
+                is prepended with this list.
         :yields: iterator over all variants.
-        :raises NotImplementedError: default implementation is left undefined for compound
-            constraints.
-        """
 
+        Raises:
+            NotImplementedError: default implementation is left
+                undefined for compound constraints.
+        """
         raise NotImplementedError
 
 
 @container(repr=False)
 class Constraint(BaseConstraint):
-    """
-    A constraint imposing a particular limit to one of the guest properties
-    """
+    """A constraint imposing a particular limit to one of the guest properties."""
 
     # Name of the constraint. Used for logging purposes, usually matches the
     # name of the system property.
@@ -513,22 +497,32 @@ class Constraint(BaseConstraint):
         allowed_operators: Optional[list[Operator]] = None,
         default_unit: Optional[Any] = "bytes",
     ) -> 'Constraint':
-        """
-        Parse raw constraint specification into our internal representation.
+        """Parse raw constraint specification into our internal representation.
 
-        :param name: name of the constraint.
-        :param raw_value: raw value of the constraint.
-        :param as_quantity: if set, value is treated as a quantity containing also unit, and as
-            such the raw value is converted to :py:class`pint.Quantity` instance.
-        :param as_cast: if specified, this callable is used to convert raw value to its final type.
-        :param original_constraint: when specified, new constraint logically belongs to
-            ``original_constraint``, possibly representing one of its aspects.
-        :param allowed_operators: if specified, only operators on this list are accepted.
-        :param default_unit: if raw_value contains no unit, this unit will be appended.
-        :raises ParseError: when parsing fails, or the operator is now allowed.
-        :returns: a :py:class:`Constraint` representing the given specification.
-        """
+        Args:
+            name: name of the constraint.
+            raw_value: raw value of the constraint.
+            as_quantity: if set, value is treated as a quantity
+                containing also unit, and as such the raw value is
+                converted to :py:class`pint.Quantity` instance.
+            as_cast: if specified, this callable is used to convert raw
+                value to its final type.
+            original_constraint: when specified, new constraint
+                logically belongs to ``original_constraint``, possibly
+                representing one of its aspects.
+            allowed_operators: if specified, only operators on this list
+                are accepted.
+            default_unit: if raw_value contains no unit, this unit will
+                be appended.
 
+        Raises:
+            ParseError: when parsing fails, or the operator is now
+                allowed.
+
+        Returns:
+            a :py:class:`Constraint` representing the given
+            specification.
+        """
         allowed_operators = allowed_operators or INPUTABLE_OPERATORS
 
         parsed_value = CONSTRAINT_VALUE_PATTERN.match(raw_value)
@@ -590,13 +584,12 @@ class Constraint(BaseConstraint):
         return {self.name.replace('_', '-'): f'{self.operator.value} {self.value}'}
 
     def expand_name(self) -> ConstraintNameComponents:
-        """
-        Expand constraint name into its components.
+        """Expand constraint name into its components.
 
-        :returns: tuple consisting of constraint name components: name, optional indices, child
-            properties, etc.
+        Returns:
+            tuple consisting of constraint name components: name,
+            optional indices, child properties, etc.
         """
-
         match = CONSTRAINT_NAME_PATTERN.match(self.name)
 
         # Cannot happen as long as we test our pattern well...
@@ -628,48 +621,46 @@ class Constraint(BaseConstraint):
         return '.'.join(names)
 
     def change_operator(self, operator: Operator) -> None:
-        """
-        Change operator of this constraint to a given one.
+        """Change operator of this constraint to a given one.
 
-        :param operator: new operator.
+        Args:
+            operator: new operator.
         """
-
         self.operator = operator
         self.operator_handler = OPERATOR_TO_HANDLER[operator]
 
     def uses_constraint(self, constraint_name: str, logger: tmt.log.Logger) -> bool:
-        """
-        Inspect constraint whether it or its children use a constraint of a given name.
+        """Inspect constraint whether it or its children use a constraint of a given name.
 
-        :param constraint_name: constraint name to look for.
-        :param logger: logger to use for logging.
-        :returns: ``True`` if the given constraint or its children use given constraint name.
-        """
+        Args:
+            constraint_name: constraint name to look for.
+            logger: logger to use for logging.
 
+        Returns:
+            ``True`` if the given constraint or its children use given
+            constraint name.
+        """
         return self.expand_name().name == constraint_name
 
     def variants(
         self, members: Optional[list['Constraint']] = None
     ) -> Iterator[list['Constraint']]:
-        """
-        Generate all distinct variants of constraints covered by this one.
+        """Generate all distinct variants of constraints covered by this one.
 
         For a trivial constraint, there is only one variant, and that is the
         constraint itself. In the case of compound constraints, the number of
         variants would be bigger, depending on the constraint's ``reducer``.
 
-        :param members: if specified, each variant generated by this method is
-            prepended with this list.
+        Args:
+            members: if specified, each variant generated by this method
+                is prepended with this list.
         :yields: iterator over all variants.
         """
-
         yield (members or []) + [self]
 
 
 class SizeConstraint(Constraint):
-    """
-    A constraint representing a size of resource, usually a storage
-    """
+    """A constraint representing a size of resource, usually a storage."""
 
     value: 'Size'
 
@@ -696,9 +687,7 @@ class SizeConstraint(Constraint):
 
 
 class FlagConstraint(Constraint):
-    """
-    A constraint representing a boolean flag, enabled/disabled, has/has not, etc.
-    """
+    """A constraint representing a boolean flag, enabled/disabled, has/has not, etc."""
 
     value: bool
 
@@ -724,9 +713,7 @@ class FlagConstraint(Constraint):
 
 
 class IntegerConstraint(Constraint):
-    """
-    A constraint representing a dimension-less int number
-    """
+    """A constraint representing a dimension-less int number."""
 
     value: int
 
@@ -766,9 +753,7 @@ class IntegerConstraint(Constraint):
 
 
 class NumberConstraint(Constraint):
-    """
-    A constraint representing a float number
-    """
+    """A constraint representing a float number."""
 
     value: 'Quantity'
 
@@ -806,9 +791,7 @@ class NumberConstraint(Constraint):
 
 
 class TextConstraint(Constraint):
-    """
-    A constraint representing a string, e.g. a name
-    """
+    """A constraint representing a string, e.g. a name."""
 
     value: str
 
@@ -834,35 +817,31 @@ class TextConstraint(Constraint):
 
 @container(repr=False)
 class And(CompoundConstraint):
-    """
-    Represents constraints that are grouped in ``and`` fashion
-    """
+    """Represents constraints that are grouped in ``and`` fashion."""
 
     def __init__(self, constraints: Optional[list[BaseConstraint]] = None) -> None:
-        """
-        Hold constraints that are grouped in ``and`` fashion.
+        """Hold constraints that are grouped in ``and`` fashion.
 
-        :param constraints: list of constraints to group.
+        Args:
+            constraints: list of constraints to group.
         """
-
         super().__init__(all, constraints=constraints)
 
     def variants(
         self, members: Optional[list['Constraint']] = None
     ) -> Iterator[list['Constraint']]:
-        """
-        Generate all distinct variants of constraints covered by this one.
+        """Generate all distinct variants of constraints covered by this one.
 
         Since the ``and`` reducer demands all child constraints must be
         satisfied, and some of these constraints can also be compound
         constraints, we need to construct a cartesian product of variants
         yielded by child constraints to include all possible combinations.
 
-        :param members: if specified, each variant generated by this method is
-            prepended with this list.
+        Args:
+            members: if specified, each variant generated by this method
+                is prepended with this list.
         :yields: iterator over all variants.
         """
-
         members = members or []
 
         # List of non-compound constraints - we just slap these into every combination we generate
@@ -888,35 +867,31 @@ class And(CompoundConstraint):
 
 @container(repr=False)
 class Or(CompoundConstraint):
-    """
-    Represents constraints that are grouped in ``or`` fashion
-    """
+    """Represents constraints that are grouped in ``or`` fashion."""
 
     def __init__(self, constraints: Optional[list[BaseConstraint]] = None) -> None:
-        """
-        Hold constraints that are grouped in ``or`` fashion.
+        """Hold constraints that are grouped in ``or`` fashion.
 
-        :param constraints: list of constraints to group.
+        Args:
+            constraints: list of constraints to group.
         """
-
         super().__init__(any, constraints=constraints)
 
     def variants(
         self, members: Optional[list['Constraint']] = None
     ) -> Iterator[list['Constraint']]:
-        """
-        Generate all distinct variants of constraints covered by this one.
+        """Generate all distinct variants of constraints covered by this one.
 
         Since the ``any`` reducer allows any child constraints to be satisfied
         for the whole group to evaluate as ``True``, it is trivial to generate
         variants - each child constraint shall provide its own "branch", and
         there is no need for products or joins of any kind.
 
-        :param members: if specified, each variant generated by this method is
-            prepended with this list.
+        Args:
+            members: if specified, each variant generated by this method
+                is prepended with this list.
         :yields: iterator over all variants.
         """
-
         members = members or []
 
         for constraint in self.constraints:
@@ -930,8 +905,7 @@ class Or(CompoundConstraint):
 
 
 def ungroupify(fn: Callable[[Spec], BaseConstraint]) -> Callable[[Spec], BaseConstraint]:
-    """
-    Swap returned single-child compound constraint and that child.
+    """Swap returned single-child compound constraint and that child.
 
     Helps reduce the number of levels in the constraint tree: if the return value
     is a compound constraint which contains just a single child, return the
@@ -956,8 +930,7 @@ def ungroupify(fn: Callable[[Spec], BaseConstraint]) -> Callable[[Spec], BaseCon
 def ungroupify_indexed(
     fn: Callable[[Spec, int], BaseConstraint],
 ) -> Callable[[Spec, int], BaseConstraint]:
-    """
-    Swap returned single-child compound constraint and that child.
+    """Swap returned single-child compound constraint and that child.
 
     Helps reduce the number of levels in the constraint tree: if the return value
     is a compound constraint which contains just a single child, return the
@@ -984,10 +957,7 @@ def _parse_int_constraints(
     prefix: str,
     constraint_keys: tuple[str, ...],
 ) -> list[BaseConstraint]:
-    """
-    Parse number-like constraints defined by a given set of keys, to int
-    """
-
+    """Parse number-like constraints defined by a given set of keys, to int."""
     return [
         IntegerConstraint.from_specification(
             f'{prefix}.{constraint_name.replace("-", "_")}',
@@ -1012,10 +982,7 @@ def _parse_number_constraints(
     constraint_keys: tuple[str, ...],
     default_unit: Optional[Any] = None,
 ) -> list[BaseConstraint]:
-    """
-    Parse number-like constraints defined by a given set of keys, to float
-    """
-
+    """Parse number-like constraints defined by a given set of keys, to float."""
     return [
         NumberConstraint.from_specification(
             f'{prefix}.{constraint_name.replace("-", "_")}',
@@ -1040,10 +1007,7 @@ def _parse_size_constraints(
     prefix: str,
     constraint_keys: tuple[str, ...],
 ) -> list[BaseConstraint]:
-    """
-    Parse size-like constraints defined by a given set of keys
-    """
-
+    """Parse size-like constraints defined by a given set of keys."""
     return [
         SizeConstraint.from_specification(
             f'{prefix}.{constraint_name.replace("-", "_")}',
@@ -1068,10 +1032,7 @@ def _parse_text_constraints(
     constraint_keys: tuple[str, ...],
     allowed_operators: Optional[tuple[Operator, ...]] = None,
 ) -> list[BaseConstraint]:
-    """
-    Parse text-like constraints defined by a given set of keys
-    """
-
+    """Parse text-like constraints defined by a given set of keys."""
     allowed_operators = allowed_operators or (
         Operator.EQ,
         Operator.NEQ,
@@ -1095,10 +1056,7 @@ def _parse_flag_constraints(
     prefix: str,
     constraint_keys: tuple[str, ...],
 ) -> list[BaseConstraint]:
-    """
-    Parse flag-like constraints defined by a given set of keys
-    """
-
+    """Parse flag-like constraints defined by a given set of keys."""
     return [
         FlagConstraint.from_specification(
             f'{prefix}.{constraint_name.replace("-", "_")}',
@@ -1116,13 +1074,15 @@ def _parse_device_core(
     include_driver: bool = True,
     include_device: bool = True,
 ) -> And:
-    """
-    Parse constraints shared across device classes.
+    """Parse constraints shared across device classes.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     number_constraints: tuple[str, ...] = ('vendor',)
@@ -1151,13 +1111,15 @@ def _parse_device_core(
 
 @ungroupify
 def _parse_boot(spec: Spec) -> BaseConstraint:
-    """
-    Parse a boot-related constraints.
+    """Parse a boot-related constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     if 'method' in spec:
@@ -1178,13 +1140,15 @@ def _parse_boot(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_virtualization(spec: Spec) -> BaseConstraint:
-    """
-    Parse a virtualization-related constraints.
+    """Parse a virtualization-related constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_flag_constraints(
@@ -1203,13 +1167,15 @@ def _parse_virtualization(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_compatible(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the compatible distro parameter.
+    """Parse constraints related to the compatible distro parameter.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     for distro in spec.get('distro', []):
@@ -1224,13 +1190,15 @@ def _parse_compatible(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_cpu(spec: Spec) -> BaseConstraint:
-    """
-    Parse a cpu-related constraints.
+    """Parse a cpu-related constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_int_constraints(
@@ -1297,26 +1265,30 @@ def _parse_cpu(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_device(spec: Spec) -> BaseConstraint:
-    """
-    Parse a device-related constraints.
+    """Parse a device-related constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     return _parse_device_core(spec)
 
 
 @ungroupify_indexed
 def _parse_disk(spec: Spec, disk_index: int) -> BaseConstraint:
-    """
-    Parse a disk-related constraints.
+    """Parse a disk-related constraints.
 
-    :param spec: raw constraint block specification.
-    :param disk_index: index of this disk among its peers in specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
+        disk_index: index of this disk among its peers in specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_size_constraints(
@@ -1335,13 +1307,15 @@ def _parse_disk(spec: Spec, disk_index: int) -> BaseConstraint:
 
 @ungroupify
 def _parse_disks(spec: Spec) -> BaseConstraint:
-    """
-    Parse a storage-related constraints.
+    """Parse a storage-related constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     # The old-style constraint when `disk` was a mapping. Remove once v0.0.26 is gone.
     if isinstance(spec, dict):
         return _parse_disk(spec, 0)
@@ -1357,26 +1331,31 @@ def _parse_disks(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_gpu(spec: Spec) -> BaseConstraint:
-    """
-    Parse a gpu-related constraints.
+    """Parse a gpu-related constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     return _parse_device_core(spec, device_prefix='gpu')
 
 
 @ungroupify_indexed
 def _parse_network(spec: Spec, network_index: int) -> BaseConstraint:
-    """
-    Parse a network-related constraints.
+    """Parse a network-related constraints.
 
-    :param spec: raw constraint block specification.
-    :param network_index: index of this network among its peers in specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
+        network_index: index of this network among its peers in
+            specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = _parse_device_core(spec, f'network[{network_index}]')
     group.constraints += _parse_text_constraints(
         spec,
@@ -1389,13 +1368,15 @@ def _parse_network(spec: Spec, network_index: int) -> BaseConstraint:
 
 @ungroupify
 def _parse_networks(spec: Spec) -> BaseConstraint:
-    """
-    Parse a network-related constraints.
+    """Parse a network-related constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += [
@@ -1408,13 +1389,15 @@ def _parse_networks(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_system(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``system`` HW requirement.
+    """Parse constraints related to the ``system`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = _parse_device_core(
         spec, device_prefix='system', include_driver=False, include_device=False
     )
@@ -1445,13 +1428,15 @@ TPM_VERSION_ALLOWED_OPERATORS: tuple[Operator, ...] = (
 
 @ungroupify
 def _parse_tpm(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``tpm`` HW requirement.
+    """Parse constraints related to the ``tpm`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_text_constraints(
@@ -1465,13 +1450,15 @@ def _parse_tpm(spec: Spec) -> BaseConstraint:
 
 
 def _parse_memory(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``memory`` HW requirement.
+    """Parse constraints related to the ``memory`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     return SizeConstraint.from_specification(
         'memory',
         str(spec['memory']),
@@ -1488,13 +1475,15 @@ def _parse_memory(spec: Spec) -> BaseConstraint:
 
 
 def _parse_hostname(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``hostname`` HW requirement.
+    """Parse constraints related to the ``hostname`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     return TextConstraint.from_specification(
         'hostname',
         spec['hostname'],
@@ -1504,13 +1493,15 @@ def _parse_hostname(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_zcrypt(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``zcrypt`` HW requirement.
+    """Parse constraints related to the ``zcrypt`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_text_constraints(
@@ -1524,13 +1515,15 @@ def _parse_zcrypt(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_iommu(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``iommu`` HW requirement.
+    """Parse constraints related to the ``iommu`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_flag_constraints(
@@ -1549,13 +1542,15 @@ def _parse_iommu(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_location(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``location`` HW requirement.
+    """Parse constraints related to the ``location`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_text_constraints(
@@ -1569,13 +1564,15 @@ def _parse_location(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_beaker(spec: Spec) -> BaseConstraint:
-    """
-    Parse constraints related to the ``beaker`` HW requirement.
+    """Parse constraints related to the ``beaker`` HW requirement.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += _parse_text_constraints(
@@ -1590,13 +1587,15 @@ def _parse_beaker(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_generic_spec(spec: Spec) -> BaseConstraint:
-    """
-    Parse actual constraints.
+    """Parse actual constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     if 'arch' in spec:
@@ -1655,13 +1654,15 @@ def _parse_generic_spec(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_and(spec: Spec) -> BaseConstraint:
-    """
-    Parse an ``and`` clause holding one or more subblocks or constraints.
+    """Parse an ``and`` clause holding one or more subblocks or constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = And()
 
     group.constraints += [_parse_block(member) for member in spec]
@@ -1671,13 +1672,15 @@ def _parse_and(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_or(spec: Spec) -> BaseConstraint:
-    """
-    Parse an ``or`` clause holding one or more subblocks or constraints.
+    """Parse an ``or`` clause holding one or more subblocks or constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its subclasses.
-    """
+    Args:
+        spec: raw constraint block specification.
 
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
+        subclasses.
+    """
     group = Or()
 
     group.constraints += [_parse_block(member) for member in spec]
@@ -1687,15 +1690,17 @@ def _parse_or(spec: Spec) -> BaseConstraint:
 
 @ungroupify
 def _parse_block(spec: Spec) -> BaseConstraint:
-    """
-    Parse a generic block of HW constraints - may contain ``and`` and ``or``
-    subblocks and actual constraints.
+    """Parse a generic block of HW constraints.
 
-    :param spec: raw constraint block specification.
-    :returns: block representation as :py:class:`BaseConstraint` or one of its
+    May contain ``and`` and ``or`` subblocks and actual constraints.
+
+    Args:
+        spec: raw constraint block specification.
+
+    Returns:
+        block representation as :py:class:`BaseConstraint` or one of its
     subclasses.
     """
-
     if 'and' in spec:
         return _parse_and(spec['and'])
 
@@ -1706,13 +1711,14 @@ def _parse_block(spec: Spec) -> BaseConstraint:
 
 
 def parse_hw_requirements(spec: Spec) -> BaseConstraint:
-    """
-    Convert raw specification of HW constraints to our internal representation.
+    """Convert raw specification of HW constraints to our internal representation.
 
-    :param spec: raw constraints specification as stored in an environment.
-    :returns: root of HW constraints tree.
-    """
+    Args:
+        spec: raw constraints specification as stored in an environment.
 
+    Returns:
+        root of HW constraints tree.
+    """
     return _parse_block(spec)
 
 
@@ -1754,8 +1760,7 @@ class Hardware(SpecBasedContainer[Spec, Spec]):
         check: Optional[Callable[['Constraint'], bool]] = None,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Report all unsupported constraints.
+        """Report all unsupported constraints.
 
         A helper method for plugins: plugin provides a callback which checks
         whether a given constraint is or is not supported by the plugin, and
@@ -1765,17 +1770,19 @@ class Hardware(SpecBasedContainer[Spec, Spec]):
         combined. First, the ``names`` list is checked, if a constraint is not
         found, ``check`` is called if it's defined.
 
-        :param names: a list of constraint names. If a constraint name is on
-            this list, it is considered to be supported by the ``report_support``
-            caller. Caller may list both full constraint name, e.g. ``cpu.cores``,
-            or just the subsystem name, ``cpu``, indicating all child constraints
-            are supported.
-        :param check: a callback to call for each constraint in this container.
-            Accepts a single parameter, a constraint to check, and if its return
-            value is true-ish, the constraint is considered to be supported
-            by the ``report_support`` caller.
+        Args:
+            names: a list of constraint names. If a constraint name is
+                on this list, it is considered to be supported by the
+                ``report_support`` caller. Caller may list both full
+                constraint name, e.g. ``cpu.cores``, or just the
+                subsystem name, ``cpu``, indicating all child
+                constraints are supported.
+            check: a callback to call for each constraint in this
+                container. Accepts a single parameter, a constraint to
+                check, and if its return value is true-ish, the
+                constraint is considered to be supported by the
+                ``report_support`` caller.
         """
-
         if not self.constraint:
             return
 
@@ -1794,14 +1801,12 @@ class Hardware(SpecBasedContainer[Spec, Spec]):
                 )
 
     def format_variants(self) -> Iterator[str]:
-        """
-        Format variants of constraints.
+        """Format variants of constraints.
 
         :yields: for each variant, which is nothing but a list of constraints,
             method yields a string variant's serial number and formatted
             constraints.
         """
-
         if self.constraint is None:
             return
 

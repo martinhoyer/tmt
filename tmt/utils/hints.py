@@ -1,5 +1,4 @@
-"""
-Hints for users when facing installation-related issues.
+"""Hints for users when facing installation-related issues.
 
 Plugins, steps, and tmt code in general can register hints to be shown
 to user when an important (or optional, but interesting) package is not
@@ -110,15 +109,13 @@ HINTS: dict[str, Hint] = {
 
 
 def register_hint(id_: str, hint: str) -> None:
-    """
-    Register a hint for users.
+    """Register a hint for users.
 
-    :param id_: step name for step-specific hints,
-        ``<step name>/<plugin name>`` for plugin-specific hints,
-        or an arbitrary string.
-    :param hint: a hint to register.
+    Args:
+        id_: step name for step-specific hints, ``<step name>/<plugin
+            name>`` for plugin-specific hints, or an arbitrary string.
+        hint: a hint to register.
     """
-
     if id_ in HINTS:
         raise tmt.utils.GeneralError(
             f"Registering hint '{id_}' collides with an already registered hint."
@@ -128,16 +125,16 @@ def register_hint(id_: str, hint: str) -> None:
 
 
 def get_hints(*ids: str, ignore_missing: bool = False) -> list[Hint]:
-    """
-    Find given hints.
+    """Find given hints.
 
-    :param ids: ids of hints to retrieve.
-    :param ignore_missing: if not set, non-existent hints will
-        raise an exception. Otherwise, non-existent hints will
-        be skipped.
-    :returns: found hints.
-    """
+    Args:
+        *ids: ids of hints to retrieve.
+        ignore_missing: if not set, non-existent hints will raise an
+            exception. Otherwise, non-existent hints will be skipped.
 
+    Returns:
+        found hints.
+    """
     if ignore_missing:
 
         def _get_optional_hints() -> Iterator[Hint]:
@@ -164,15 +161,14 @@ def get_hints(*ids: str, ignore_missing: bool = False) -> list[Hint]:
 
 
 def print_hints(*ids: str, ignore_missing: bool = False, logger: tmt.log.Logger) -> None:
-    """
-    Display given hints by printing them as info-level messages.
+    """Display given hints by printing them as info-level messages.
 
-    :param ids: ids of hints to render.
-    :param ignore_missing: if not set, non-existent hints will
-        raise an exception.
-    :param logger: to use for logging.
+    Args:
+        *ids: ids of hints to render.
+        ignore_missing: if not set, non-existent hints will raise an
+            exception.
+        logger: to use for logging.
     """
-
     hints = get_hints(*ids, ignore_missing=ignore_missing)
 
     for hint in hints:

@@ -64,13 +64,11 @@ PACKAGE_MANAGER_APK = tmt.package_managers._PACKAGE_MANAGER_PLUGIN_REGISTRY.get_
 
 
 def has_legacy_dnf(container: ContainerData) -> bool:
-    """
-    Checks whether a container provides older ``dnf`` and ``yum``.
+    """Checks whether a container provides older ``dnf`` and ``yum``.
 
     At some point, Fedora switched to ``dnf5`` completely, and older
     ``dnf`` and ``yum`` commands are now mere symlinks to ``dnf5``.
     """
-
     if 'fedora' not in container.image_url_or_id and 'centos' not in container.image_url_or_id:
         return False
 
@@ -83,10 +81,7 @@ def has_legacy_dnf(container: ContainerData) -> bool:
 
 
 def has_dnf5_preinstalled(container: ContainerData) -> bool:
-    """
-    Checks whether a container provides ``dnf5``
-    """
-
+    """Checks whether a container provides ``dnf5``."""
     return container.image_url_or_id in (
         CONTAINER_FEDORA_RAWHIDE.url,
         CONTAINER_FEDORA_41.url,
@@ -98,13 +93,11 @@ def has_dnf5_preinstalled(container: ContainerData) -> bool:
 def assert_output(
     expected_output: Optional[str], stdout: Optional[str], stderr: Optional[str]
 ) -> None:
-    """
-    Check that the expected output is present
+    """Check that the expected output is present.
 
     We don't care whether the expected string is in stdout or stderr.
     Just make sure the output is there.
     """
-
     # Nothing to do if there are no expectations
     if not expected_output:
         return
@@ -1686,7 +1679,7 @@ def _parametrize_test_install_downloaded() -> Iterator[
                     package_manager_class,
                     (Package('tree'), Package('diffutils')),
                     ('tree*.x86_64.rpm', 'diffutils*.x86_64.rpm'),
-                    r"yum install -y --skip-broken /tmp/tree.rpm /tmp/diffutils.rpm \|\| /bin/true",  # noqa: E501
+                    r"yum install -y --skip-broken /tmp/tree.rpm /tmp/diffutils.rpm \|\| /bin/true",
                     'Complete!',
                 )
 

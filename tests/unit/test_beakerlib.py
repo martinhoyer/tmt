@@ -12,10 +12,7 @@ from tmt.utils import Path
 
 @pytest.mark.web
 def test_basic(root_logger):
-    """
-    Fetch a beakerlib library with/without providing a parent
-    """
-
+    """Fetch a beakerlib library with/without providing a parent."""
     parent = tmt.utils.Common(logger=root_logger, workdir=True)
     library_with_parent = tmt.libraries.library_factory(
         logger=root_logger,
@@ -47,10 +44,7 @@ def test_basic(root_logger):
     ],
 )
 def test_require_from_fmf(url, name, default_branch, root_logger):
-    """
-    Fetch beakerlib library referenced by fmf identifier
-    """
-
+    """Fetch beakerlib library referenced by fmf identifier."""
     library = tmt.libraries.library_factory(
         logger=root_logger, identifier=tmt.base.DependencyFmfId(url=url, name=name)
     )
@@ -68,10 +62,7 @@ def test_require_from_fmf(url, name, default_branch, root_logger):
 
 @pytest.mark.web
 def test_invalid_url_conflict(root_logger):
-    """
-    Saner check if url mismatched for translated library
-    """
-
+    """Saner check if url mismatched for translated library."""
     parent = tmt.utils.Common(logger=root_logger, workdir=True)
     # Fetch to cache 'tmt' repo
     tmt.libraries.library_factory(
@@ -95,10 +86,7 @@ def test_invalid_url_conflict(root_logger):
 
 @pytest.mark.web
 def test_dependencies(root_logger):
-    """
-    Check requires for possible libraries
-    """
-
+    """Check requires for possible libraries."""
     parent = tmt.utils.Common(logger=root_logger, workdir=True)
     requires, recommends, libraries = tmt.libraries.dependencies(
         original_require=[
@@ -135,10 +123,7 @@ def test_dependencies(root_logger):
 
 @pytest.mark.web
 def test_mark_nonexistent_url(root_logger, monkeypatch):
-    """
-    Check url existence just one time
-    """
-
+    """Check url existence just one time."""
     parent = tmt.utils.Common(logger=root_logger, workdir=True)
     identifier = tmt.base.DependencyFmfId(
         url='https://github.com/beakerlib/THISDOESNTEXIST',

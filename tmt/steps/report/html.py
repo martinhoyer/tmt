@@ -56,8 +56,7 @@ class ReportHtmlData(tmt.steps.report.ReportStepData):
 
 @tmt.steps.provides_method('html')
 class ReportHtml(tmt.steps.report.ReportPlugin[ReportHtmlData]):
-    """
-    Format test results into an HTML report.
+    """Format test results into an HTML report.
 
     Create a local ``html`` file with test results arranged in
     a table. Optionally open the page in the default browser.
@@ -83,17 +82,11 @@ class ReportHtml(tmt.steps.report.ReportPlugin[ReportHtmlData]):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         return {DEFAULT_FILENAME}
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Process results
-        """
-
+        """Process results."""
         super().go(logger=logger)
 
         # Prepare the template

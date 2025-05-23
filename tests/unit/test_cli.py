@@ -17,10 +17,7 @@ PATH = Path(__file__).resolve().parent
 
 
 def example(name):
-    """
-    Return path to given example
-    """
-
+    """Return path to given example."""
     return PATH / "../../examples/" / name
 
 
@@ -28,10 +25,7 @@ runner = CliRunner()
 
 
 def test_mini():
-    """
-    Minimal smoke test
-    """
-
+    """Minimal smoke test."""
     tmp = tempfile.mkdtemp()
     result = runner.invoke(
         tmt.cli._root.main, ['--root', example('mini'), 'run', '-i', tmp, '-dv', 'discover']
@@ -44,10 +38,7 @@ def test_mini():
 
 
 def test_init():
-    """
-    Tree initialization
-    """
-
+    """Tree initialization."""
     tmp = tempfile.mkdtemp()
     original_directory = os.getcwd()
     os.chdir(tmp)
@@ -74,10 +65,7 @@ def test_init():
 
 
 def test_create():
-    """
-    Test, plan and story creation
-    """
-
+    """Test, plan and story creation."""
     # Create a test directory
     tmp = tempfile.mkdtemp()
     original_directory = os.getcwd()
@@ -102,10 +90,7 @@ def test_create():
 
 
 def test_step():
-    """
-    Select desired step
-    """
-
+    """Select desired step."""
     for step in ['discover', 'provision', 'prepare']:
         tmp = tempfile.mkdtemp()
         result = runner.invoke(
@@ -119,16 +104,11 @@ def test_step():
 
 
 def test_step_execute():
-    """
-    Test execute step
-    """
-
+    """Test execute step."""
     tmp = tempfile.mkdtemp()
     step = 'execute'
 
-    result = runner.invoke(
-        tmt.cli._root.main, ['--root', example('local'), 'run', '-i', tmp, step]
-    )
+    result = runner.invoke(tmt.cli._root.main, ['--root', example('local'), 'run', '-i', tmp, step])
 
     # Test execute empty with discover output missing
     assert result.exit_code != 0
@@ -141,10 +121,7 @@ def test_step_execute():
 
 
 def test_systemd():
-    """
-    Check systemd example
-    """
-
+    """Check systemd example."""
     result = runner.invoke(tmt.cli._root.main, ['--root', example('systemd'), 'plan'])
     assert result.exit_code == 0
     assert 'Found 2 plans' in result.output
@@ -155,9 +132,7 @@ def test_systemd():
 
 @container
 class DecideColorizationTestcase:
-    """
-    A single test case for :py:func:`tmt.log.decide_colorization`
-    """
+    """A single test case for :py:func:`tmt.log.decide_colorization`."""
 
     # Name of the testcase and expected outcome of decide_colorization()
     name: str

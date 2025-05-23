@@ -265,8 +265,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
 
 @tmt.steps.provides_method('fmf')
 class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
-    """
-    Discover available tests from fmf metadata.
+    """Discover available tests from fmf metadata.
 
     By default all available tests from the current repository are used
     so the minimal configuration looks like this:
@@ -301,7 +300,6 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
     ``exclude`` - exclude tests which match a regular expression
 
     ``prune`` - copy only immediate directories of executed tests and their required files
-
 
     For DistGit repo one can download sources and use code from them in
     the tests. Sources are extracted into ``$TMT_SOURCE_DIR`` path,
@@ -386,19 +384,13 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
 
     @property
     def is_in_standalone_mode(self) -> bool:
-        """
-        Enable standalone mode when listing fmf ids
-        """
-
+        """Enable standalone mode when listing fmf ids."""
         if self.opt('fmf_id'):
             return True
         return super().is_in_standalone_mode
 
     def get_git_root(self, directory: Path) -> Path:
-        """
-        Find git root of the path
-        """
-
+        """Find git root of the path."""
         output = self.run(
             Command("git", "rev-parse", "--show-toplevel"),
             cwd=directory,
@@ -408,10 +400,7 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
         return Path(output.stdout.strip("\n"))
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Discover available tests
-        """
-
+        """Discover available tests."""
         super().go(logger=logger)
 
         # Check url and path, prepare test directory
@@ -462,8 +451,7 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
                     fmf_tree = fmf.Tree(os.getcwd())
                 except fmf.utils.RootError:
                     raise tmt.utils.DiscoverError(
-                        "No metadata found in the current directory. "
-                        "Use 'tmt init' to get started."
+                        "No metadata found in the current directory. Use 'tmt init' to get started."
                     )
                 for attr in fmf_tree.climb():
                     try:
@@ -500,9 +488,7 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
                 fmf_root: Optional[Path] = path
             else:
                 fmf_root = Path(self.step.plan.node.root)
-            requires_git = self.opt('sync-repo') or any(
-                self.get(opt) for opt in self._REQUIRES_GIT
-            )
+            requires_git = self.opt('sync-repo') or any(self.get(opt) for opt in self._REQUIRES_GIT)
             # Path for distgit sources cannot be checked until the
             # they are extracted
             if path and not path.is_dir() and not dist_git_source:
@@ -604,10 +590,7 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
         self.do_the_discovery(path)
 
     def do_the_discovery(self, path: Optional[Path] = None) -> None:
-        """
-        Discover the tests
-        """
-
+        """Discover the tests."""
         # Original path might adjusted already in go()
         if path is None:
             path = Path(cast(str, self.get('path'))) if self.get('path') else None
@@ -784,10 +767,7 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
             shutil.rmtree(self.clone_dirpath, ignore_errors=True)
 
     def post_dist_git(self, created_content: list[Path]) -> None:
-        """
-        Discover tests after dist-git applied patches
-        """
-
+        """Discover tests after dist-git applied patches."""
         # Directory to copy out from sources
         dist_git_extract = self.get('dist-git-extract', None)
         dist_git_init = self.get('dist-git-init', False)
@@ -801,9 +781,7 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
         # glob otherwise
         if dist_git_extract and dist_git_extract != '/':
             try:
-                dist_git_extract = Path(
-                    glob.glob(str(sourcedir / dist_git_extract.lstrip('/')))[0]
-                )
+                dist_git_extract = Path(glob.glob(str(sourcedir / dist_git_extract.lstrip('/')))[0])
             except IndexError:
                 raise tmt.utils.DiscoverError(
                     f"Couldn't glob '{dist_git_extract}' within extracted sources."
@@ -893,10 +871,7 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
     def tests(
         self, *, phase_name: Optional[str] = None, enabled: Optional[bool] = None
     ) -> list[tmt.steps.discover.TestOrigin]:
-        """
-        Return all discovered tests
-        """
-
+        """Return all discovered tests."""
         if phase_name is not None and phase_name != self.name:
             return []
 

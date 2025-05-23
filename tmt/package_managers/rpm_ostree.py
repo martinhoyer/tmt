@@ -15,10 +15,7 @@ from tmt.utils import Command, CommandOutput, GeneralError, RunError, ShellScrip
 
 class RpmOstreeEngine(PackageManagerEngine):
     def prepare_command(self) -> tuple[Command, Command]:
-        """
-        Prepare installation command for rpm-ostree
-        """
-
+        """Prepare installation command for rpm-ostree."""
         command = Command()
 
         if self.guest.facts.is_superuser is False:

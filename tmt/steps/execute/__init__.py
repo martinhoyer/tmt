@@ -77,8 +77,7 @@ SCRIPTS_DEST_DIR_VARIABLE = 'TMT_SCRIPTS_DIR'
 
 @container
 class Script:
-    """
-    Represents a script provided by the internal executor.
+    """Represents a script provided by the internal executor.
 
     Must be used as a context manager. The context manager returns
     the source filename.
@@ -115,8 +114,7 @@ class Script:
 
 @container
 class ScriptCreatingFile(Script):
-    """
-    Represents a script which creates a file.
+    """Represents a script which creates a file.
 
     See :py:class:`Script` for more details.
     """
@@ -126,8 +124,7 @@ class ScriptCreatingFile(Script):
 
 @container
 class ScriptTemplate(Script):
-    """
-    Represents a Jinja2 templated script.
+    """Represents a Jinja2 templated script.
 
     The source filename is constructed from the name of the file specified
     via the ``source_filename`` attribute, with the ``.j2`` suffix appended.
@@ -157,14 +154,12 @@ class ScriptTemplate(Script):
 
 
 def effective_scripts_dest_dir(default: Path = DEFAULT_SCRIPTS_DEST_DIR) -> Path:
-    """
-    Find out what the actual scripts destination directory is.
+    """Find out what the actual scripts destination directory is.
 
     If the ``TMT_SCRIPTS_DIR`` environment variable is set, it is used
     as the scripts destination directory. Otherwise, the ``default``
     parameter path is returned.
     """
-
     return Path(os.environ.get(SCRIPTS_DEST_DIR_VARIABLE, default))
 
 
@@ -240,9 +235,7 @@ TMT_ETC_PROFILE_D = ScriptTemplate(
     aliases=[],
     related_variables=[],
     context={
-        'SCRIPTS_DEST_DIR': str(
-            effective_scripts_dest_dir(default=DEFAULT_SCRIPTS_DEST_DIR_OSTREE)
-        )
+        'SCRIPTS_DEST_DIR': str(effective_scripts_dest_dir(default=DEFAULT_SCRIPTS_DEST_DIR_OSTREE))
     },
     enabled=lambda guest: guest.facts.is_ostree is True,
 )
@@ -294,17 +287,14 @@ ExecuteStepDataT = TypeVar('ExecuteStepDataT', bound=ExecuteStepData)
 
 
 class AbortExecute(tmt.utils.GeneralError):
-    """
-    Raised by ``execute`` phases when the entire step should abort.
-    """
+    """Raised by ``execute`` phases when the entire step should abort."""
 
     pass
 
 
 @container
 class TestInvocation:
-    """
-    A bundle describing one test invocation.
+    """A bundle describing one test invocation.
 
     Describes a ``test`` invoked on a particular ``guest`` under the
     supervision of an ``execute`` plugin ``phase``.
@@ -339,10 +329,7 @@ class TestInvocation:
 
     @functools.cached_property
     def path(self) -> Path:
-        """
-        Absolute path to invocation directory
-        """
-
+        """Absolute path to invocation directory."""
         assert self.phase.step.workdir is not None  # narrow type
 
         path = (
@@ -364,60 +351,39 @@ class TestInvocation:
 
     @functools.cached_property
     def relative_path(self) -> Path:
-        """
-        Invocation directory path relative to step workdir
-        """
-
+        """Invocation directory path relative to step workdir."""
         assert self.phase.step.workdir is not None  # narrow type
 
         return self.path.relative_to(self.phase.step.workdir)
 
     @functools.cached_property
     def test_data_path(self) -> Path:
-        """
-        Absolute path to test data directory
-        """
-
+        """Absolute path to test data directory."""
         return self.path / TEST_DATA
 
     @functools.cached_property
     def relative_test_data_path(self) -> Path:
-        """
-        Test data path relative to step workdir
-        """
-
+        """Test data path relative to step workdir."""
         return self.relative_path / TEST_DATA
 
     @functools.cached_property
     def check_files_path(self) -> Path:
-        """
-        Construct a directory path for check files needed by tmt
-        """
-
+        """Construct a directory path for check files needed by tmt."""
         return self.path / CHECK_DATA
 
     @functools.cached_property
     def reboot_request_path(self) -> Path:
-        """
-        A path to the reboot request file
-        """
-
+        """A path to the reboot request file."""
         return self.test_data_path / TMT_REBOOT_SCRIPT.created_file
 
     @functools.cached_property
     def abort_request_path(self) -> Path:
-        """
-        A path to the abort request file
-        """
-
+        """A path to the abort request file."""
         return self.test_data_path / TMT_ABORT_SCRIPT.created_file
 
     @property
     def soft_reboot_requested(self) -> bool:
-        """
-        If set, test requested a reboot
-        """
-
+        """If set, test requested a reboot."""
         return self.reboot_request_path.exists()
 
     #: If set, an asynchronous observer requested a reboot while the test was
@@ -426,40 +392,28 @@ class TestInvocation:
 
     @property
     def reboot_requested(self) -> bool:
-        """
-        Whether a guest reboot has been requested while the test was running
-        """
-
+        """Whether a guest reboot has been requested while the test was running."""
         return self.soft_reboot_requested or self.hard_reboot_requested
 
     @property
     def restart_requested(self) -> bool:
-        """
-        Whether a test restart has been requested
-        """
-
+        """Whether a test restart has been requested."""
         return self.return_code in self.test.restart_on_exit_code
 
     @property
     def abort_requested(self) -> bool:
-        """
-        Whether a testing abort was requested
-        """
-
+        """Whether a testing abort was requested."""
         return self.abort_request_path.exists()
 
     @property
     def is_guest_healthy(self) -> bool:
-        """
-        Whether the guest is deemed to be healthy and responsive.
+        """Whether the guest is deemed to be healthy and responsive.
 
-        .. note::
-
+        Note:
             The answer is deduced from various flags set by execute code
             while observing the test, no additional checks are
             performed.
         """
-
         if self.hard_reboot_requested:
             return False
 
@@ -469,11 +423,9 @@ class TestInvocation:
         return True
 
     def handle_restart(self) -> bool:
-        """
-        "Restart" the test if the test requested it.
+        """Restart the test if the test requested it.
 
-        .. note::
-
+        Note:
             The test is not actually restarted, because running the test
             is managed by a plugin calling this method. Instead, the
             method performs all necessary steps before letting plugin
@@ -485,10 +437,10 @@ class TestInvocation:
 
         If requested by the test, the guest might be rebooted as well.
 
-        :return: ``True`` when the restart is to take place, ``False``
+        Returns:
+            ``True`` when the restart is to take place, ``False``
             otherwise.
         """
-
         if not self.restart_requested:
             return False
 
@@ -530,17 +482,17 @@ class TestInvocation:
         return True
 
     def handle_reboot(self) -> bool:
-        """
-        Reboot the guest if the test requested it.
+        """Reboot the guest if the test requested it.
 
         Check for presence of a file signalling reboot request and orchestrate
         the reboot if it was requested. Also increment the ``REBOOTCOUNT``
         variable, reset it to zero if no reboot was requested (going forward to
         the next test).
 
-        :return: ``True`` when the reboot has taken place, ``False`` otherwise.
+        Returns:
+            ``True`` when the reboot has taken place, ``False``
+            otherwise.
         """
-
         if not self.reboot_requested:
             return False
 
@@ -607,21 +559,19 @@ class TestInvocation:
         signal: _signal.Signals = _signal.SIGTERM,
         logger: Optional[tmt.log.Logger] = None,
     ) -> None:
-        """
-        Terminate the invocation process.
+        """Terminate the invocation process.
 
-        .. warning::
-
+        Warning:
             This method should be used carefully. Process running the
             invocation's test has been started by some part of tmt code which
             is responsible for its well-being. Unless you have a really good
             reason to do so, doing things behind the tmt's back may lead to
             unexpected results.
 
-        :param signal: signal to send to the invocation process.
-        :param logger: logger to use for logging.
+        Args:
+            signal: signal to send to the invocation process.
+            logger: logger to use for logging.
         """
-
         logger = logger or self.logger
 
         with self.process_lock:
@@ -642,9 +592,7 @@ class TestInvocation:
 
 @container
 class ResultCollection:
-    """
-    Collection of raw results loaded from a file
-    """
+    """Collection of raw results loaded from a file."""
 
     invocation: TestInvocation
 
@@ -653,12 +601,10 @@ class ResultCollection:
     results: list['tmt.result.RawResult'] = simple_field(default_factory=list)
 
     def validate(self) -> None:
-        """
-        Validate raw collected results against the result JSON schema.
+        """Validate raw collected results against the result JSON schema.
 
         Report found errors as warnings via :py:attr:`invocation` logger.
         """
-
         schema = tmt.utils.load_schema(Path('results.yaml'))
         schema_store = tmt.utils.load_schema_store()
 
@@ -674,9 +620,7 @@ class ResultCollection:
 
 
 class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
-    """
-    Common parent of execute plugins
-    """
+    """Common parent of execute plugins."""
 
     # ignore[assignment]: as a base class, ExecuteStepData is not included in
     # ExecuteStepDataT.
@@ -714,10 +658,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         usage: str,
         method_class: Optional[type[click.Command]] = None,
     ) -> click.Command:
-        """
-        Create base click command (common for all execute plugins)
-        """
-
+        """Create base click command (common for all execute plugins)."""
         # Prepare general usage message for the step
         if method_class:
             usage = Execute.usage(method_overview=usage)
@@ -745,9 +686,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
 
     @property
     def discover(self) -> Discover:
-        """
-        Return discover plugin instance
-        """
+        """Return discover plugin instance."""
         # This is necessary so that upgrade plugin can inject a fake discover
 
         return self.step.plan.discover
@@ -757,14 +696,12 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         self._discover = plugin
 
     def prepare_tests(self, guest: Guest, logger: tmt.log.Logger) -> list[TestInvocation]:
-        """
-        Prepare discovered tests for testing
+        """Prepare discovered tests for testing.
 
         Check which tests have been discovered, for each test prepare
         the aggregated metadata in a file under the test data directory
         and finally return a list of discovered tests.
         """
-
         invocations: list[TestInvocation] = []
 
         for test_origin in self.discover.tests(phase_name=self.discover_phase, enabled=True):
@@ -788,9 +725,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
                 self.parent._results = [
                     result
                     for result in self.parent._results
-                    if not (
-                        test.name == result.name and test.serial_number == result.serial_number
-                    )
+                    if not (test.name == result.name and test.serial_number == result.serial_number)
                 ]
 
         # Keep old results in another variable to have numbers only for actually executed tests
@@ -803,10 +738,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         return invocations
 
     def prepare_scripts(self, guest: "tmt.steps.provision.Guest") -> None:
-        """
-        Prepare additional scripts for testing
-        """
-
+        """Prepare additional scripts for testing."""
         # Make sure scripts directory exists
         command = Command("mkdir", "-p", f"{guest.scripts_path}")
 
@@ -828,20 +760,18 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
                         )
 
     def _tmt_report_results_filepath(self, invocation: TestInvocation) -> Path:
-        """
-        Create path to test's ``tmt-report-result`` file
-        """
-
+        """Create path to test's ``tmt-report-result`` file."""
         return invocation.test_data_path / TMT_REPORT_RESULT_SCRIPT.created_file
 
     def _load_custom_results_file(self, invocation: TestInvocation) -> ResultCollection:
-        """
-        Load results created by the test itself.
+        """Load results created by the test itself.
 
-        :param invocation: test invocation to which the results belong to.
-        :returns: raw loaded results.
-        """
+        Args:
+            invocation: test invocation to which the results belong to.
 
+        Returns:
+            raw loaded results.
+        """
         custom_results_path_yaml = invocation.test_data_path / 'results.yaml'
         custom_results_path_json = invocation.test_data_path / 'results.json'
 
@@ -863,13 +793,14 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         return collection
 
     def _load_tmt_report_results_file(self, invocation: TestInvocation) -> ResultCollection:
-        """
-        Load results created by ``tmt-report-result`` script.
+        """Load results created by ``tmt-report-result`` script.
 
-        :param invocation: test invocation to which the results belong to.
-        :returns: raw loaded results.
-        """
+        Args:
+            invocation: test invocation to which the results belong to.
 
+        Returns:
+            raw loaded results.
+        """
         results_path = self._tmt_report_results_filepath(invocation)
         collection = ResultCollection(invocation=invocation, filepaths=[results_path])
 
@@ -889,20 +820,21 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         results: list['tmt.result.RawResult'],
         default_log: Optional[Path] = None,
     ) -> list['tmt.result.Result']:
-        """
-        Treat results as partial results belonging to a test.
+        """Treat results as partial results belonging to a test.
 
         This is the default behavior for custom results, all results
         would be prefixed with test name, plus various their attributes
         would be updated.
 
-        :param invocation: test invocation to which the results belong to.
-        :param results: results to process.
-        :param default_log: attach this log file to results which do not
-            have any log provided.
-        :returns: list of results.
-        """
+        Args:
+            invocation: test invocation to which the results belong to.
+            results: results to process.
+            default_log: attach this log file to results which do not
+                have any log provided.
 
+        Returns:
+            list of results.
+        """
         test = invocation.test
 
         custom_results = []
@@ -960,10 +892,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         return custom_results
 
     def extract_custom_results(self, invocation: TestInvocation) -> list["tmt.Result"]:
-        """
-        Extract results from the file generated by the test itself
-        """
-
+        """Extract results from the file generated by the test itself."""
         collection = self._load_custom_results_file(invocation)
 
         if not collection.file_exists:
@@ -989,10 +918,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         return self._process_results_partials(invocation, collection.results)
 
     def extract_tmt_report_results(self, invocation: TestInvocation) -> list["tmt.Result"]:
-        """
-        Extract results from a file generated by ``tmt-report-result`` script
-        """
-
+        """Extract results from a file generated by ``tmt-report-result`` script."""
         collection = self._load_tmt_report_results_file(invocation)
 
         results_path = collection.filepaths[0]
@@ -1005,9 +931,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         self.debug(f"tmt-report-results file '{results_path}' detected.")
 
         if not collection.results:
-            raise tmt.utils.ExecuteError(
-                f"Test results not found in result file '{results_path}'."
-            )
+            raise tmt.utils.ExecuteError(f"Test results not found in result file '{results_path}'.")
 
         collection.validate()
 
@@ -1023,13 +947,11 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
     def extract_tmt_report_results_restraint(
         self, invocation: TestInvocation, default_log: Path
     ) -> list["tmt.Result"]:
-        """
-        Extract results from the file generated by ``tmt-report-result`` script.
+        """Extract results from the file generated by ``tmt-report-result`` script.
 
         Special, restraint-like handling is used to convert each
         recorded result into a standalone result.
         """
-
         collection = self._load_tmt_report_results_file(invocation)
 
         results_path = collection.filepaths[0]
@@ -1042,9 +964,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         self.debug(f"tmt-report-results file '{results_path}' detected.")
 
         if not collection.results:
-            raise tmt.utils.ExecuteError(
-                f"Test results not found in result file '{results_path}'."
-            )
+            raise tmt.utils.ExecuteError(f"Test results not found in result file '{results_path}'.")
 
         collection.validate()
 
@@ -1053,10 +973,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         )
 
     def extract_results(self, invocation: TestInvocation, logger: tmt.log.Logger) -> list[Result]:
-        """
-        Check the test result
-        """
-
+        """Check the test result."""
         self.debug(f"Extract results of '{invocation.test.name}'.")
 
         if invocation.test.result == ResultInterpret.CUSTOM:
@@ -1078,10 +995,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         return invocation.test.test_framework.extract_results(invocation, results, logger)
 
     def timeout_hint(self, invocation: TestInvocation) -> None:
-        """
-        Append a duration increase hint to the test output
-        """
-
+        """Append a duration increase hint to the test output."""
         output = invocation.path / TEST_OUTPUT_FILENAME
         self.write(
             output,
@@ -1093,10 +1007,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
         )
 
     def results(self) -> list["tmt.Result"]:
-        """
-        Return test results
-        """
-
+        """Return test results."""
         raise NotImplementedError
 
     def _run_checks_for_test(
@@ -1156,9 +1067,7 @@ class ExecutePlugin(tmt.steps.Plugin[ExecuteStepDataT, None]):
 
 
 class Execute(tmt.steps.Step):
-    """
-    Run tests using the specified executor
-    """
+    """Run tests using the specified executor."""
 
     # Internal executor is the default implementation
     DEFAULT_HOW = 'tmt'
@@ -1172,10 +1081,7 @@ class Execute(tmt.steps.Step):
         data: tmt.steps.RawStepDataArgument,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Initialize execute step data
-        """
-
+        """Initialize execute step data."""
         super().__init__(plan=plan, data=data, logger=logger)
         # List of Result() objects representing test results
         self._results: list[tmt.Result] = []
@@ -1183,35 +1089,23 @@ class Execute(tmt.steps.Step):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         return {*super()._preserved_workdir_members, 'data', 'results.yaml'}
 
     def load(self) -> None:
-        """
-        Load test results
-        """
-
+        """Load test results."""
         super().load()
 
         self._results = self._load_results(Result, allow_missing=True)
 
     def save(self) -> None:
-        """
-        Save test results to the workdir
-        """
-
+        """Save test results to the workdir."""
         super().save()
 
         self._save_results(self.results())
 
     def wake(self) -> None:
-        """
-        Wake up the step (process workdir and command line)
-        """
-
+        """Wake up the step (process workdir and command line)."""
         super().wake()
 
         # There should be just a single definition
@@ -1235,10 +1129,7 @@ class Execute(tmt.steps.Step):
             self.save()
 
     def summary(self) -> None:
-        """
-        Give a concise summary of the execution
-        """
-
+        """Give a concise summary of the execution."""
         executed_tests = []
         skipped_tests = []
         pending_tests = []
@@ -1262,10 +1153,7 @@ class Execute(tmt.steps.Step):
         self.info('summary', ', '.join(message), 'green', shift=1)
 
     def update_results(self, results: list['Result']) -> None:
-        """
-        Update existing results with new results.
-        """
-
+        """Update existing results with new results."""
         results_to_save: dict[tuple[int, str, str], Result] = {
             (r.serial_number, r.name, r.guest.name): r for r in self._results
         }
@@ -1291,11 +1179,10 @@ class Execute(tmt.steps.Step):
         self._results = list(results_to_save.values())
 
     def create_results(self, tests: list['tmt.steps.discover.TestOrigin']) -> list['Result']:
-        """
-        Get all available results from tests. For tests not yet executed, create a pending
-        result.
-        """
+        """Get all available results from tests.
 
+        For tests not yet executed, create a pending result.
+        """
         guests = self.plan.provision.get_guests_info()
 
         results = []
@@ -1331,10 +1218,7 @@ class Execute(tmt.steps.Step):
         return results
 
     def go(self, force: bool = False) -> None:
-        """
-        Execute tests
-        """
-
+        """Execute tests."""
         super().go(force=force)
 
         # Clean up possible old results
@@ -1433,30 +1317,26 @@ class Execute(tmt.steps.Step):
             )
 
     def results(self) -> list["tmt.result.Result"]:
-        """
-        Results from executed tests
+        """Results from executed tests.
 
         Return a list with test results according to the spec:
         https://tmt.readthedocs.io/en/latest/spec/plans.html#execute
         """
-
         return self._results
 
     def results_for_tests(
         self, tests: list['tmt.steps.discover.TestOrigin']
     ) -> list[tuple[Optional[Result], Optional['tmt.steps.discover.TestOrigin']]]:
-        """
-        Collect results and corresponding tests.
+        """Collect results and corresponding tests.
 
-        :returns: a list of result and test pairs.
-            * if there is not test found for the result, e.g. when
-            results were loaded from storage but tests were not,
-            ``None`` represents the missing test: ``(result, None)``.
-            * if there is no result for a test, e.g. when the test was
-            not executed, ``None`` represents the missing result:
-            ``(None, test)``.
+        Returns:
+            a list of result and test pairs. * if there is not test
+            found for the result, e.g. when results were loaded from
+            storage but tests were not, ``None`` represents the missing
+            test: ``(result, None)``. * if there is no result for a
+            test, e.g. when the test was not executed, ``None``
+            represents the missing result: ``(None, test)``.
         """
-
         known_serial_numbers = {
             test_origin.test.serial_number: test_origin for test_origin in tests
         }

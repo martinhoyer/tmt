@@ -26,8 +26,7 @@ class CrbStepData(PrepareFeatureData):
 
 @provides_feature('crb')
 class Crb(ToggleableFeature):
-    """
-    Enable or disable the CodeReady Builder (CRB) repository:
+    """Enable or disable the CodeReady Builder (CRB) repository.
 
     .. code-block:: yaml
 
@@ -49,8 +48,7 @@ class Crb(ToggleableFeature):
 
     @classmethod
     def _manage_repo(cls, guest: Guest, logger: tmt.log.Logger, action: str) -> None:
-        """Enable or disable the repository"""
-
+        """Enable or disable the repository."""
         # Check if we're running on supported distro
         if not (
             guest.facts.distro

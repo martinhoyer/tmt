@@ -8,8 +8,7 @@ SERVER_PORT = 9000
 
 
 class TestDistGit(DistGitHandler):
-    """
-    Test handler
+    """Test handler.
 
     each line in MOCK_SOURCES_FILENAME contains
     filename to serve and optional (after single space a custom filename)

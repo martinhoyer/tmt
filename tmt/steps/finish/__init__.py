@@ -34,9 +34,7 @@ FinishStepDataT = TypeVar('FinishStepDataT', bound=FinishStepData)
 
 
 class FinishPlugin(tmt.steps.Plugin[FinishStepDataT, list[PhaseResult]]):
-    """
-    Common parent of finish plugins
-    """
+    """Common parent of finish plugins."""
 
     # ignore[assignment]: as a base class, FinishStepData is not included in
     # FinishStepDataT.
@@ -51,10 +49,7 @@ class FinishPlugin(tmt.steps.Plugin[FinishStepDataT, list[PhaseResult]]):
         usage: str,
         method_class: Optional[type[click.Command]] = None,
     ) -> click.Command:
-        """
-        Create base click command (common for all finish plugins)
-        """
-
+        """Create base click command (common for all finish plugins)."""
         # Prepare general usage message for the step
         if method_class:
             usage = Finish.usage(method_overview=usage)
@@ -83,8 +78,7 @@ class FinishPlugin(tmt.steps.Plugin[FinishStepDataT, list[PhaseResult]]):
 
 
 class Finish(tmt.steps.Step):
-    """
-    Perform the finishing tasks and clean up provisioned guests.
+    """Perform the finishing tasks and clean up provisioned guests.
 
     Additional actions to be performed after the test execution has been
     completed. Counterpart of the ``prepare`` step useful for various
@@ -99,17 +93,11 @@ class Finish(tmt.steps.Step):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         return {*super()._preserved_workdir_members, 'results.yaml'}
 
     def wake(self) -> None:
-        """
-        Wake up the step (process workdir and command line)
-        """
-
+        """Wake up the step (process workdir and command line)."""
         super().wake()
 
         # Choose the right plugin and wake it up
@@ -130,18 +118,12 @@ class Finish(tmt.steps.Step):
             self.save()
 
     def summary(self) -> None:
-        """
-        Give a concise summary
-        """
-
+        """Give a concise summary."""
         tasks = fmf.utils.listed(self.phases(), 'task')
         self.info('summary', f'{tasks} completed', 'green', shift=1)
 
     def go(self, force: bool = False) -> None:
-        """
-        Execute finishing tasks
-        """
-
+        """Execute finishing tasks."""
         super().go(force=force)
 
         # Nothing more to do if already done

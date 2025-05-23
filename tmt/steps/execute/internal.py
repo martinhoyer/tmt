@@ -45,13 +45,11 @@ TEST_PIDFILE_ROOT = Path('/var/tmp')  # noqa: S108 insecure usage of temporary d
 
 
 def effective_pidfile_root() -> Path:
-    """
-    Find out what the actual pidfile directory is.
+    """Find out what the actual pidfile directory is.
 
     If ``TMT_TEST_PIDFILE_ROOT`` variable is set, it is used. Otherwise,
     :py:const:`TEST_PIDFILE_ROOT` is picked.
     """
-
     if 'TMT_TEST_PIDFILE_ROOT' in os.environ:
         return Path(os.environ['TMT_TEST_PIDFILE_ROOT'])
 
@@ -241,8 +239,7 @@ exit $_exit_code
 
 
 class UpdatableMessage(tmt.utils.UpdatableMessage):
-    """
-    Updatable message suitable for plan progress reporting.
+    """Updatable message suitable for plan progress reporting.
 
     Based on :py:class:`tmt.utils.UpdatableMessage`, simplifies
     reporting of plan progress, namely by extracting necessary setup
@@ -343,8 +340,7 @@ class ExecuteInternalData(tmt.steps.execute.ExecuteStepData):
 
 @tmt.steps.provides_method('tmt')
 class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
-    """
-    Use the internal tmt executor to execute tests.
+    """Use the internal tmt executor to execute tests.
 
     The internal tmt executor runs tests on the guest one by one directly
     from the tmt code which shows testing :ref:`/stories/cli/steps/execute/progress`
@@ -383,8 +379,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
     Note that for guests using ``rpm-ostree``, the directory is added to
     executable paths using the system-wide ``/etc/profile.d/tmt.sh`` profile script.
 
-    .. warning::
-
+    Warning:
         Please be aware that for guests using ``rpm-ostree``
         the provided scripts will only be available in a shell that
         loads the profile scripts. This is the default for
@@ -406,10 +401,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
         extra_environment: Optional[Environment] = None,
         logger: tmt.log.Logger,
     ) -> Environment:
-        """
-        Return test environment
-        """
-
+        """Return test environment."""
         extra_environment = extra_environment or Environment()
 
         environment = extra_environment.copy()
@@ -463,10 +455,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
         level: int = 3,
         topic: Optional[tmt.log.Topic] = None,
     ) -> None:
-        """
-        Custom logger for test output with shift 2 and level 3 defaults
-        """
-
+        """Custom logger for test output with shift 2 and level 3 defaults."""
         self.verbose(key=key, value=value, color=color, shift=shift, level=level)
 
     def execute(
@@ -476,10 +465,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
         extra_environment: Optional[Environment] = None,
         logger: tmt.log.Logger,
     ) -> list[Result]:
-        """
-        Run test on the guest
-        """
-
+        """Run test on the guest."""
         test, guest = invocation.test, invocation.guest
 
         logger.debug(f"Execute '{test.name}' as a '{test.framework}' test.")
@@ -558,9 +544,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
             level: int = 3,
             topic: Optional[tmt.log.Topic] = None,
         ) -> None:
-            logger.verbose(
-                key=key, value=value, color=color, shift=shift, level=level, topic=topic
-            )
+            logger.verbose(key=key, value=value, color=color, shift=shift, level=level, topic=topic)
 
         def _save_process(
             command: Command, process: subprocess.Popen[bytes], logger: tmt.log.Logger
@@ -693,10 +677,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Execute available tests
-        """
-
+        """Execute available tests."""
         super().go(guest=guest, environment=environment, logger=logger)
 
         # Nothing to do in dry mode
@@ -713,10 +694,7 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
         extra_environment: Optional[Environment] = None,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Execute tests on provided guest
-        """
-
+        """Execute tests on provided guest."""
         assert self.workdir is not None  # narrow type
 
         # Prepare tests and helper scripts, check options
@@ -855,22 +833,18 @@ class ExecuteInternal(tmt.steps.execute.ExecutePlugin[ExecuteInternalData]):
             raise abort_execute_exception
 
     def results(self) -> list[Result]:
-        """
-        Return test results
-        """
-
+        """Return test results."""
         return self._results
 
     def essential_requires(self) -> list[tmt.base.Dependency]:
-        """
-        Collect all essential requirements of the plugin.
+        """Collect all essential requirements of the plugin.
 
         Essential requirements of a plugin are necessary for the plugin to
         perform its basic functionality.
 
-        :returns: a list of requirements.
+        Returns:
+            a list of requirements.
         """
-
         return [
             tmt.base.DependencySimple('/usr/bin/awk'),
             tmt.base.DependencySimple('/usr/bin/flock'),

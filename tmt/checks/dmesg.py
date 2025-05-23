@@ -83,9 +83,7 @@ class DmesgCheck(Check):
             level: int = 3,
             topic: Optional[tmt.log.Topic] = None,
         ) -> None:
-            logger.verbose(
-                key=key, value=value, color=color, shift=shift, level=level, topic=topic
-            )
+            logger.verbose(key=key, value=value, color=color, shift=shift, level=level, topic=topic)
 
         if guest.facts.has_capability(GuestCapability.SYSLOG_ACTION_READ_CLEAR):
             script = tmt.utils.ShellScript('dmesg -c')
@@ -142,8 +140,7 @@ class Dmesg(CheckPlugin[DmesgCheck]):
     #
     # https://tmt.readthedocs.io/en/stable/contribute.html#docs
     #
-    """
-    Save the content of kernel ring buffer (aka "console") into a file.
+    r"""Save the content of kernel ring buffer (aka "console") into a file.
 
     The check saves one file before the test, and then again
     when test finishes.

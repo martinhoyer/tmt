@@ -46,10 +46,7 @@ REPORT_FILENAME = 'tmt-watchdog.txt'
 
 
 def render_report_path(invocation: 'TestInvocation') -> Path:
-    """
-    Render path to a watchdog report file from necessary components
-    """
-
+    """Render path to a watchdog report file from necessary components."""
     return invocation.check_files_path / REPORT_FILENAME
 
 
@@ -59,16 +56,15 @@ def report_progress(
     report: Iterable[str],
     command_output: Optional[str] = None,
 ) -> None:
-    """
-    Add new report into a report file.
+    """Add new report into a report file.
 
-    :param log: path to the report file.
-    :param report: iterable of report lines to add. Each line is emitted on its
-        own line in the file.
-    :param command_output: if set, the string is added to the report file once
-        ``report`` lines are written into it.
+    Args:
+        log: path to the report file.
+        report: iterable of report lines to add. Each line is emitted on
+            its own line in the file.
+        command_output: if set, the string is added to the report file
+            once ``report`` lines are written into it.
     """
-
     timestamp = format_timestamp(datetime.datetime.now(datetime.timezone.utc))
 
     with open(log, mode='a') as f:
@@ -87,9 +83,7 @@ def report_progress(
 
 @container
 class GuestContext:
-    """
-    Per-guest watchdog context
-    """
+    """Per-guest watchdog context."""
 
     #: Current number of failed watchdog checks.
     ping_failures: int = 0
@@ -153,10 +147,7 @@ class WatchdogCheck(Check):
     )
 
     def notify(self, invocation: 'TestInvocation', logger: tmt.log.Logger) -> None:
-        """
-        Notify invocation that hard reboot is required
-        """
-
+        """Notify invocation that hard reboot is required."""
         if not self.reboot:
             return
 
@@ -169,19 +160,13 @@ class WatchdogCheck(Check):
         guest_context: GuestContext,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Perform a ping check
-        """
-
+        """Perform a ping check."""
         logger.debug('pinging', level=4)
 
         log = render_report_path(invocation)
 
         def _fail_parse_error(ping_output: str) -> None:
-            """
-            Handle unparsable ``ping`` output
-            """
-
+            """Handle unparsable ``ping`` output."""
             logger.fail('failed to parse ping output')
 
             guest_context.ping_failures += 1
@@ -197,10 +182,7 @@ class WatchdogCheck(Check):
             )
 
         def _fail_lost_packets(ping_output: str, transmitted: int, received: int) -> None:
-            """
-            Handle missing response packets
-            """
-
+            """Handle missing response packets."""
             logger.fail(f'not all packets returned: {transmitted=} {received=}')
 
             guest_context.ping_failures += 1
@@ -216,10 +198,7 @@ class WatchdogCheck(Check):
             )
 
         def _success(ping_output: str) -> None:
-            """
-            Handle successful response
-            """
-
+            """Handle successful response."""
             logger.verbose('Received successful response to ping.', level=2)
 
             report = ['# successful response']
@@ -232,10 +211,7 @@ class WatchdogCheck(Check):
             report_progress(log, 'ping', report, command_output=ping_output)
 
         def _handle_output(ping_output: str) -> None:
-            """
-            Process ``ping`` output and decide on its outcome
-            """
-
+            """Process ``ping`` output and decide on its outcome."""
             match = PING_OUTPUT_PATTERN.search(ping_output)
 
             if match is None:
@@ -282,10 +258,7 @@ class WatchdogCheck(Check):
         guest_context: GuestContext,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Perform a "SSH ping" check
-        """
-
+        """Perform a "SSH ping" check."""
         assert isinstance(invocation.guest, tmt.steps.provision.GuestSsh)
 
         logger.debug('checking SSH port', level=4)
@@ -293,10 +266,7 @@ class WatchdogCheck(Check):
         log = render_report_path(invocation)
 
         def _fail_unknown(ncat_output: str) -> None:
-            """
-            Handle unknown failures
-            """
-
+            """Handle unknown failures."""
             logger.fail('unknown error')
 
             guest_context.ssh_ping_failures += 1
@@ -313,10 +283,7 @@ class WatchdogCheck(Check):
             )
 
         def _fail_connection_refused(ncat_output: str) -> None:
-            """
-            Handle failed connection
-            """
-
+            """Handle failed connection."""
             logger.fail('connection refused')
 
             guest_context.ssh_ping_failures += 1
@@ -333,10 +300,7 @@ class WatchdogCheck(Check):
             )
 
         def _success(ncat_output: str) -> None:
-            """
-            Handle successful response
-            """
-
+            """Handle successful response."""
             logger.verbose('Received successful response to SSH ping.', level=2)
 
             report = ['# successful response']
@@ -383,8 +347,7 @@ class Watchdog(CheckPlugin[WatchdogCheck]):
     #
     # https://tmt.readthedocs.io/en/stable/contribute.html#docs
     #
-    """
-    Take various actions when guest becomes unresponsive.
+    """Take various actions when guest becomes unresponsive.
 
     Watchdog runs selected probes every now and then, and when a given
     number of `probes` fail, watchdog would run one or more of the
@@ -398,8 +361,7 @@ class Watchdog(CheckPlugin[WatchdogCheck]):
     * "SSH ping" tries to establish SSH connection,
     * "reboot" action issues a hard reboot of the guest.
 
-    .. warning::
-
+    Warning:
         Be aware that this feature may be limited depending on how the
         guest was provisioned. See :ref:`/plugins/provision/hard-reboot`.
 
@@ -466,10 +428,7 @@ class Watchdog(CheckPlugin[WatchdogCheck]):
             check.ssh_ping = False
 
         def watchdog(guest_context: GuestContext) -> None:
-            """
-            Watchdog thread code
-            """
-
+            """Watchdog thread code."""
             tid = threading.get_ident()
 
             watchdog_logger.debug(f'Watchdog starts in thread {tid}')

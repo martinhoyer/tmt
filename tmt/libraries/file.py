@@ -14,8 +14,7 @@ from . import Library
 
 
 class File(Library):
-    """
-    Required files
+    """Required files.
 
     Takes care of copying required files for specific test or library,
     more details here:
@@ -50,10 +49,7 @@ class File(Library):
         self.target_location: Path = target_location
 
     def fetch(self) -> None:
-        """
-        Copy the files over to target location
-        """
-
+        """Copy the files over to target location."""
         patterns = fmf.utils.listed(self.pattern, quote="'")
         self.parent.debug(
             f"Searching for patterns {patterns} in directory '{self.source_location}."

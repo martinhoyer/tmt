@@ -1,5 +1,4 @@
-"""
-Metadata linting.
+r"""Metadata linting.
 
 Internal APIs, classes, shared functionality and helpers for test, plan and
 story metadata linting.
@@ -21,7 +20,7 @@ following examples:
        # a linter *id*. The id should match ``[CTPSG]\\d\\d\\d`` regular expression:
        # ``C``ommon, ``T``est, ``P``lan, ``S``tory, ``G``roup, plus a three-digit
        # serial number of the check among its peers.
-       ''' T004: test directory path must exist '''
+       '''T004: test directory path must exist'''
 
        # Linter implements a generator (see :py:member:`LinterReturn`) yielding
        # two item tuples of :py:class:`LinterOutcome` and string messages.
@@ -38,15 +37,16 @@ following examples:
 
        yield LinterOutcome.PASS, f'test path "{test_path}" does exist'
 
+
    def lint_manual_valid_markdown(self) -> LinterReturn:
-       ''' T008: manual test should be valid markdown '''
+       '''T008: manual test should be valid markdown'''
 
        # Linter should yield `SKIP` outcome when it does not apply, to announce
        # it did inspect the object but realized the object is out of scope of
        # the linter, and checks do not apply.
        if not self.manual:
-            yield LinterOutcome.SKIP, 'not a manual test'
-            return
+           yield LinterOutcome.SKIP, 'not a manual test'
+           return
 
        manual_test = os.path.join(self.node.root, self.path.strip())
 
@@ -57,7 +57,7 @@ following examples:
            # for linters iterating over more granular aspects of metadata,
            # providing more specific hints.
            for warning in warnings:
-              yield LinterOutcome.WARN, warning
+               yield LinterOutcome.WARN, warning
 
        ...
 """
@@ -149,9 +149,7 @@ _LINTER_DESCRIPTION_PATTERN = re.compile(
 
 @container(init=False)
 class Linter:
-    """
-    A single linter
-    """
+    """A single linter."""
 
     callback: LinterCallback
     id: str
@@ -176,20 +174,17 @@ class Linter:
         self.help = components['short'].strip()
 
     def format(self) -> list[str]:
-        """
-        Format the linter for printing or logging.
+        """Format the linter for printing or logging.
 
-        :returns: a string description of the linter, suitable for
-            logging or help texts, in the form of lines of text.
+        Returns:
+            a string description of the linter, suitable for logging or
+            help texts, in the form of lines of text.
         """
-
         return [f'{self.id}: {self.help}']
 
 
 class Lintable(Generic[LintableT]):
-    """
-    Mixin class adding support for linting of class instances
-    """
+    """Mixin class adding support for linting of class instances."""
 
     # Declare linter registry as a class variable, but do not initialize it. If initialized
     # here, the mapping would be shared by all classes, which is not a desirable attribute.
@@ -203,10 +198,7 @@ class Lintable(Generic[LintableT]):
     # Cannot use @property as this must remain classmethod
     @classmethod
     def get_linter_registry(cls) -> list[Linter]:
-        """
-        Return - or initialize - linter registry
-        """
-
+        """Return - or initialize - linter registry."""
         if not hasattr(cls, '_linter_registry'):
             cls._linter_registry = []
 
@@ -214,13 +206,11 @@ class Lintable(Generic[LintableT]):
 
     @classmethod
     def discover_linters(cls) -> None:
-        """
-        Discover and register all linters implemented by this class.
+        """Discover and register all linters implemented by this class.
 
         A linter is a method whose name starts with ``lint_`` prefix. It must
         have a docstring which serves as a hint for ``--list-checks`` output.
         """
-
         for name in dir(cls):
             if not name.startswith('lint_'):
                 continue
@@ -233,8 +223,7 @@ class Lintable(Generic[LintableT]):
         enable_checks: Optional[list[str]] = None,
         disable_checks: Optional[list[str]] = None,
     ) -> list[Linter]:
-        """
-        Produce a list of enabled linters from all registered ones.
+        """Produce a list of enabled linters from all registered ones.
 
         Method combines three inputs:
 
@@ -244,14 +233,16 @@ class Lintable(Generic[LintableT]):
 
         into a single list of linters that are considered as enabled.
 
-        :param enable_checks: if set, only linters providing the listed checks
-            would be included in the output.
-        :param disable_checks: if set, linters providing the listed checks would
-            be removed from the output.
-        :returns: list of linters that were registered, and whose checks were
+        Args:
+            enable_checks: if set, only linters providing the listed
+                checks would be included in the output.
+            disable_checks: if set, linters providing the listed checks
+                would be removed from the output.
+
+        Returns:
+            list of linters that were registered, and whose checks were
             enabled and not disabled.
         """
-
         linters: list[Linter] = []
 
         if not enable_checks:
@@ -275,24 +266,27 @@ class Lintable(Generic[LintableT]):
         enforce_checks: Optional[list[str]] = None,
         linters: Optional[list[Linter]] = None,
     ) -> tuple[bool, list[LinterRuling]]:
-        """
-        Check the instance against a battery of linters and report results.
+        """Check the instance against a battery of linters and report results.
 
-        :param enable_checks: if set, only linters providing the listed checks
-            would be applied.
-        :param disable_checks: if set, linters providing the listed checks would
-            not be applied.
-        :param enforce_checks: if set, listed checks would be marked as failed
-            if their outcome is not ``pass``, i.e. even a warning would become
-            a fail.
-        :param linters: if set, only these linters would be applied. Providing
-            ``linters`` makes ``enable_checks`` and ``disable_checks`` ignored.
-        :returns: a tuple of two items: a boolean reporting whether the instance
-            passed the test, and a list of :py:class:`LinterRuling` items, each
-            describing one linter outcome. Note that linters may produce none or
-            more than one outcome.
-        """
+        Args:
+            enable_checks: if set, only linters providing the listed
+                checks would be applied.
+            disable_checks: if set, linters providing the listed checks
+                would not be applied.
+            enforce_checks: if set, listed checks would be marked as
+                failed if their outcome is not ``pass``, i.e. even a
+                warning would become a fail.
+            linters: if set, only these linters would be applied.
+                Providing ``linters`` makes ``enable_checks`` and
+                ``disable_checks`` ignored.
 
+        Returns:
+            a tuple of two items: a boolean reporting whether the
+            instance passed the test, and a list of
+            :py:class:`LinterRuling` items, each describing one linter
+            outcome. Note that linters may produce none or more than one
+            outcome.
+        """
         enforce_checks = enforce_checks or []
 
         linters = (
@@ -329,13 +323,12 @@ class Lintable(Generic[LintableT]):
 
     @classmethod
     def format_linters(cls) -> str:
-        """
-        Format registered linters for printing or logging.
+        """Format registered linters for printing or logging.
 
-        :returns: a string description of registered linters, suitable for
+        Returns:
+            a string description of registered linters, suitable for
             logging or help texts.
         """
-
         hints: list[str] = []
 
         for linter in sorted(cls.get_linter_registry(), key=lambda x: x.id):
@@ -348,15 +341,14 @@ def filter_allowed_checks(
     rulings: Iterable[LinterRuling],
     outcomes: Optional[list[LinterOutcome]] = None,
 ) -> Iterator[LinterRuling]:
-    """
-    Filter only rulings whose outcomes are allowed.
+    """Filter only rulings whose outcomes are allowed.
 
-    :param rulings: rulings to process.
-    :param outcomes: a list of allowed ruling outcomes. If not set, all outcomes
-        are allowed.
+    Args:
+        rulings: rulings to process.
+        outcomes: a list of allowed ruling outcomes. If not set, all
+            outcomes are allowed.
     :yields: rulings with allowed outcomes.
     """
-
     outcomes = outcomes or []
 
     for linter, actual_outcome, eventual_outcome, message in rulings:
@@ -367,13 +359,12 @@ def filter_allowed_checks(
 
 
 def format_rulings(rulings: Iterable[LinterRuling]) -> Iterator[str]:
-    """
-    Format rulings for printing or logging.
+    """Format rulings for printing or logging.
 
-    :param rulings: rulings to format.
+    Args:
+        rulings: rulings to format.
     :yields: rulings formatted as separate strings.
     """
-
     # Find out whether there is a ruling whose actual outcome is not the same
     # as its eventual outcome. That means the actual outcome has been overruled,
     # waived or turned into a failure - if there is any such ruling, we should

@@ -30,8 +30,7 @@ _CHECK_PLUGIN_REGISTRY: PluginRegistry[CheckPluginClass] = PluginRegistry('test.
 
 
 def provides_check(check: str) -> Callable[[CheckPluginClass], CheckPluginClass]:
-    """
-    A decorator for registering test checks.
+    """A decorator for registering test checks.
 
     Decorate a test check plugin class to register its checks.
     """
@@ -49,12 +48,11 @@ def provides_check(check: str) -> Callable[[CheckPluginClass], CheckPluginClass]
 
 
 def find_plugin(name: str) -> 'CheckPluginClass':
-    """
-    Find a plugin by its name.
+    """Find a plugin by its name.
 
-    :raises GeneralError: when the plugin does not exist.
+    Raises:
+        GeneralError: when the plugin does not exist.
     """
-
     plugin = _CHECK_PLUGIN_REGISTRY.get_plugin(name)
 
     if plugin is None:
@@ -71,9 +69,7 @@ class _RawCheck(TypedDict):
 
 
 class CheckEvent(enum.Enum):
-    """
-    Events in test runtime when a check can be executed
-    """
+    """Events in test runtime when a check can be executed."""
 
     BEFORE_TEST = 'before-test'
     AFTER_TEST = 'after-test'
@@ -108,8 +104,7 @@ class Check(
     SerializableContainer,
     NormalizeKeysMixin,
 ):
-    """
-    Represents a single check from test's ``check`` field.
+    """Represents a single check from test's ``check`` field.
 
     Serves as a link between raw fmf/CLI specification and an actual
     check implementation/plugin.
@@ -163,16 +158,18 @@ class Check(
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> list['CheckResult']:
-        """
-        Run the check.
+        """Run the check.
 
-        :param event: when the check is running - before the test, after the test, etc.
-        :param invocation: test invocation to which the check belongs to.
-        :param environment: optional environment to set for the check.
-        :param logger: logger to use for logging.
-        :returns: list of results produced by checks.
-        """
+        Args:
+            event: when the check is running - before the test, after
+                the test, etc.
+            invocation: test invocation to which the check belongs to.
+            environment: optional environment to set for the check.
+            logger: logger to use for logging.
 
+        Returns:
+            list of results produced by checks.
+        """
         # TODO: there's "skipped" outcome brewing, we should use it once
         # it lands
         if not self.enabled:
@@ -198,9 +195,7 @@ class Check(
 
 
 class CheckPlugin(tmt.utils._CommonBase, Generic[CheckT]):
-    """
-    Base class for plugins providing extra checks before, during and after tests
-    """
+    """Base class for plugins providing extra checks before, during and after tests."""
 
     _check_class: type[CheckT]
 
@@ -215,10 +210,7 @@ class CheckPlugin(tmt.utils._CommonBase, Generic[CheckT]):
         raw_data: _RawCheck,
         logger: tmt.log.Logger,
     ) -> Check:
-        """
-        Create a check data instance for the plugin
-        """
-
+        """Create a check data instance for the plugin."""
         return cast(CheckPlugin[CheckT], find_plugin(raw_data['how']))._check_class.from_spec(
             raw_data, logger
         )
@@ -230,15 +222,14 @@ class CheckPlugin(tmt.utils._CommonBase, Generic[CheckT]):
         test: 'tmt.base.Test',
         logger: tmt.log.Logger,
     ) -> list['tmt.base.DependencySimple']:
-        """
-        Collect all essential requirements of the test check.
+        """Collect all essential requirements of the test check.
 
         Essential requirements of a check are necessary for the check to
         perform its basic functionality.
 
-        :returns: a list of requirements.
+        Returns:
+            a list of requirements.
         """
-
         return []
 
     @classmethod
@@ -269,10 +260,7 @@ def normalize_test_check(
     raw_test_check: Any,
     logger: tmt.log.Logger,
 ) -> Check:
-    """
-    Normalize a single test check
-    """
-
+    """Normalize a single test check."""
     if isinstance(raw_test_check, str):
         try:
             return CheckPlugin.delegate(
@@ -305,10 +293,7 @@ def normalize_test_checks(
     raw_checks: Any,
     logger: tmt.log.Logger,
 ) -> list[Check]:
-    """
-    Normalize (prepare/finish/test) checks
-    """
-
+    """Normalize (prepare/finish/test) checks."""
     if raw_checks is None:
         return []
 

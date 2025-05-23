@@ -1,6 +1,4 @@
-"""
-``tmt status`` implementation
-"""
+"""``tmt status`` implementation."""
 
 from typing import Any, Optional
 
@@ -48,8 +46,7 @@ def status(
     finished: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Show status of runs.
+    """Show status of runs.
 
     Lists past runs in the given directory filtered using options.
     /var/tmp/tmt is used by default.
@@ -61,7 +58,6 @@ def status(
     displayed with the most verbosity (-vv).
 
     """
-
     if [abandoned, active, finished].count(True) > 1:
         raise tmt.utils.GeneralError(
             "Options --abandoned, --active and --finished cannot be used together."

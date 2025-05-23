@@ -1,6 +1,4 @@
-"""
-``tmt init`` implementation
-"""
+"""``tmt init`` implementation."""
 
 from typing import Any
 
@@ -32,8 +30,7 @@ def init(
     force: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Initialize a new tmt tree.
+    r"""Initialize a new tmt tree.
 
     By default tree is created in the current directory.
     Provide a PATH to create it in a different location.
@@ -44,6 +41,5 @@ def init(
     * 'base' template contains a plan and a beakerlib test,
     * 'full' template contains a 'full' story, an 'full' plan and a shell test.
     """
-
     tmt.Tree.store_cli_invocation(context)
     tmt.Tree.init(logger=context.obj.logger, path=Path(path), template=template, force=force)

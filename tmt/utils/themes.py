@@ -24,22 +24,23 @@ def style(
     bold: Optional[bool] = None,
     underline: Optional[bool] = None,
 ) -> str:
-    """
-    Apply a style to a string.
+    """Apply a style to a string.
 
     ``style`` is the most preferred argument, and, if set, no other
     arguments would be used. If ``style`` is not given, remaining keyword
     arguments are passed directly to :py:func:`click.style`.
 
-    :param s: string to colorize.
-    :param style: style to apply. If set, it will be preferred over any
-        other arguments.
-    :param fg: foreground color.
-    :param bold: whether the text should be using bold font.
-    :param underline: whether the text should be underlined.
-    :returns: colorized string.
-    """
+    Args:
+        s: string to colorize.
+        style: style to apply. If set, it will be preferred over any
+            other arguments.
+        fg: foreground color.
+        bold: whether the text should be using bold font.
+        underline: whether the text should be underlined.
 
+    Returns:
+        colorized string.
+    """
     # If `style` is not set, then fall back to Click/colorama style
     # of parameters, with various facets specified by separate arguments.
     if style is None:

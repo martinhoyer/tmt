@@ -17,8 +17,7 @@ SFSectionValueType = Union[str, list[str]]
 
 
 class StructuredField:
-    """
-    Handling multiple text data in a single text field
+    r"""Handling multiple text data in a single text field.
 
     The StructuredField allows you to easily store and extract several
     sections of text data to/from a single text field. The sections are
@@ -167,10 +166,7 @@ class StructuredField:
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def __init__(self, text: Optional[str] = None, version: int = 1, multi: bool = False) -> None:
-        """
-        Initialize the structured field
-        """
-
+        """Initialize the structured field."""
         self.version(version)
         self._header: str = ""
         self._footer: str = ""
@@ -183,17 +179,11 @@ class StructuredField:
             self.load(text)
 
     def __iter__(self) -> Iterator[str]:
-        """
-        By default iterate through all available section names
-        """
-
+        """By default iterate through all available section names."""
         yield from self._order
 
     def __nonzero__(self) -> bool:
-        """
-        True when any section is defined
-        """
-
+        """True when any section is defined."""
         return len(self._order) > 0
 
     __bool__ = __nonzero__
@@ -203,10 +193,7 @@ class StructuredField:
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def _load_version_zero(self, text: str) -> None:
-        """
-        Load version 0 format
-        """
-
+        """Load version 0 format."""
         # Attempt to split the text according to the section tag
         section = re.compile(r"\n?^\[([^\]]+)\]\n", re.MULTILINE)
         parts = section.split(text)
@@ -226,10 +213,7 @@ class StructuredField:
             self.set(key, value)
 
     def _load(self, text: str) -> None:
-        """
-        Load version 1+ format
-        """
-
+        """Load version 1+ format."""
         # The text must exactly match the format
         format = re.compile(
             r"(.*)^\[structured-field-start\][ \t]*\n"
@@ -270,10 +254,7 @@ class StructuredField:
         log.debug(f"Parsed sections:\n{format_value(self._sections)}")
 
     def _save_version_zero(self) -> str:
-        """
-        Save version 0 format
-        """
-
+        """Save version 0 format."""
         result = []
         if self._header:
             result.append(self._header)
@@ -286,10 +267,7 @@ class StructuredField:
         return "\n".join(result)
 
     def _save(self) -> str:
-        """
-        Save version 1+ format
-        """
-
+        """Save version 1+ format."""
         result = []
         # Regular expression for escaping section-like lines
         escape = re.compile(r"^(\[.+\])$", re.MULTILINE)
@@ -314,10 +292,7 @@ class StructuredField:
         return "\n".join(result)
 
     def _read_section(self, content: str) -> dict[str, SFSectionValueType]:
-        """
-        Parse config section and return ordered dictionary
-        """
-
+        """Parse config section and return ordered dictionary."""
         dictionary: dict[str, SFSectionValueType] = OrderedDict()
         for line in content.split("\n"):
             # Remove comments and skip empty lines
@@ -342,10 +317,7 @@ class StructuredField:
         return dictionary
 
     def _write_section(self, dictionary: dict[str, SFSectionValueType]) -> str:
-        """
-        Convert dictionary into a config section format
-        """
-
+        """Convert dictionary into a config section format."""
         section = ""
         for key, value in dictionary.items():
             if isinstance(value, list):
@@ -360,18 +332,12 @@ class StructuredField:
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def iterate(self) -> Iterator[tuple[str, str]]:
-        """
-        Return (section, content) tuples for all sections
-        """
-
+        """Return (section, content) tuples for all sections."""
         for section in self:
             yield section, self._sections[section]
 
     def version(self, version: Optional[int] = None) -> int:
-        """
-        Get or set the StructuredField version
-        """
-
+        """Get or set the StructuredField version."""
         if version is not None:
             if version in [0, 1]:
                 self._version = version
@@ -380,10 +346,7 @@ class StructuredField:
         return self._version
 
     def load(self, text: str, version: Optional[int] = None) -> None:
-        """
-        Load the StructuredField from a string
-        """
-
+        """Load the StructuredField from a string."""
         if version is not None:
             self.version(version)
         # Make sure we got a text, convert from bytes if necessary
@@ -404,44 +367,29 @@ class StructuredField:
             self._load(text)
 
     def save(self) -> str:
-        """
-        Convert the StructuredField into a string
-        """
-
+        """Convert the StructuredField into a string."""
         if self.version() == 0:
             return self._save_version_zero()
         return self._save()
 
     def header(self, content: Optional[str] = None) -> str:
-        """
-        Get or set the header content
-        """
-
+        """Get or set the header content."""
         if content is not None:
             self._header = content
         return self._header
 
     def footer(self, content: Optional[str] = None) -> str:
-        """
-        Get or set the footer content
-        """
-
+        """Get or set the footer content."""
         if content is not None:
             self._footer = content
         return self._footer
 
     def sections(self) -> list[str]:
-        """
-        Get the list of available sections
-        """
-
+        """Get the list of available sections."""
         return self._order
 
     def get(self, section: str, item: Optional[str] = None) -> SFSectionValueType:
-        """
-        Return content of given section or section item
-        """
-
+        """Return content of given section or section item."""
         try:
             content = self._sections[section]
         except KeyError:
@@ -458,10 +406,7 @@ class StructuredField:
             )
 
     def set(self, section: str, content: Any, item: Optional[str] = None) -> None:
-        """
-        Update content of given section or section item
-        """
-
+        """Update content of given section or section item."""
         # Convert to string if necessary, keep lists untouched
         if isinstance(content, list):
             pass
@@ -489,10 +434,7 @@ class StructuredField:
             self._order.append(section)
 
     def remove(self, section: str, item: Optional[str] = None) -> None:
-        """
-        Remove given section or section item
-        """
-
+        """Remove given section or section item."""
         # Remove the whole section
         if item is None:
             try:

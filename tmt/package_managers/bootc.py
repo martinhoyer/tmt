@@ -19,15 +19,14 @@ class BootcEngine(PackageManagerEngine):
     containerfile_directives: list[str]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Initialize bootc engine for package management"""
+        """Initialize bootc engine for package management."""
         super().__init__(*args, **kwargs)
 
         self.aux_engine = self.guest.bootc_builder._engine_class(*args, **kwargs)
         self.containerfile_directives = []
 
     def open_containerfile_directives(self) -> None:
-        """Initialize containerfile directives"""
-
+        """Initialize containerfile directives."""
         if self.containerfile_directives:
             self.debug('Already collecting containerfile directives.')
             return
@@ -42,18 +41,14 @@ class BootcEngine(PackageManagerEngine):
         self.containerfile_directives = []
 
     def prepare_command(self) -> tuple[Command, Command]:
-        """
-        Prepare installation command for bootc
-        """
-
+        """Prepare installation command for bootc."""
         if self.guest.facts.is_superuser is False:
             return (Command('sudo', 'bootc'), Command(''))
 
         return (Command('bootc'), Command(''))
 
     def _get_current_bootc_image(self) -> str:
-        """Get the current bootc image running on the system"""
-
+        """Get the current bootc image running on the system."""
         command, _ = self.prepare_command()
         command += Command('status', '--json')
         output = self.guest.execute(command, silent=True)

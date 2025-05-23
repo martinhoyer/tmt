@@ -1,5 +1,4 @@
-"""
-ReST rendering.
+"""ReST rendering.
 
 Package provides primitives for ReST rendering used mainly for CLI
 help texts.
@@ -74,8 +73,7 @@ class TextWrapper(textwrap.TextWrapper):
 
 
 class RestVisitor(docutils.nodes.NodeVisitor):
-    """
-    Custom renderer of docutils nodes.
+    """Custom renderer of docutils nodes.
 
     See :py:class:`docutils.nodes.NodeVisitor` for details, but the
     functionality is fairly simple: for each node type, a pair of
@@ -115,10 +113,7 @@ class RestVisitor(docutils.nodes.NodeVisitor):
 
     @property
     def rendered(self) -> str:
-        """
-        Return the rendered document as a single string
-        """
-
+        """Return the rendered document as a single string."""
         # Drop any trailing empty lines
         while self._rendered_paragraphs and self._rendered_paragraphs[-1] == NL:
             self._rendered_paragraphs.pop(-1)
@@ -126,24 +121,15 @@ class RestVisitor(docutils.nodes.NodeVisitor):
         return '\n'.join(self._rendered_paragraphs)
 
     def _emit(self, s: str) -> None:
-        """
-        Add a string to the paragraph being rendered
-        """
-
+        """Add a string to the paragraph being rendered."""
         self._rendered_paragraph.append(ANSIString(s))
 
     def _emit_paragraphs(self, paragraphs: list[str]) -> None:
-        """
-        Add new rendered paragraphs
-        """
-
+        """Add new rendered paragraphs."""
         self._rendered_paragraphs += paragraphs
 
     def flush(self) -> None:
-        """
-        Finalize rendering of the current paragraph
-        """
-
+        """Finalize rendering of the current paragraph."""
         if not self._rendered_paragraph:
             self.nl()
 
@@ -168,10 +154,7 @@ class RestVisitor(docutils.nodes.NodeVisitor):
             self._rendered_paragraph = []
 
     def nl(self) -> None:
-        """
-        Render a new, empty line
-        """
-
+        """Render a new, empty line."""
         # To simplify the implementation, this is merging of multiple
         # empty lines into one. Rendering of nodes than does not have
         # to worry about an empty line already being on the stack.
@@ -379,22 +362,18 @@ def role_ref(
     options: Optional[Mapping[str, Any]] = None,
     content: Optional[Sequence[str]] = None,
 ) -> tuple[Sequence[docutils.nodes.reference], Sequence[docutils.nodes.reference]]:
-    """
-    A handler for ``:ref:`` role.
+    """A handler for ``:ref:`` role.
 
-    :returns: a simple :py:class:`docutils.nodes.Text` node with text of
-        the "link": ``foo`` for both ``:ref:`foo``` and
+    Returns:
+        a simple :py:class:`docutils.nodes.Text` node with text of the
+        "link": ``foo`` for both ``:ref:`foo``` and
         ``:ref:`foo</bar>```.
     """
-
     return ([docutils.nodes.reference(rawtext, text)], [])
 
 
 def parse_rst(text: str) -> docutils.nodes.document:
-    """
-    Parse a ReST document into docutils tree of nodes
-    """
-
+    """Parse a ReST document into docutils tree of nodes."""
     docutils.parsers.rst.roles.register_local_role('ref', role_ref)
 
     parser = docutils.parsers.rst.Parser()
@@ -408,10 +387,7 @@ def parse_rst(text: str) -> docutils.nodes.document:
 
 
 def render_rst(text: str, logger: Logger) -> str:
-    """
-    Render a ReST document
-    """
-
+    """Render a ReST document."""
     logger.debug('text', text, level=4, topic=tmt.log.Topic.HELP_RENDERING)
 
     document = parse_rst(text)

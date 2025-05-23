@@ -56,10 +56,7 @@ def insert_to_prepare_step(
     discover_plugin: 'tmt.steps.discover.DiscoverPlugin[Any]',
     sourcedir: Path,
 ) -> None:
-    """
-    Single place to call when inserting PrepareDistGit from discover
-    """
-
+    """Single place to call when inserting PrepareDistGit from discover."""
     prepare_step = discover_plugin.step.plan.prepare
     where = cast(tmt.steps.discover.DiscoverStepData, discover_plugin.data).where
     # Future install require
@@ -156,8 +153,7 @@ class DistGitData(tmt.steps.prepare.PrepareStepData):
 
 # @tmt.steps.provides_method('distgit') Hiding from the menu
 class PrepareDistGit(tmt.steps.prepare.PreparePlugin[DistGitData]):
-    """
-    Companion to the discover-dist-git, place where ``rpmbuild -bp`` happens
+    """Companion to the discover-dist-git, place where ``rpmbuild -bp`` happens.
 
     Step is responsible:
     1. Install required packages for the rpmbuild itself
@@ -189,10 +185,7 @@ class PrepareDistGit(tmt.steps.prepare.PreparePlugin[DistGitData]):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> list[PhaseResult]:
-        """
-        Prepare the guests for building rpm sources
-        """
-
+        """Prepare the guests for building rpm sources."""
         results = super().go(guest=guest, environment=environment, logger=logger)
 
         environment = environment or tmt.utils.Environment()
@@ -287,8 +280,7 @@ class PrepareDistGit(tmt.steps.prepare.PreparePlugin[DistGitData]):
         if builddir is None:
             guest.execute(
                 command=ShellScript(
-                    "shopt -s dotglob; if test -e */SPECPARTS; "
-                    "then mv ./*-build/* .; else true; fi"
+                    "shopt -s dotglob; if test -e */SPECPARTS; then mv ./*-build/* .; else true; fi"
                 ),
                 cwd=source_dir,
             )

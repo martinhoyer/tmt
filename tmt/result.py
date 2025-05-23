@@ -39,14 +39,12 @@ class ResultOutcome(enum.Enum):
 
     @staticmethod
     def reduce(outcomes: list['ResultOutcome']) -> 'ResultOutcome':
-        """
-        Reduce several result outcomes into a single outcome
+        """Reduce several result outcomes into a single outcome.
 
         Convert multiple outcomes into a single one by picking the
         worst. This is used when aggregating several test or check
         results to present a single value to the user.
         """
-
         outcomes_by_severity = (
             ResultOutcome.ERROR,
             ResultOutcome.FAIL,
@@ -131,9 +129,7 @@ RawResult = Any
 
 @container
 class ResultGuestData(SerializableContainer):
-    """
-    Describes what tmt knows about a guest the result was produced on
-    """
+    """Describes what tmt knows about a guest the result was produced on."""
 
     name: str = f'{tmt.utils.DEFAULT_NAME}-0'
     role: Optional[str] = None
@@ -143,15 +139,15 @@ class ResultGuestData(SerializableContainer):
     def from_test_invocation(
         cls, *, invocation: 'tmt.steps.execute.TestInvocation'
     ) -> 'ResultGuestData':
-        """
-        Create a guest data for a result from a test invocation.
+        """Create a guest data for a result from a test invocation.
 
         A helper for extracting interesting guest data from a given test
         invocation.
 
-        :param invocation: a test invocation capturing the test run and results.
+        Args:
+            invocation: a test invocation capturing the test run and
+                results.
         """
-
         return ResultGuestData(
             name=invocation.guest.name,
             role=invocation.guest.role,
@@ -169,9 +165,7 @@ def _unserialize_fmf_id(serialized: 'tmt.base._RawFmfId') -> 'tmt.base.FmfId':
 
 @container
 class BaseResult(SerializableContainer):
-    """
-    Describes what tmt knows about a result
-    """
+    """Describes what tmt knows about a result."""
 
     name: str
     result: ResultOutcome = field(
@@ -202,10 +196,7 @@ class BaseResult(SerializableContainer):
         self.original_result = self.result
 
     def show(self) -> str:
-        """
-        Return a nicely colored result with test name (and note)
-        """
-
+        """Return a nicely colored result with test name (and note)."""
         result = 'errr' if self.result == ResultOutcome.ERROR else self.result.value
 
         components: list[str] = [
@@ -224,10 +215,7 @@ class BaseResult(SerializableContainer):
 
     @property
     def failure_logs(self) -> list[Path]:
-        """
-        Return paths to all failure logs from the result
-        """
-
+        """Return paths to all failure logs from the result."""
         if self.result not in (ResultOutcome.FAIL, ResultOutcome.ERROR, ResultOutcome.WARN):
             return []
 
@@ -238,9 +226,7 @@ class BaseResult(SerializableContainer):
 
 @container
 class CheckResult(BaseResult):
-    """
-    Describes what tmt knows about a single test check result
-    """
+    """Describes what tmt knows about a single test check result."""
 
     event: CheckEvent = field(
         default=CheckEvent.BEFORE_TEST,
@@ -249,17 +235,13 @@ class CheckResult(BaseResult):
     )
 
     def to_subcheck(self) -> 'SubCheckResult':
-        """
-        Convert check to a tmt SubCheckResult
-        """
-
+        """Convert check to a tmt SubCheckResult."""
         return SubCheckResult.from_serialized(self.to_serialized())
 
 
 @container
 class SubCheckResult(CheckResult):
-    """
-    Describes what tmt knows about a single subtest check result.
+    """Describes what tmt knows about a single subtest check result.
 
     It does not contain any additional fields; it simply defines a type to
     easily differentiate between a :py:class:`tmt.result.CheckResult` and a
@@ -269,9 +251,7 @@ class SubCheckResult(CheckResult):
 
 @container
 class SubResult(BaseResult):
-    """
-    Describes what tmt knows about a single test subresult
-    """
+    """Describes what tmt knows about a single test subresult."""
 
     check: list[SubCheckResult] = field(
         default_factory=cast(Callable[[], list[SubCheckResult]], list),
@@ -283,10 +263,7 @@ class SubResult(BaseResult):
 
     @property
     def failure_logs(self) -> list[Path]:
-        """
-        Return paths to all failure logs from the result
-        """
-
+        """Return paths to all failure logs from the result."""
         failure_logs = super().failure_logs
         for check in self.check:
             failure_logs += check.failure_logs
@@ -295,16 +272,12 @@ class SubResult(BaseResult):
 
 @container
 class PhaseResult(BaseResult):
-    """
-    Describes what tmt knows about result of individual phases, e.g. prepare ansible
-    """
+    """Describes what tmt knows about result of individual phases, e.g. prepare ansible."""
 
 
 @container
 class Result(BaseResult):
-    """
-    Describes what tmt knows about a single test result
-    """
+    """Describes what tmt knows about a single test result."""
 
     serial_number: int = 0
     fmf_id: Optional['tmt.base.FmfId'] = field(
@@ -335,9 +308,7 @@ class Result(BaseResult):
     check: list[CheckResult] = field(
         default_factory=cast(Callable[[], list[CheckResult]], list),
         serialize=lambda results: [result.to_serialized() for result in results],
-        unserialize=lambda serialized: [
-            CheckResult.from_serialized(check) for check in serialized
-        ],
+        unserialize=lambda serialized: [CheckResult.from_serialized(check) for check in serialized],
     )
     data_path: Optional[Path] = field(
         default=cast(Optional[Path], None),
@@ -356,24 +327,24 @@ class Result(BaseResult):
         log: Optional[list[Path]] = None,
         subresult: Optional[list[SubResult]] = None,
     ) -> 'Result':
-        """
-        Create a result from a test invocation.
+        """Create a result from a test invocation.
 
         A helper for extracting interesting data from a given test invocation.
         While it's perfectly possible to go directly through ``Result(...)``,
         most of the time a result stems from a particular test invocation
         captured by a :py:class:`TestInvocation` instance.
 
-        :param invocation: a test invocation capturing the test run and results.
-        :param result: actual test outcome. It will be interpreted according to
-            :py:attr:`Test.result` key (see
-            https://tmt.readthedocs.io/en/stable/spec/tests.html#result).
-        :param note: optional result notes.
-        :param ids: additional test IDs. They will be added to IDs extracted
-            from the test.
-        :param log: optional list of test logs.
+        Args:
+            invocation: a test invocation capturing the test run and
+                results.
+            result: actual test outcome. It will be interpreted
+                according to :py:attr:`Test.result` key (see https://tmt
+                .readthedocs.io/en/stable/spec/tests.html#result).
+            note: optional result notes.
+            ids: additional test IDs. They will be added to IDs
+                extracted from the test.
+            log: optional list of test logs.
         """
-
         # Saving identifiable information for each test case so we can match them
         # to Polarion/Nitrate/other cases and report run results there
         # TODO: would an exception be better? Can test.id be None?
@@ -415,14 +386,17 @@ class Result(BaseResult):
         check_name: str,
         interpret_checks: dict[str, CheckResultInterpret],
     ) -> ResultOutcome:
-        """
-        Aggregate all checks of given name and interpret the outcome
+        """Aggregate all checks of given name and interpret the outcome.
 
-        :param check_name: name of the check to be aggregated
-        :param interpret_checks: mapping of check:how and its result interpret
-        :returns: :py:class:`ResultOutcome` instance with the interpreted result
-        """
+        Args:
+            check_name: name of the check to be aggregated
+            interpret_checks: mapping of check:how and its result
+                interpret
 
+        Returns:
+            :py:class:`ResultOutcome` instance with the interpreted
+            result
+        """
         # Reduce all check outcomes into a single worst outcome
         reduced_outcome = ResultOutcome.reduce(
             [check.result for check in self.check if check.name == check_name]
@@ -456,17 +430,19 @@ class Result(BaseResult):
         interpret: ResultInterpret,
         interpret_checks: dict[str, CheckResultInterpret],
     ) -> 'Result':
-        """
-        Interpret result according to a given interpretation instruction.
+        """Interpret result according to a given interpretation instruction.
 
         Inspect and possibly modify :py:attr:`result` and :py:attr:`note`
         attributes, following the ``interpret`` value.
 
-        :param interpret: how to interpret current result.
-        :param interpret_checks: mapping of check:how and its result interpret
-        :returns: :py:class:`Result` instance containing the updated result.
-        """
+        Args:
+            interpret: how to interpret current result.
+            interpret_checks: mapping of check:how and its result
+                interpret
 
+        Returns:
+            :py:class:`Result` instance containing the updated result.
+        """
         if interpret not in ResultInterpret:
             raise tmt.utils.SpecificationError(
                 f"Invalid result '{interpret.value}' in test '{self.name}'."
@@ -512,9 +488,7 @@ class Result(BaseResult):
         return self
 
     def to_subresult(self) -> 'SubResult':
-        """
-        Convert result to tmt subresult
-        """
+        """Convert result to tmt subresult."""
         options = [
             tmt.container.key_to_option(key) for key in tmt.container.container_keys(SubResult)
         ]
@@ -525,10 +499,7 @@ class Result(BaseResult):
 
     @staticmethod
     def total(results: list['Result']) -> dict[ResultOutcome, int]:
-        """
-        Return dictionary with total stats for given results
-        """
-
+        """Return dictionary with total stats for given results."""
         stats = dict.fromkeys(RESULT_OUTCOME_COLORS, 0)
 
         for result in results:
@@ -537,10 +508,7 @@ class Result(BaseResult):
 
     @staticmethod
     def summary(results: list['Result']) -> str:
-        """
-        Prepare a nice human summary of provided results
-        """
-
+        """Prepare a nice human summary of provided results."""
         stats = Result.total(results)
         comments = []
         if stats.get(ResultOutcome.PASS):
@@ -568,10 +536,7 @@ class Result(BaseResult):
         return cast(str, fmf.utils.listed(comments or ['no results found']))
 
     def show(self, display_guest: bool = True) -> str:
-        """
-        Return a nicely colored result with test name (and note)
-        """
-
+        """Return a nicely colored result with test name (and note)."""
         from tmt.steps.provision import format_guest_full_name
 
         result = 'errr' if self.result == ResultOutcome.ERROR else self.result.value
@@ -593,10 +558,7 @@ class Result(BaseResult):
 
     @property
     def failure_logs(self) -> list[Path]:
-        """
-        Return paths to all failure logs from the result
-        """
-
+        """Return paths to all failure logs from the result."""
         failure_logs = super().failure_logs
         for check in self.check:
             failure_logs += check.failure_logs
@@ -604,10 +566,7 @@ class Result(BaseResult):
 
 
 def results_to_exit_code(results: list[Result], execute_enabled: bool = True) -> int:
-    """
-    Map results to a tmt exit code
-    """
-
+    """Map results to a tmt exit code."""
     from tmt.cli import TmtExitCode
 
     stats = Result.total(results)
@@ -650,14 +609,13 @@ def results_to_exit_code(results: list[Result], execute_enabled: bool = True) ->
 def save_failures(
     invocation: 'tmt.steps.execute.TestInvocation', directory: Path, failures: list[str]
 ) -> Path:
-    """
-    Save test failures to a file.
+    """Save test failures to a file.
 
-    :param invocation: test invocation.
-    :param directory: directory to save the file in.
-    :param failures: list of failures to save.
+    Args:
+        invocation: test invocation.
+        directory: directory to save the file in.
+        failures: list of failures to save.
     """
-
     path = directory / tmt.steps.execute.TEST_FAILURES_FILENAME
 
     try:

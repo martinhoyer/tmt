@@ -1,6 +1,4 @@
-"""
-``tmt try`` implementation
-"""
+"""``tmt try`` implementation."""
 
 import re
 from typing import Any
@@ -82,8 +80,7 @@ from tmt.options import option
 @verbosity_options
 @force_dry_options
 def try_command(context: Context, **kwargs: Any) -> None:
-    """
-    Try tests or experiment with guests.
+    r"""Try tests or experiment with guests.
 
     Provide an interactive session to run tests or play with guests.
     Provisions a guest, runs tests from the current working directory
@@ -105,7 +102,6 @@ def try_command(context: Context, **kwargs: Any) -> None:
     \b
         tmt try 192.168.12.23@connect
     """
-
     tmt.trying.Try.store_cli_invocation(context)
 
     # Inject custom image and provision method to the Provision options
@@ -120,10 +116,7 @@ def try_command(context: Context, **kwargs: Any) -> None:
 
 
 def _construct_trying_provision_options(params: Any) -> dict[str, Any]:
-    """
-    Convert try-specific options into generic option format
-    """
-
+    """Convert try-specific options into generic option format."""
     options: dict[str, Any] = {}
 
     if params['image_and_how']:

@@ -62,9 +62,7 @@ class ReportDisplayData(tmt.steps.report.ReportStepData):
 
 @container
 class ResultRenderer:
-    """
-    A rendering engine for turning results into printable representation.
-    """
+    """A rendering engine for turning results into printable representation."""
 
     #: A base path for all log references.
     basepath: Path
@@ -94,10 +92,7 @@ class ResultRenderer:
 
     @staticmethod
     def _indent(level: int, iterable: Iterable[str]) -> Iterator[str]:
-        """
-        Indent each string from iterable by the given indentation levels.
-        """
-
+        """Indent each string from iterable by the given indentation levels."""
         for item in iterable:
             if not item:
                 yield item
@@ -107,10 +102,7 @@ class ResultRenderer:
                     yield f'{level * PER_LEVEL_INDENT}{line}'
 
     def render_note(self, note: str) -> Iterator[str]:
-        """
-        Render a single result note.
-        """
-
+        """Render a single result note."""
         yield render_template(
             self.note_template,
             environment=self.environment,
@@ -120,26 +112,17 @@ class ResultRenderer:
         )
 
     def render_notes(self, result: BaseResult) -> Iterator[str]:
-        """
-        Render result notes.
-        """
-
+        """Render result notes."""
         for note in result.note:
             yield from self.render_note(note)
 
     @staticmethod
     def render_log_info(log: Path) -> Iterator[str]:
-        """
-        Render info about a single log.
-        """
-
+        """Render info about a single log."""
         yield f'{log.name} ({log})'
 
     def render_logs_info(self, result: BaseResult) -> Iterator[str]:
-        """
-        Render info about result logs.
-        """
-
+        """Render info about result logs."""
         if not result.log:
             return
 
@@ -150,19 +133,13 @@ class ResultRenderer:
 
     @staticmethod
     def render_log_content(log: Path) -> Iterator[str]:
-        """
-        Render log info and content of a single log.
-        """
-
+        """Render log info and content of a single log."""
         with open(log) as f:
             for line in f:
                 yield f'content: {line}'
 
     def render_logs_content(self, result: BaseResult) -> Iterator[str]:
-        """
-        Render log info and content of result logs.
-        """
-
+        """Render log info and content of result logs."""
         if not result.log:
             return
 
@@ -175,10 +152,7 @@ class ResultRenderer:
                 yield from self._indent(2, self.render_log_content(self.basepath / log))
 
     def render_check_result(self, result: CheckResult, template: str) -> Iterator[str]:
-        """
-        Render a single test check result.
-        """
-
+        """Render a single test check result."""
         outcome = 'errr' if result.result == ResultOutcome.ERROR else result.result.value
 
         yield render_template(
@@ -194,18 +168,12 @@ class ResultRenderer:
         yield from self._indent(1, self.render_notes(result))
 
     def render_check_results(self, results: Iterable[CheckResult], template: str) -> Iterator[str]:
-        """
-        Render test check results.
-        """
-
+        """Render test check results."""
         for result in results:
             yield from self.render_check_result(result, template)
 
     def render_subresult(self, result: SubResult) -> Iterator[str]:
-        """
-        Render a single subresult.
-        """
-
+        """Render a single subresult."""
         outcome = 'errr' if result.result == ResultOutcome.ERROR else result.result.value
 
         yield render_template(
@@ -233,18 +201,12 @@ class ResultRenderer:
         )
 
     def render_subresults(self, results: Iterable[SubResult]) -> Iterator[str]:
-        """
-        Render subresults.
-        """
-
+        """Render subresults."""
         for result in results:
             yield from self.render_subresult(result)
 
     def render_result(self, result: Result) -> Iterator[str]:
-        """
-        Render a single test result.
-        """
-
+        """Render a single test result."""
         outcome = 'errr' if result.result == ResultOutcome.ERROR else result.result.value
 
         yield render_template(
@@ -274,34 +236,24 @@ class ResultRenderer:
         yield from self._indent(1, self.render_subresults(result.subresult))
 
     def render_results(self, results: Iterable[Result]) -> Iterator[str]:
-        """
-        Render test results.
-        """
-
+        """Render test results."""
         for result in results:
             yield from self.render_result(result)
 
     def print_result(self, result: Result) -> None:
-        """
-        Print out a single rendered test result.
-        """
-
+        """Print out a single rendered test result."""
         for line in self.render_result(result):
             self.logger.verbose(line, shift=self.shift)
 
     def print_results(self, results: Iterable[Result]) -> None:
-        """
-        Print out rendered test results.
-        """
-
+        """Print out rendered test results."""
         for line in self.render_results(results):
             self.logger.verbose(line, shift=self.shift)
 
 
 @tmt.steps.provides_method('display')
 class ReportDisplay(tmt.steps.report.ReportPlugin[ReportDisplayData]):
-    """
-    Show test results on the terminal.
+    """Show test results on the terminal.
 
     Give a concise summary of test results directly on the terminal.
     Allows to select the desired level of verbosity.
@@ -317,10 +269,7 @@ class ReportDisplay(tmt.steps.report.ReportPlugin[ReportDisplayData]):
     _data_class = ReportDisplayData
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Discover available tests
-        """
-
+        """Discover available tests."""
         super().go(logger=logger)
         # Show individual test results only in verbose mode
         if not self.verbosity_level:

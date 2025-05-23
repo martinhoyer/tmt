@@ -17,18 +17,14 @@ WaitCheckType = Callable[[], T]
 
 
 class WaitingIncompleteError(GeneralError):
-    """
-    Waiting incomplete
-    """
+    """Waiting incomplete."""
 
     def __init__(self) -> None:
         super().__init__('Waiting incomplete')
 
 
 class WaitingTimedOutError(GeneralError):
-    """
-    Waiting ran out of time
-    """
+    """Waiting ran out of time."""
 
     def __init__(
         self,
@@ -53,8 +49,7 @@ class WaitingTimedOutError(GeneralError):
 
 
 class Deadline:
-    """
-    A point in time when something should end.
+    """A point in time when something should end.
 
     Instead of raw timeouts that represent remaining time, we deal more
     with points when things should stop. Timeouts must be updated
@@ -86,52 +81,37 @@ class Deadline:
 
     @classmethod
     def from_delta(cls, timeout: datetime.timedelta) -> 'Deadline':
-        """
-        Create a deadline from a delta.
-        """
-
+        """Create a deadline from a delta."""
         return Deadline(timeout)
 
     @classmethod
     def from_seconds(cls, timeout: float) -> 'Deadline':
-        """
-        Create a deadline from the number of seconds of a timeout.
-        """
-
+        """Create a deadline from the number of seconds of a timeout."""
         return Deadline(datetime.timedelta(seconds=timeout))
 
     @property
     def is_due(self) -> bool:
-        """
-        ``True`` when the deadline has been reached, ``False`` otherwise.
-        """
-
+        """``True`` when the deadline has been reached, ``False`` otherwise."""
         return self._now >= self._deadline
 
     @property
     def time_left(self) -> datetime.timedelta:
-        """
-        The remaining time left.
+        """The remaining time left.
 
-        .. note::
-
+        Note:
             The value will be negative when the deadline has been
             reached already.
         """
-
         return datetime.timedelta(seconds=self._deadline - self._now)
 
     @property
     def time_over(self) -> datetime.timedelta:
-        """
-        The time past the deadline.
+        """The time past the deadline.
 
-        .. note::
-
+        Note:
             The value will be negative when the deadline has not been
             reached yet.
         """
-
         return datetime.timedelta(self._now - self._deadline)
 
     def __enter__(self) -> 'Deadline':
@@ -144,9 +124,7 @@ class Deadline:
 
 @container
 class Waiting:
-    """
-    Context describing how to wait for a condition with limited deadline.
-    """
+    """Context describing how to wait for a condition with limited deadline."""
 
     #: The deadline that limits the waiting.
     deadline: Deadline
@@ -159,8 +137,7 @@ class Waiting:
     tick_increase: float = DEFAULT_WAIT_TICK_INCREASE
 
     def wait(self, check: WaitCheckType[T], logger: tmt.log.Logger) -> T:
-        """
-        Wait for a condition to become true.
+        """Wait for a condition to become true.
 
         To test the condition state, a ``check`` callback is called every
         :py:attr:`tick` seconds until ``check`` reports a success. The
@@ -175,18 +152,23 @@ class Waiting:
 
         ``wait()`` will also stop and quit if tmt has been interrupted.
 
-        :param check: a callable responsible for testing the condition.
-            Accepts no arguments. To indicate more time and attempts are
-            needed, the callable shall raise :py:class:`WaitingIncomplete`,
-            otherwise it shall return without exception. Its return
-            value will be returned by ``wait()`` itself. All other
-            exceptions raised by ``check`` will be propagated upstream,
-            terminating the wait.
-        :returns: value returned by ``check`` reporting success.
-        :raises WaitingTimedOutError: when time quota has been consumed.
-        :raises Interrupted: when tmt has been interrupted.
-        """
+        Args:
+            check: a callable responsible for testing the condition.
+                Accepts no arguments. To indicate more time and attempts
+                are needed, the callable shall raise
+                :py:class:`WaitingIncomplete`, otherwise it shall return
+                without exception. Its return value will be returned by
+                ``wait()`` itself. All other exceptions raised by
+                ``check`` will be propagated upstream, terminating the
+                wait.
 
+        Returns:
+            value returned by ``check`` reporting success.
+
+        Raises:
+            WaitingTimedOutError: when time quota has been consumed.
+            Interrupted: when tmt has been interrupted.
+        """
         from tmt.utils.signals import INTERRUPT_PENDING, Interrupted
 
         def _check_interrupted() -> None:

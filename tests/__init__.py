@@ -6,8 +6,7 @@ import click.testing
 
 
 def reset_common() -> None:
-    """
-    Reset CLI invocation storage of classes derived from :py:class:`tmt.utils.Common`
+    """Reset CLI invocation storage of classes derived from :py:class:`tmt.utils.Common`.
 
     As CLI invocations are stored in class-level attributes, before each
     invocation of CLI in a test, we must reset these attributes to pretend the
@@ -18,7 +17,6 @@ def reset_common() -> None:
     A helper function to clear invocations of the "usual suspects". Classes that
     accept CLI options are reset.
     """
-
     from tmt.base import Core, Plan, Run, Story, Test, Tree
     from tmt.utils import Common, MultiInvokableCommon
 

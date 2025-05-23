@@ -1,6 +1,4 @@
-"""
-Test Metadata Utilities
-"""
+"""Test Metadata Utilities."""
 
 import functools
 import os
@@ -31,9 +29,7 @@ if TYPE_CHECKING:
 
 @container
 class GitInfo:
-    """
-    Data container for commonly queried git data.
-    """
+    """Data container for commonly queried git data."""
 
     #: Path to the git root.
     git_root: Path
@@ -53,20 +49,22 @@ class GitInfo:
     @classmethod
     @functools.cache
     def from_fmf_root(cls, *, fmf_root: Path, logger: tmt.log.Logger) -> Optional["GitInfo"]:
-        """
-        Get the current git info of an fmf tree.
+        """Get the current git info of an fmf tree.
 
-        :param fmf_root: Root path of the fmf tree
-        :param logger: Current tmt logger
-        :return: Git info container or ``None`` if git metadata could not be resolved
+        Args:
+            fmf_root: Root path of the fmf tree
+            logger: Current tmt logger
+
+        Returns:
+            Git info container or ``None`` if git metadata could not be
+            resolved
         """
 
         def run(command: Command) -> str:
-            """
-            Run command, return output.
+            """Run command, return output.
+
             We don't need the stderr here, but we need exit status.
             """
-
             result = command.run(cwd=fmf_root, logger=logger)
             if result.stdout is None:
                 return ""
@@ -143,10 +141,7 @@ class GitInfo:
 # Avoid multiple subprocess calls for the same url
 @functools.cache
 def check_git_url(url: str, logger: tmt.log.Logger) -> str:
-    """
-    Check that a remote git url is accessible
-    """
-
+    """Check that a remote git url is accessible."""
     try:
         logger.debug(f"Check git url '{url}'.")
         subprocess.check_call(
@@ -197,26 +192,28 @@ PUBLIC_GIT_URL_PATTERNS: list[tuple[str, str]] = [
 
 
 def public_git_url(url: str) -> str:
-    """
-    Convert a git url into a public format.
+    """Convert a git url into a public format.
 
-    :param url: an URL to convert.
-    :returns: URL that is publicly accessible without authentication,
-        or the original URL if no applicable conversion was found.
-    """
+    Args:
+        url: an URL to convert.
 
+    Returns:
+        URL that is publicly accessible without authentication, or the
+        original URL if no applicable conversion was found.
+    """
     return rewrite_git_url(url, PUBLIC_GIT_URL_PATTERNS)
 
 
 def rewrite_git_url(url: str, patterns: list[tuple[str, str]]) -> str:
-    """
-    Rewrite git url based on supplied patterns
+    """Rewrite git url based on supplied patterns.
 
-    :param url: an URL to modify
-    :param patterns: List of patterns to try in order
-    :returns: Modified url or the original one if no pattern was be applied.
-    """
+    Args:
+        url: an URL to modify
+        patterns: List of patterns to try in order
 
+    Returns:
+        Modified url or the original one if no pattern was be applied.
+    """
     for pattern, replacement in patterns:
         public_url = re.sub(pattern, replacement, url)
 
@@ -235,14 +232,15 @@ INJECT_CREDENTIALS_VALUE_PREFIX = 'TMT_GIT_CREDENTIALS_VALUE_'
 
 
 def inject_auth_git_url(url: str) -> str:
-    """
-    Inject username or token to the git url
+    """Inject username or token to the git url.
 
-    :param url: original git repo url
-    :returns: URL with injected authentication based on pattern from the environment
-        or unmodified URL
-    """
+    Args:
+        url: original git repo url
 
+    Returns:
+        URL with injected authentication based on pattern from the
+        environment or unmodified URL
+    """
     # Try all environment variables sorted by their name
     for name, value in sorted(os.environ.items(), key=lambda x: x[0]):
         # First one which matches url is taken into the account
@@ -277,22 +275,17 @@ CLONABLE_GIT_URL_PATTERNS: list[tuple[str, str]] = [
 
 
 def clonable_git_url(url: str) -> str:
-    """
-    Modify the git repo url so it can be cloned
-    """
-
+    """Modify the git repo url so it can be cloned."""
     url = rewrite_git_url(url, CLONABLE_GIT_URL_PATTERNS)
     return inject_auth_git_url(url)
 
 
 def web_git_url(url: str, ref: str, path: Optional[Path] = None) -> str:
-    """
-    Convert a public git url into a clickable web url format
+    """Convert a public git url into a clickable web url format.
 
     Compose a clickable link from git url, ref and path to file
     for the most common git servers.
     """
-
     if path:
         path = Path(urllib.parse.quote_plus(str(path), safe="/"))
 
@@ -317,14 +310,15 @@ def web_git_url(url: str, ref: str, path: Optional[Path] = None) -> str:
 
 
 def git_hash(*, directory: Path, logger: tmt.log.Logger) -> Optional[str]:
-    """
-    Return short hash of current HEAD in the git repo in directory.
+    """Return short hash of current HEAD in the git repo in directory.
 
-    :param directory: path to a local git repository.
-    :param logger: used for logging.
-    :returns: short hash as string
-    """
+    Args:
+        directory: path to a local git repository.
+        logger: used for logging.
 
+    Returns:
+        short hash as string
+    """
     cmd = Command("git", "rev-parse", "--short", "HEAD")
     result = cmd.run(cwd=directory, logger=logger)
 
@@ -340,15 +334,17 @@ def git_hash(*, directory: Path, logger: tmt.log.Logger) -> Optional[str]:
 
 
 def git_root(*, fmf_root: Path, logger: tmt.log.Logger) -> Optional[Path]:
-    """
-    Find a path to the root of git repository containing an fmf root.
+    """Find a path to the root of git repository containing an fmf root.
 
-    :param fmf_root: path to an fmf root that is supposedly in a git repository.
-    :param logger: used for logging.
-    :returns: path to the git repository root, if fmf root lies in one,
-        or ``None``.
-    """
+    Args:
+        fmf_root: path to an fmf root that is supposedly in a git
+            repository.
+        logger: used for logging.
 
+    Returns:
+        path to the git repository root, if fmf root lies in one, or
+        ``None``.
+    """
     try:
         result = Command("git", "rev-parse", "--show-toplevel").run(cwd=fmf_root, logger=logger)
 
@@ -363,13 +359,12 @@ def git_root(*, fmf_root: Path, logger: tmt.log.Logger) -> Optional[Path]:
 
 
 def git_add(*, path: Path, logger: tmt.log.Logger) -> None:
-    """
-    Add path to the git index.
+    """Add path to the git index.
 
-    :param path: path to add to the git index.
-    :param logger: used for logging.
+    Args:
+        path: path to add to the git index.
+        logger: used for logging.
     """
-
     path = path.resolve()
 
     try:
@@ -380,16 +375,17 @@ def git_add(*, path: Path, logger: tmt.log.Logger) -> None:
 
 
 def git_ignore(*, root: Path, logger: tmt.log.Logger) -> list[Path]:
-    """
-    Collect effective paths ignored by git.
+    """Collect effective paths ignored by git.
 
-    :param root: path to the root of git repository.
-    :param logger: used for logging.
-    :returns: list of actual paths that would be ignored by git based on
-        its ``.gitignore`` files. If a whole directory is to be ignored,
-        it is listed as a directory path, not listing its content.
-    """
+    Args:
+        root: path to the root of git repository.
+        logger: used for logging.
 
+    Returns:
+        list of actual paths that would be ignored by git based on its
+        ``.gitignore`` files. If a whole directory is to be ignored, it
+        is listed as a directory path, not listing its content.
+    """
     output = Command(
         'git',
         'ls-files',
@@ -410,10 +406,7 @@ def default_branch(
     remote: str = 'origin',
     logger: tmt.log.Logger,
 ) -> Optional[str]:
-    """
-    Detect default branch from given local git repository
-    """
-
+    """Detect default branch from given local git repository."""
     # Make sure '.git' is present and it is a file or a directory
     dot_git = repository / '.git'
     if not dot_git.exists():
@@ -455,8 +448,7 @@ def default_branch(
 
 
 def validate_git_status(test: 'tmt.base.Test') -> tuple[bool, str]:
-    """
-    Validate that test has current metadata on fmf_id
+    """Validate that test has current metadata on fmf_id.
 
     Return a tuple (boolean, message) as the result of validation.
 
@@ -467,7 +459,6 @@ def validate_git_status(test: 'tmt.base.Test') -> tuple[bool, str]:
 
     When all checks pass returns (True, '').
     """
-
     # There has to be an fmf tree root defined
     if not test.fmf_root:
         raise MetadataError(f"Test '{test.name}' does not have fmf root defined.")
@@ -541,9 +532,7 @@ def validate_git_status(test: 'tmt.base.Test') -> tuple[bool, str]:
 
 
 class DistGitHandler:
-    """
-    Common functionality for DistGit handlers
-    """
+    """Common functionality for DistGit handlers."""
 
     sources_file_name = 'sources'
     uri = "/rpms/{name}/{filename}/{hashtype}/{hash}/{filename}"
@@ -558,12 +547,10 @@ class DistGitHandler:
     remote_substring: Pattern[str]
 
     def url_and_name(self, cwd: Optional[Path] = None) -> list[tuple[str, str]]:
-        """
-        Return list of urls and basenames of the used source
+        """Return list of urls and basenames of the used source.
 
         The 'cwd' parameter has to be a DistGit directory.
         """
-
         cwd = cwd or Path.cwd()
         # Assumes <package>.spec
         globbed = list(cwd.glob('*.spec'))
@@ -599,17 +586,12 @@ class DistGitHandler:
         return ret_values
 
     def its_me(self, remotes: list[str]) -> bool:
-        """
-        True if self can work with remotes
-        """
-
+        """True if self can work with remotes."""
         return any(self.remote_substring.search(item) for item in remotes)
 
 
 class FedoraDistGit(DistGitHandler):
-    """
-    Fedora Handler
-    """
+    """Fedora Handler."""
 
     usage_name = "fedora"
     re_source = re.compile(r"^(\w+) \(([^)]+)\) = ([0-9a-fA-F]+)$")
@@ -618,9 +600,7 @@ class FedoraDistGit(DistGitHandler):
 
 
 class CentOSDistGit(DistGitHandler):
-    """
-    CentOS Handler
-    """
+    """CentOS Handler."""
 
     usage_name = "centos"
     re_source = re.compile(r"^(\w+) \(([^)]+)\) = ([0-9a-fA-F]+)$")
@@ -629,9 +609,7 @@ class CentOSDistGit(DistGitHandler):
 
 
 class RedHatDistGit(DistGitHandler):
-    """
-    Red Hat Handler
-    """
+    """Red Hat Handler."""
 
     usage_name = "redhat"
     re_source = re.compile(r"^(\w+) \(([^)]+)\) = ([0-9a-fA-F]+)$")
@@ -644,13 +622,11 @@ def get_distgit_handler(
     remotes: Optional[list[str]] = None,
     usage_name: Optional[str] = None,
 ) -> DistGitHandler:
-    """
-    Return the right DistGitHandler
+    """Return the right DistGitHandler.
 
     Pick the DistGitHandler class which understands specified
     remotes or by usage_name.
     """
-
     for candidate_class in DistGitHandler.__subclasses__():
         if usage_name is not None and usage_name == candidate_class.usage_name:
             return candidate_class()
@@ -662,10 +638,7 @@ def get_distgit_handler(
 
 
 def get_distgit_handler_names() -> list[str]:
-    """
-    All known distgit handlers
-    """
-
+    """All known distgit handlers."""
     return [i.usage_name for i in DistGitHandler.__subclasses__()]
 
 
@@ -677,12 +650,10 @@ def distgit_download(
     caller: Optional['Common'] = None,
     logger: tmt.log.Logger,
 ) -> None:
-    """
-    Download sources to the target_dir
+    """Download sources to the target_dir.
 
     distgit_dir is path to the DistGit repository
     """
-
     # Get the handler unless specified
     if handler_name is None:
         cmd = Command("git", "config", "--get-regexp", '^remote\\..*.url')
@@ -715,22 +686,24 @@ def git_clone(
     timeout: Optional[int] = None,
     logger: tmt.log.Logger,
 ) -> CommandOutput:
-    """
-    Clone git repository from provided url to the destination directory
+    """Clone git repository from provided url to the destination directory.
 
-    :param url: Source URL of the git repository.
-    :param destination: Full path to the destination directory.
-    :param shallow: For ``shallow=True`` first try to clone repository
-        using ``--depth=1`` option. If not successful clone repo with
-        the whole history.
-    :param can_change: URL can be modified with hardcoded rules. Use
-        ``can_change=False`` to disable rewrite rules.
-    :param env: Environment provided to the ``git clone`` process.
-    :param attempts: Number of tries to call the function.
-    :param interval: Amount of seconds to wait before a new try.
-    :param timeout: Overall maximum time in seconds to clone the repo.
-    :param logger: A Logger instance to be used for logging.
-    :returns: Command output, bundled in a :py:class:`CommandOutput` tuple.
+    Args:
+        url: Source URL of the git repository.
+        destination: Full path to the destination directory.
+        shallow: For ``shallow=True`` first try to clone repository
+            using ``--depth=1`` option. If not successful clone repo
+            with the whole history.
+        can_change: URL can be modified with hardcoded rules. Use
+            ``can_change=False`` to disable rewrite rules.
+        env: Environment provided to the ``git clone`` process.
+        attempts: Number of tries to call the function.
+        interval: Amount of seconds to wait before a new try.
+        timeout: Overall maximum time in seconds to clone the repo.
+        logger: A Logger instance to be used for logging.
+
+    Returns:
+        Command output, bundled in a :py:class:`CommandOutput` tuple.
     """
 
     def clone_the_repo(
@@ -740,10 +713,7 @@ def git_clone(
         env: Optional[Environment] = None,
         timeout: Optional[int] = None,
     ) -> CommandOutput:
-        """
-        Clone the repo, handle history depth
-        """
-
+        """Clone the repo, handle history depth."""
         depth = ['--depth=1'] if shallow else []
         return Command('git', 'clone', *depth, url, destination).run(
             cwd=Path('/'), env=env, timeout=timeout, logger=logger

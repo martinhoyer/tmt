@@ -1,5 +1,4 @@
-"""
-Template rendering.
+"""Template rendering.
 
 Package provides primitives for Jinja2 template rendering, plus our
 custom filters.
@@ -33,8 +32,7 @@ if TYPE_CHECKING:
 def _template_filter_basename(  # type: ignore[reportUnusedFunction,unused-ignore]
     pathlike: str,
 ) -> str:
-    """
-    Return the last component of the given path.
+    """Return the last component of the given path.
 
     .. code-block:: jinja
 
@@ -44,15 +42,13 @@ def _template_filter_basename(  # type: ignore[reportUnusedFunction,unused-ignor
         # "/var/log/" -> "log"
         {{ "/var/log/" | basename }}
     """
-
     return Path(pathlike).name
 
 
 def _template_filter_match(  # type: ignore[reportUnusedFunction,unused-ignore]
     s: str, pattern: str
 ) -> Optional[Match[str]]:
-    """
-    Return `re.Match`__ if the string matches a given pattern.
+    """Return `re.Match`__ if the string matches a given pattern.
 
     Pattern is tested in "match" mode, i.e. it must match from the
     beginning of the string. See :ref:`regular-expressions` description
@@ -71,15 +67,13 @@ def _template_filter_match(  # type: ignore[reportUnusedFunction,unused-ignore]
         # 'foo/bar/baz' -> 'bar'
         {{ 'foo/bar' | match('foo/(.+?)/.*').group(1) }}
     """
-
     return re.match(pattern, s)
 
 
 def _template_filter_search(  # type: ignore[reportUnusedFunction,unused-ignore]
     s: str, pattern: str
 ) -> Optional[Match[str]]:
-    """
-    Return `re.Match`__ if the string matches a given pattern.
+    """Return `re.Match`__ if the string matches a given pattern.
 
     Pattern is tested in "search" mode, i.e. it can match anywhere
     in the string. See :ref:`regular-expressions` description for more
@@ -98,15 +92,13 @@ def _template_filter_search(  # type: ignore[reportUnusedFunction,unused-ignore]
         # 'baz/foo/bar/baz' -> 'bar'
         {{ 'baz/foo/bar' | search('foo/(.+?)/.*').group(1) }}
     """
-
     return re.search(pattern, s)
 
 
 def _template_filter_regex_findall(  # type: ignore[reportUnusedFunction,unused-ignore]
     s: str, pattern: str
 ) -> list[str]:
-    """
-    Return a list of all non-overlapping matches in the string.
+    """Return a list of all non-overlapping matches in the string.
 
     If one or more capturing groups are present in the pattern, return
     a list of groups; this will be a list of tuples if the pattern
@@ -119,15 +111,13 @@ def _template_filter_regex_findall(  # type: ignore[reportUnusedFunction,unused-
         # '/var/log/mail.log' => ['/', '/', '/']
         {{ '/var/log/mail.log' | regex_findall('/') }}
     """
-
     return re.findall(pattern, s)
 
 
 def _template_filter_regex_match(  # type: ignore[reportUnusedFunction,unused-ignore]
     s: str, pattern: str
 ) -> str:
-    """
-    Return string matching a given pattern.
+    """Return string matching a given pattern.
 
     Pattern is tested in "match" mode, i.e. it must match from the
     beginning of the string. See :ref:`regular-expressions` description
@@ -149,7 +139,6 @@ def _template_filter_regex_match(  # type: ignore[reportUnusedFunction,unused-ig
         # 'foo/bar/baz' -> 'bar'
         {{ 'foo/bar/baz' | regex_match('foo/(.+?)/.*') }}
     """
-
     match = re.match(pattern, s)
 
     if match is None:
@@ -164,8 +153,7 @@ def _template_filter_regex_match(  # type: ignore[reportUnusedFunction,unused-ig
 def _template_filter_regex_search(  # type: ignore[reportUnusedFunction,unused-ignore]
     s: str, pattern: str
 ) -> str:
-    """
-    Return string matching a given pattern.
+    """Return string matching a given pattern.
 
     Pattern is tested in "search" mode, i.e. it can match anywhere
     in the string. See :ref:`regular-expressions` description for more
@@ -187,7 +175,6 @@ def _template_filter_regex_search(  # type: ignore[reportUnusedFunction,unused-i
         # 'baz/foo/bar/baz' -> 'bar'
         {{ 'baz/foo/bar/baz' | regex_search('foo/(.+?)/.*') }}
     """
-
     match = re.search(pattern, s)
 
     if match is None:
@@ -202,8 +189,7 @@ def _template_filter_regex_search(  # type: ignore[reportUnusedFunction,unused-i
 def _template_filter_regex_replace(  # type: ignore[reportUnusedFunction,unused-ignore]
     s: str, pattern: str, repl: str
 ) -> str:
-    """
-    Replace a substring defined by a regular expression with another string.
+    r"""Replace a substring defined by a regular expression with another string.
 
     Return the string obtained by replacing the leftmost
     non-overlapping occurrences of pattern in string by the replacement.
@@ -220,13 +206,11 @@ def _template_filter_regex_replace(  # type: ignore[reportUnusedFunction,unused-
         # 'foo/bar' -> 'foo/bar'
         {{ 'foo/bar' | regex_replace('(.+)/baz', '\1/') }}
     """
-
     return re.sub(pattern, repl, s)
 
 
 def _template_filter_dedent(s: str) -> str:  # type: ignore[reportUnusedFunction,unused-ignore]
-    """
-    Remove any common leading whitespace from every line in the string.
+    r"""Remove any common leading whitespace from every line in the string.
 
     .. code-block:: jinja
 
@@ -246,7 +230,6 @@ def _template_filter_dedent(s: str) -> str:  # type: ignore[reportUnusedFunction
         # '''
         {{ "\\n    foo\\n    bar\\n        baz\\n" | dedent }}
     """
-
     return textwrap.dedent(s)
 
 
@@ -258,8 +241,7 @@ def _template_filter_listed(  # type: ignore[reportUnusedFunction,unused-ignore]
     quote: str = "",
     join: str = "and",
 ) -> str:
-    """
-    Return a nice, human readable description of an iterable.
+    """Return a nice, human readable description of an iterable.
 
     .. code-block:: jinja
 
@@ -287,7 +269,6 @@ def _template_filter_listed(  # type: ignore[reportUnusedFunction,unused-ignore]
         # [0, 1, 2, 3, 4, 5, 6] -> "7 leaves"
         {{ [0, 1, 2, 3, 4, 5, 6] | listed("leaf", "leaves") }}
     """
-
     # cast: for some reason, mypy sees `listed` as `Any`
     return cast(
         str,
@@ -300,8 +281,7 @@ def _template_filter_web_git_url(  # type: ignore[reportUnusedFunction,unused-ig
     url: str,
     ref: str,
 ) -> str:
-    """
-    Sanitize git url using :py:meth:`tmt.utils.web_git_url`
+    """Sanitize git url using :py:meth:`tmt.utils.web_git_url`.
 
     .. code-block:: jinja
 
@@ -311,7 +291,6 @@ def _template_filter_web_git_url(  # type: ignore[reportUnusedFunction,unused-ig
         -> https://github.com/teemtee/tmt/tree/main/tmt/base.py
 
     """
-
     path = Path(path_str) if path_str else None
     return web_git_url(url, ref, path)
 
@@ -319,15 +298,13 @@ def _template_filter_web_git_url(  # type: ignore[reportUnusedFunction,unused-ig
 def _template_filter_shell_quote(  # type: ignore[reportUnusedFunction,unused-ignore]
     s: str,
 ) -> str:
-    """
-    Return a shell-escaped version of the string.
+    """Return a shell-escaped version of the string.
 
     .. code-block:: jinja
 
         # "foo bar" -> "'foo bar'"
         {{ "foo bar" | shell_quote }}
     """
-
     return shlex.quote(s)
 
 
@@ -337,12 +314,10 @@ def _template_filter_style(  # type: ignore[reportUnusedFunction,unused-ignore]
     bold: Optional[bool] = None,
     underline: Optional[bool] = None,
 ) -> str:
-    """
-    Evaluate terminal-style colorization tags supported by Click.
+    """Evaluate terminal-style colorization tags supported by Click.
 
     Implemented by passing all arguments to :py:func:`click.style`.
     """
-
     from tmt.utils.themes import style
 
     return style(s, fg=fg, bold=bold, underline=underline)
@@ -351,8 +326,7 @@ def _template_filter_style(  # type: ignore[reportUnusedFunction,unused-ignore]
 def _template_filter_guest_full_name(  # type: ignore[reportUnusedFunction,unused-ignore]
     guest: 'Guest',
 ) -> str:
-    """
-    Render guest's "full name".
+    """Render guest's "full name".
 
     Implemented by calling :py:func:`format_guest_full_name`.
 
@@ -364,7 +338,6 @@ def _template_filter_guest_full_name(  # type: ignore[reportUnusedFunction,unuse
         # {"name": "foo", "role": "bar"} -> 'foo (bar)'
         {{ {"name": "foo", "role": "bar"} | guest_full_name }}
     """
-
     from tmt.steps.provision import format_guest_full_name
 
     return format_guest_full_name(guest.name, guest.role)
@@ -373,8 +346,7 @@ def _template_filter_guest_full_name(  # type: ignore[reportUnusedFunction,unuse
 def _template_filter_format_duration(  # type: ignore[reportUnusedFunction,unused-ignore]
     result: 'BaseResult',
 ) -> str:
-    """
-    Render result duration in the ``hh:mm:ss`` format.
+    """Render result duration in the ``hh:mm:ss`` format.
 
     If the duration is not defined, return a placeholder marker instead.
 
@@ -386,7 +358,6 @@ def _template_filter_format_duration(  # type: ignore[reportUnusedFunction,unuse
         # {"duration": "12:34:56"} -> '12:34:56'
         {{ {"duration": "12:34:56"} | format_duration }}
     """
-
     return result.duration if result.duration else '..:..:..'
 
 
@@ -398,8 +369,7 @@ TEMPLATE_FILTERS: dict[str, Callable[..., Any]] = {
 
 
 def _template_test_unit(value: Any) -> bool:  # type: ignore[reportUnusedFunction,unused-ignore]
-    """
-    Return true if the object is a unit.
+    """Return true if the object is a unit.
 
     .. code-block:: jinja
 
@@ -407,7 +377,6 @@ def _template_test_unit(value: Any) -> bool:  # type: ignore[reportUnusedFunctio
             Value is a Pint's ``Quantity`` instance.
         {% endif %}
     """
-
     from pint import Quantity
 
     return isinstance(value, Quantity)
@@ -421,12 +390,10 @@ TEMPLATE_TESTS: dict[str, Callable[..., Any]] = {
 
 
 def default_template_environment() -> jinja2.Environment:
-    """
-    Create a Jinja2 environment with default settings.
+    """Create a Jinja2 environment with default settings.
 
     Adds common filters, and enables block trimming and left strip.
     """
-
     # S701: `autoescape=False` is dangerous and can lead to XSS.
     # As there can be many different template file formats, used to render various formats,
     # we need to explicitly set autoescape=False, as default might change in the future.
@@ -449,22 +416,18 @@ def render_template(
     environment: Optional[jinja2.Environment] = None,
     **variables: Any,
 ) -> str:
-    """
-    Render a template.
+    """Render a template.
 
-    :param template: template to render.
-    :param template_filepath: path to the template file, if any.
-    :param environment: Jinja2 environment to use.
-    :param variables: variables to pass to the template.
+    Args:
+        template: template to render.
+        template_filepath: path to the template file, if any.
+        environment: Jinja2 environment to use.
+        **variables: variables to pass to the template.
     """
-
     environment = environment or default_template_environment()
 
     def raise_error(message: str) -> None:
-        """
-        An in-template helper for raising exceptions
-        """
-
+        """An in-template helper for raising exceptions."""
         raise Exception(message)
 
     if 'raise_error' not in variables:
@@ -491,14 +454,13 @@ def render_template_file(
     environment: Optional[jinja2.Environment] = None,
     **variables: Any,
 ) -> str:
-    """
-    Render a template from a file.
+    """Render a template from a file.
 
-    :param template_filepath: path to the template file.
-    :param environment: Jinja2 environment to use.
-    :param variables: variables to pass to the template.
+    Args:
+        template_filepath: path to the template file.
+        environment: Jinja2 environment to use.
+        **variables: variables to pass to the template.
     """
-
     try:
         return render_template(
             template_filepath.read_text(), template_filepath, environment, **variables

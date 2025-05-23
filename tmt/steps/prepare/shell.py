@@ -41,8 +41,7 @@ class PrepareShellData(tmt.steps.prepare.PrepareStepData):
 
 @tmt.steps.provides_method('shell')
 class PrepareShell(tmt.steps.prepare.PreparePlugin[PrepareShellData]):
-    """
-    Prepare guest using shell (Bash) scripts.
+    """Prepare guest using shell (Bash) scripts.
 
     Default shell options are applied to the script, see the
     :ref:`/spec/tests/test` key specification for more
@@ -67,10 +66,7 @@ class PrepareShell(tmt.steps.prepare.PreparePlugin[PrepareShellData]):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> list[PhaseResult]:
-        """
-        Prepare the guests
-        """
-
+        """Prepare the guests."""
         results = super().go(guest=guest, environment=environment, logger=logger)
 
         environment = environment or tmt.utils.Environment()
@@ -91,9 +87,7 @@ class PrepareShell(tmt.steps.prepare.PreparePlugin[PrepareShellData]):
                     dirpath=workdir,
                     guest=guest,
                     logger=logger,
-                    filename_base=safe_filename(
-                        tmt.steps.TEST_TOPOLOGY_FILENAME_BASE, self, guest
-                    ),
+                    filename_base=safe_filename(tmt.steps.TEST_TOPOLOGY_FILENAME_BASE, self, guest),
                 )
             )
 

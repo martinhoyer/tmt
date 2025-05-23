@@ -1,8 +1,6 @@
-"""
-Main top-level command implementations.
+"""Main top-level command implementations.
 
-.. note::
-
+Note:
     We are currently refactoring :py:mod:`tmt.cli` into smaller modules.
     As of now, this module contains vast majority of tmt commands, but
     those will be continuously extracted until only the top-level
@@ -129,10 +127,7 @@ def main(
     pre_check: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Test Management Tool
-    """
-
+    """Test Management Tool."""
     # Let Click know about the output width - this affects mostly --help output.
     click_contex.max_content_width = tmt.utils.OUTPUT_WIDTH
 
@@ -295,10 +290,7 @@ def main(
 @force_dry_options
 @again_option
 def run(context: Context, id_: Optional[str], workdir_root: Optional[Path], **kwargs: Any) -> None:
-    """
-    Run test steps.
-    """
-
+    """Run test steps."""
     # Initialize
     logger = context.obj.logger.descend(logger_name='run', extra_shift=0)
     logger.apply_verbosity_options(**kwargs)
@@ -363,13 +355,11 @@ run.add_command(tmt.steps.Reboot.command())
 )
 @verbosity_options
 def run_plans(context: Context, **kwargs: Any) -> None:
-    """
-    Select plans which should be executed.
+    """Select plans which should be executed.
 
     Regular expression can be used to filter plans by name.
     Use '.' to select plans under the current working directory.
     """
-
     tmt.base.Plan.store_cli_invocation(context)
 
 
@@ -412,13 +402,11 @@ def run_plans(context: Context, **kwargs: Any) -> None:
 )
 @verbosity_options
 def run_tests(context: Context, **kwargs: Any) -> None:
-    """
-    Select tests which should be executed.
+    """Select tests which should be executed.
 
     Regular expression can be used to filter tests by name.
     Use '.' to select tests under the current working directory.
     """
-
     tmt.base.Test.store_cli_invocation(context)
 
 
@@ -432,10 +420,7 @@ def finito(
     *args: Any,
     **kwargs: Any,
 ) -> None:
-    """
-    Run tests if run defined
-    """
-
+    """Run tests if run defined."""
     if click_context.obj.run:
         click_context.obj.run.go()
 
@@ -449,13 +434,11 @@ def finito(
 @pass_context
 @verbosity_options
 def tests(context: Context, /, **kwargs: Any) -> None:
-    """
-    Manage tests (L1 metadata).
+    """Manage tests (L1 metadata).
 
     Check available tests, inspect their metadata.
     Convert old metadata into the new fmf format.
     """
-
     context.obj.logger = context.obj.logger.clone().apply_verbosity_options(**kwargs)
 
     # Show overview of available tests
@@ -468,13 +451,11 @@ def tests(context: Context, /, **kwargs: Any) -> None:
 @filtering_options
 @verbosity_options
 def tests_ls(context: Context, /, **kwargs: Any) -> None:
-    """
-    List available tests.
+    """List available tests.
 
     Regular expression can be used to filter tests by name.
     Use '.' to select tests under the current working directory.
     """
-
     tmt.Test.store_cli_invocation(context)
     for test in context.obj.tree.tests():
         test.ls()
@@ -485,13 +466,11 @@ def tests_ls(context: Context, /, **kwargs: Any) -> None:
 @filtering_options
 @verbosity_options
 def tests_show(context: Context, /, **kwargs: Any) -> None:
-    """
-    Show test details.
+    """Show test details.
 
     Regular expression can be used to filter tests by name.
     Use '.' to select tests under the current working directory.
     """
-
     tmt.Test.store_cli_invocation(context)
 
     logger = context.obj.logger.clone().apply_verbosity_options(**kwargs)
@@ -538,13 +517,11 @@ def tests_create(
     force: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Create a new test based on given template.
+    """Create a new test based on given template.
 
     Specify directory name or use '.' to create tests under the
     current working directory.
     """
-
     assert context.obj.tree.root is not None  # narrow type
     tmt.Test.store_cli_invocation(context)
     tmt.Test.create(
@@ -682,8 +659,7 @@ def tests_import(
     dry: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Import old test metadata into the new fmf format.
+    r"""Import old test metadata into the new fmf format.
 
     Accepts one or more directories where old metadata are stored.
     By default all available sources and current directory are used.
@@ -696,7 +672,6 @@ def tests_import(
     nitrate ...... contact, component, tag, environment, relevancy, enabled
     polarion ..... summary, enabled, assignee, id, component, tag, description, link
     """
-
     tmt.Test.store_cli_invocation(context)
 
     if manual:
@@ -895,13 +870,11 @@ def tests_export(
     template: Optional[str],
     **kwargs: Any,
 ) -> None:
-    """
-    Export test data into the desired format.
+    """Export test data into the desired format.
 
     Regular expression can be used to filter tests by name.
     Use '.' to select tests under the current working directory.
     """
-
     tmt.Test.store_cli_invocation(context)
 
     if nitrate:
@@ -946,14 +919,12 @@ def tests_export(
 @verbosity_options
 @force_dry_options
 def tests_id(context: Context, /, **kwargs: Any) -> None:
-    """
-    Generate a unique id for each selected test.
+    """Generate a unique id for each selected test.
 
     A new UUID is generated for each test matching the provided
     filter and the value is stored to disk. Existing identifiers
     are kept intact.
     """
-
     tmt.Test.store_cli_invocation(context)
     for test in context.obj.tree.tests():
         tmt.identifier.id_command(context, test.node, "test", dry=kwargs["dry"])
@@ -969,14 +940,12 @@ def tests_id(context: Context, /, **kwargs: Any) -> None:
 @verbosity_options
 @remote_plan_options
 def plans(context: Context, /, **kwargs: Any) -> None:
-    """
-    Manage test plans (L2 metadata).
+    r"""Manage test plans (L2 metadata).
 
     \b
     Search for available plans.
     Explore detailed test step configuration.
     """
-
     context.obj.logger = context.obj.logger.clone().apply_verbosity_options(**kwargs)
 
     # Show overview of available plans
@@ -990,13 +959,11 @@ def plans(context: Context, /, **kwargs: Any) -> None:
 @verbosity_options
 @remote_plan_options
 def plans_ls(context: Context, /, **kwargs: Any) -> None:
-    """
-    List available plans.
+    """List available plans.
 
     Regular expression can be used to filter plans by name.
     Use '.' to select plans under the current working directory.
     """
-
     tmt.Plan.store_cli_invocation(context)
     for plan in context.obj.tree.plans():
         plan.ls()
@@ -1009,13 +976,11 @@ def plans_ls(context: Context, /, **kwargs: Any) -> None:
 @verbosity_options
 @remote_plan_options
 def plans_show(context: Context, /, **kwargs: Any) -> None:
-    """
-    Show plan details.
+    """Show plan details.
 
     Regular expression can be used to filter plans by name.
     Use '.' to select plans under the current working directory.
     """
-
     tmt.Plan.store_cli_invocation(context)
 
     logger = context.obj.logger.clone().apply_verbosity_options(**kwargs)
@@ -1089,10 +1054,7 @@ def plans_create(
     force: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Create a new plan based on given template.
-    """
-
+    """Create a new plan based on given template."""
     assert context.obj.tree.root is not None  # narrow type
     tmt.Plan.store_cli_invocation(context)
     tmt.Plan.create(
@@ -1147,13 +1109,11 @@ def plans_export(
     template: Optional[str],
     **kwargs: Any,
 ) -> None:
-    """
-    Export plans into desired format.
+    """Export plans into desired format.
 
     Regular expression can be used to filter plans by name.
     Use '.' to select plans under the current working directory.
     """
-
     tmt.Plan.store_cli_invocation(context)
 
     if format != _test_export_default:
@@ -1176,14 +1136,12 @@ def plans_export(
 @verbosity_options
 @force_dry_options
 def plans_id(context: Context, /, **kwargs: Any) -> None:
-    """
-    Generate a unique id for each selected plan.
+    """Generate a unique id for each selected plan.
 
     A new UUID is generated for each plan matching the provided
     filter and the value is stored to disk. Existing identifiers
     are kept intact.
     """
-
     tmt.Plan.store_cli_invocation(context)
     for plan in context.obj.tree.plans():
         tmt.identifier.id_command(context, plan.node, "plan", dry=kwargs["dry"])
@@ -1198,14 +1156,12 @@ def plans_id(context: Context, /, **kwargs: Any) -> None:
 @pass_context
 @verbosity_options
 def stories(context: Context, /, **kwargs: Any) -> None:
-    """
-    Manage user stories.
+    r"""Manage user stories.
 
     \b
     Check available user stories.
     Explore coverage (test, implementation, documentation).
     """
-
     context.obj.logger = context.obj.logger.clone().apply_verbosity_options(**kwargs)
 
     # Show overview of available stories
@@ -1231,13 +1187,11 @@ def stories_ls(
     uncovered: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    List available stories.
+    """List available stories.
 
     Regular expression can be used to filter stories by name.
     Use '.' to select stories under the current working directory.
     """
-
     tmt.Story.store_cli_invocation(context)
     for story in context.obj.tree.stories():
         if story._match(
@@ -1271,13 +1225,11 @@ def stories_show(
     uncovered: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Show story details.
+    """Show story details.
 
     Regular expression can be used to filter stories by name.
     Use '.' to select stories under the current working directory.
     """
-
     tmt.Story.store_cli_invocation(context)
 
     logger = context.obj.logger.clone().apply_verbosity_options(**kwargs)
@@ -1325,10 +1277,7 @@ def stories_create(
     force: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Create a new story based on given template.
-    """
-
+    """Create a new story based on given template."""
     assert context.obj.tree.root is not None  # narrow type
     tmt.Story.store_cli_invocation(context)
     tmt.Story.create(
@@ -1364,20 +1313,15 @@ def stories_coverage(
     uncovered: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Show code, test and docs coverage for given stories.
+    """Show code, test and docs coverage for given stories.
 
     Regular expression can be used to filter stories by name.
     Use '.' to select stories under the current working directory.
     """
-
     tmt.Story.store_cli_invocation(context)
 
     def headfoot(text: str) -> None:
-        """
-        Format simple header/footer
-        """
-
+        """Format simple header/footer."""
         echo(style(text.rjust(4) + ' ', fg='blue'), nl=False)
 
     header = False
@@ -1481,13 +1425,11 @@ def stories_export(
     template: Optional[str],
     **kwargs: Any,
 ) -> None:
-    """
-    Export selected stories into desired format.
+    """Export selected stories into desired format.
 
     Regular expression can be used to filter stories by name.
     Use '.' to select stories under the current working directory.
     """
-
     tmt.Story.store_cli_invocation(context)
 
     if format != _test_export_default:
@@ -1536,14 +1478,12 @@ def stories_id(
     uncovered: bool,
     **kwargs: Any,
 ) -> None:
-    """
-    Generate a unique id for each selected story.
+    """Generate a unique id for each selected story.
 
     A new UUID is generated for each story matching the provided
     filter and the value is stored to disk. Existing identifiers
     are kept intact.
     """
-
     tmt.Story.store_cli_invocation(context)
     for story in context.obj.tree.stories():
         if story._match(
@@ -1609,8 +1549,7 @@ def clean(
     workdir_root: Optional[Path],
     **kwargs: Any,
 ) -> None:
-    """
-    Clean workdirs, guests or images.
+    """Clean workdirs, guests or images.
 
     Without any command, clean everything, stop the guests, remove
     all runs and then remove all images. Search for runs in
@@ -1621,7 +1560,6 @@ def clean(
     the same, irrespective of the order on the command line. First, all
     the guests are cleaned, followed by runs and images.
     """
-
     if last and id_:
         raise tmt.utils.GeneralError("Options --last and --id cannot be used together.")
 
@@ -1672,13 +1610,11 @@ def perform_clean(
     *args: Any,
     **kwargs: Any,
 ) -> None:
-    """
-    Perform clean actions in the correct order.
+    """Perform clean actions in the correct order.
 
     We need to ensure that guests are always cleaned before the run workdirs
     even if the user specified them in reverse order.
     """
-
     clean_order = ("guests", "runs", "images")
     exit_code = 0
     for phase in clean_order:
@@ -1722,12 +1658,10 @@ def clean_runs(
     keep: Optional[int],
     **kwargs: Any,
 ) -> None:
-    """
-    Clean workdirs of past runs.
+    """Clean workdirs of past runs.
 
     Remove all runs in '/var/tmp/tmt' by default.
     """
-
     defined = [last is True, bool(id_), keep is not None]
     if defined.count(True) > 1:
         raise tmt.utils.GeneralError("Options --last, --id and --keep cannot be used together.")
@@ -1794,12 +1728,10 @@ def clean_guests(
     keep: Optional[int],
     **kwargs: Any,
 ) -> None:
-    """
-    Stop running guests of runs.
+    """Stop running guests of runs.
 
     Stop guests of all runs in '/var/tmp/tmt' by default.
     """
-
     if last and bool(id_):
         raise tmt.utils.GeneralError("Options --last and --id cannot be used together.")
     if workdir_root and not workdir_root.exists():
@@ -1828,13 +1760,11 @@ def clean_guests(
 @verbosity_options
 @dry_options
 def clean_images(context: Context, /, workdir_root: Optional[Path], **kwargs: Any) -> None:
-    """
-    Remove images of supported provision methods.
+    """Remove images of supported provision methods.
 
     Currently supported methods are:
      - testcloud
     """
-
     # FIXME: If there are more provision methods supporting this,
     #        we should add options to specify which provision should be
     #        cleaned, similarly to guests.
@@ -1861,15 +1791,12 @@ def clean_images(context: Context, /, workdir_root: Optional[Path], **kwargs: An
 
 @main.group(cls=CustomGroup)
 def setup(**kwargs: Any) -> None:
-    """
-    Setup the environment for working with tmt
-    """
+    """Setup the environment for working with tmt."""
 
 
 @setup.group(cls=CustomGroup)
 def completion(**kwargs: Any) -> None:
-    """
-    Setup shell completions.
+    """Setup shell completions.
 
     By default, these commands only write a shell script to the output
     which can then be sourced from the shell's configuration file. Use
@@ -1883,10 +1810,7 @@ COMPLETE_SCRIPT = 'tmt-complete'
 
 
 def setup_completion(shell: str, install: bool, context: Context, logger: tmt.log.Logger) -> None:
-    """
-    Setup completion based on the shell
-    """
-
+    """Setup completion based on the shell."""
     config = tmt.config.Config(logger)
     # Fish gets installed into its special location where it is automatically
     # loaded.
@@ -1934,10 +1858,7 @@ def setup_completion(shell: str, install: bool, context: Context, logger: tmt.lo
          """,
 )
 def completion_bash(context: Context, install: bool, **kwargs: Any) -> None:
-    """
-    Setup shell completions for bash
-    """
-
+    """Setup shell completions for bash."""
     setup_completion('bash', install, context, context.obj.logger)
 
 
@@ -1954,10 +1875,7 @@ def completion_bash(context: Context, install: bool, **kwargs: Any) -> None:
          """,
 )
 def completion_zsh(context: Context, install: bool, **kwargs: Any) -> None:
-    """
-    Setup shell completions for zsh
-    """
-
+    """Setup shell completions for zsh."""
     setup_completion('zsh', install, context, context.obj.logger)
 
 
@@ -1971,10 +1889,7 @@ def completion_zsh(context: Context, install: bool, **kwargs: Any) -> None:
     help="Persistently store the script to '~/.config/fish/completions/tmt.fish'.",
 )
 def completion_fish(context: Context, install: bool, **kwargs: Any) -> None:
-    """
-    Setup shell completions for fish
-    """
-
+    """Setup shell completions for fish."""
     setup_completion('fish', install, context, context.obj.logger)
 
 
@@ -2002,14 +1917,12 @@ def link(
     links: list[str],
     separate: bool,
 ) -> None:
-    """
-    Create a link to tmt web service in an issue tracking software.
+    """Create a link to tmt web service in an issue tracking software.
 
     Using the specified target, a link will be generated and added
     to an issue. Link is generated from names of tmt objects
     passed in arguments and configuration file.
     """
-
     tmt_objects = (
         context.obj.tree.tests(names=list(names))
         + context.obj.tree.plans(names=list(names))

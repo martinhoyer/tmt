@@ -48,8 +48,7 @@ ANSIBLE_MODULE_NOTE_TEMPLATE = """
 
 
 def _collect_playbook_modules(feature_cls: FeatureClass, logger: tmt.log.Logger) -> set[str]:
-    """
-    Find all module-like keys in feature's Ansible playbooks.
+    """Find all module-like keys in feature's Ansible playbooks.
 
     Module-like keys are keys in dictionaries that match the pattern of
     ``foo.bar.baz``, as we enforce fully-qualified module names to be
@@ -84,10 +83,7 @@ def _collect_playbook_modules(feature_cls: FeatureClass, logger: tmt.log.Logger)
 
 
 def _add_modules_to_docstring(feature_cls: FeatureClass, logger: tmt.log.Logger) -> None:
-    """
-    Add a list of Ansible modules used by feature's playbooks to its docstring.
-    """
-
+    """Add a list of Ansible modules used by feature's playbooks to its docstring."""
     if not feature_cls.__doc__:
         return
 
@@ -100,16 +96,14 @@ def _add_modules_to_docstring(feature_cls: FeatureClass, logger: tmt.log.Logger)
 
 
 def provides_feature(feature: str) -> Callable[[FeatureClass], FeatureClass]:
-    """
-    A decorator for registering feature plugins.
+    """A decorator for registering feature plugins.
 
     Decorate a feature plugin class to register a feature:
 
     .. code-block:: python
 
         @provides_feature('foo')
-        class Foo(ToggleableFeature):
-            ...
+        class Foo(ToggleableFeature): ...
 
     Decorator also inspects plugins :py:attr:`FeatureBase.PLAYBOOKS`,
     gathers all Ansible modules from listed playbooks, and adds a note
@@ -137,12 +131,11 @@ def provides_feature(feature: str) -> Callable[[FeatureClass], FeatureClass]:
 
 
 def find_plugin(name: str) -> 'FeatureClass':
-    """
-    Find a plugin by its name.
+    """Find a plugin by its name.
 
-    :raises GeneralError: when the plugin does not exist.
+    Raises:
+        GeneralError: when the plugin does not exist.
     """
-
     plugin = _FEATURE_PLUGIN_REGISTRY.get_plugin(name)
 
     if plugin is None:
@@ -159,7 +152,7 @@ class PrepareFeatureData(tmt.steps.prepare.PrepareStepData):
 
 
 class FeatureBase(tmt.utils.Common):
-    """Base class for ``feature`` plugins"""
+    """Base class for ``feature`` plugins."""
 
     FEATURE_NAME: str
     PLAYBOOKS: set[str] = set()
@@ -171,13 +164,11 @@ class FeatureBase(tmt.utils.Common):
 
     @classmethod
     def get_data_class(cls) -> type[PrepareFeatureData]:
-        """
-        Return step data class for this plugin.
+        """Return step data class for this plugin.
 
         By default, :py:attr:`_data_class` is returned, but plugin may
         override this method to provide different class.
         """
-
         return cls._data_class
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -215,7 +206,7 @@ class FeatureBase(tmt.utils.Common):
 
 
 class ToggleableFeature(FeatureBase):
-    """Base class for ``feature`` plugins that enable/disable a feature"""
+    """Base class for ``feature`` plugins that enable/disable a feature."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -230,7 +221,7 @@ class ToggleableFeature(FeatureBase):
 
 
 class Feature(FeatureBase):
-    """Base class for ``feature`` plugins that enable a feature"""
+    """Base class for ``feature`` plugins that enable a feature."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -242,30 +233,27 @@ class Feature(FeatureBase):
 
 @tmt.steps.provides_method('feature')
 class PrepareFeature(tmt.steps.prepare.PreparePlugin[PrepareFeatureData]):
-    """
-    Easily enable and disable common features
+    """Easily enable and disable common features.
 
     The ``feature`` plugin provides a comfortable way to enable
     and disable some commonly used functionality such as enabling
     and disabling the ``epel`` repository or the ``fips`` mode.
 
-    .. note::
+    Note:
+        The plugin requires a working Ansible to be available on the
+        test runner.
 
-       The plugin requires a working Ansible to be available on the
-       test runner.
+    Warning:
+        The plugin may be a subject of various limitations, imposed by
+        the fact it uses Ansible to implement some of the features:
 
-    .. warning::
-
-       The plugin may be a subject of various limitations, imposed by
-       the fact it uses Ansible to implement some of the features:
-
-       * Ansible 2.17+ no longer supports Python 3.6 and older. Guests
-         where Python 3.7+ is not available cannot be prepared with the
-         ``feature`` plugin. This has been observed when Fedora Rawhide
-         runner is used with CentOS 7 or CentOS Stream 8 guests. Possible
-         workarounds: downgrade Ansible tmt uses, or install Python 3.7+
-         before using ``feature`` plugin from an alternative repository
-         or local build.
+        * Ansible 2.17+ no longer supports Python 3.6 and older. Guests
+          where Python 3.7+ is not available cannot be prepared with the
+          ``feature`` plugin. This has been observed when Fedora Rawhide
+          runner is used with CentOS 7 or CentOS Stream 8 guests. Possible
+          workarounds: downgrade Ansible tmt uses, or install Python 3.7+
+          before using ``feature`` plugin from an alternative repository
+          or local build.
 
     .. code-block:: yaml
 
@@ -280,19 +268,17 @@ class PrepareFeature(tmt.steps.prepare.PreparePlugin[PrepareFeatureData]):
 
         prepare --how feature --epel disabled --crb enabled --fips enabled ...
 
-    .. note::
-
-       Features available via this plugin are implemented and shipped as
-       plugins too. The list of available features and configuration keys
-       will depend on which plugins you have installed.
+    Note:
+        Features available via this plugin are implemented and shipped as
+        plugins too. The list of available features and configuration keys
+        will depend on which plugins you have installed.
     """
 
     _data_class = PrepareFeatureData
 
     @classmethod
     def get_data_class(cls) -> type[PrepareFeatureData]:
-        """
-        Return step data class for this plugin.
+        """Return step data class for this plugin.
 
         ``prepare/feature`` builds the class in a dynamic way: class'
         fields are defined by discovered feature plugins. Plugins define
@@ -301,7 +287,6 @@ class PrepareFeature(tmt.steps.prepare.PreparePlugin[PrepareFeatureData]):
         (``name``, ``order``, ...) into the final data class of
         ``prepare/feature`` plugin.
         """
-
         # If this class' data class is not `PrepareFeatureData` anymore,
         # it means this method already constructed the dynamic class.
         if cls._data_class == PrepareFeatureData:
@@ -337,10 +322,7 @@ class PrepareFeature(tmt.steps.prepare.PreparePlugin[PrepareFeatureData]):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> list[PhaseResult]:
-        """
-        Prepare the guests
-        """
-
+        """Prepare the guests."""
         results = super().go(guest=guest, environment=environment, logger=logger)
 
         # Nothing to do in dry mode
@@ -373,13 +355,12 @@ class PrepareFeature(tmt.steps.prepare.PreparePlugin[PrepareFeatureData]):
         return results
 
     def essential_requires(self) -> list[tmt.base.Dependency]:
-        """
-        Collect all essential requirements of the plugin.
+        """Collect all essential requirements of the plugin.
 
         Essential requirements of a plugin are necessary for the plugin to
         perform its basic functionality.
 
-        :returns: a list of requirements.
+        Returns:
+            a list of requirements.
         """
-
         return tmt.steps.provision.essential_ansible_requires()

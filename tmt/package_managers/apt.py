@@ -85,10 +85,7 @@ class AptEngine(PackageManagerEngine):
     _sudo_prefix: Command
 
     def prepare_command(self) -> tuple[Command, Command]:
-        """
-        Prepare installation command for apt
-        """
-
+        """Prepare installation command for apt."""
         if self.guest.facts.is_superuser is False:
             self._sudo_prefix = Command('sudo')
 

@@ -5,10 +5,7 @@ from tmt.steps.prepare.install import InstallBase
 
 
 def test_debuginfo(root_logger):
-    """
-    Check debuginfo package parsing
-    """
-
+    """Check debuginfo package parsing."""
     parent = MagicMock()
     guest = MagicMock()
 

@@ -81,17 +81,15 @@ class PrepareAnsible(tmt.steps.prepare.PreparePlugin[PrepareAnsibleData]):
     #
     # https://tmt.readthedocs.io/en/stable/contribute.html#docs
     #
-    """
-    Run Ansible playbooks against the guest, by running
-    ``ansible-playbook`` for all given playbooks.
+    r"""Run Ansible playbooks against the guest.
 
-    .. note::
+    runs ``ansible-playbook`` for all given playbooks.
 
-       The plugin requires a working Ansible to be available on the
-       test runner.
+    Note:
+        The plugin requires a working Ansible to be available on the
+        test runner.
 
-    .. warning::
-
+    Warning:
         When specifying playbooks with paths:
 
         * If a metadata tree root exists, all paths must be relative to
@@ -99,18 +97,17 @@ class PrepareAnsible(tmt.steps.prepare.PreparePlugin[PrepareAnsibleData]):
         * If the metadata tree root does not exist,
           all paths must be relative to the current working directory.
 
-    .. warning::
+    Warning:
+        The plugin may be a subject of various limitations, imposed by
+        Ansible itself:
 
-       The plugin may be a subject of various limitations, imposed by
-       Ansible itself:
-
-       * Ansible 2.17+ no longer supports Python 3.6 and older. Guests
-         where Python 3.7+ is not available cannot be prepared with the
-         ``ansible`` plugin. This has been observed when Fedora Rawhide
-         runner is used with CentOS 7 or CentOS Stream 8 guests. Possible
-         workarounds: downgrade Ansible tmt uses, or install Python 3.7+
-         before using ``ansible`` plugin from an alternative repository
-         or local build.
+        * Ansible 2.17+ no longer supports Python 3.6 and older. Guests
+          where Python 3.7+ is not available cannot be prepared with the
+          ``ansible`` plugin. This has been observed when Fedora Rawhide
+          runner is used with CentOS 7 or CentOS Stream 8 guests. Possible
+          workarounds: downgrade Ansible tmt uses, or install Python 3.7+
+          before using ``ansible`` plugin from an alternative repository
+          or local build.
 
     Run a single playbook on the guest:
 
@@ -172,10 +169,7 @@ class PrepareAnsible(tmt.steps.prepare.PreparePlugin[PrepareAnsibleData]):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> list[PhaseResult]:
-        """
-        Prepare the guests
-        """
-
+        """Prepare the guests."""
         results = super().go(guest=guest, environment=environment, logger=logger)
 
         # Apply each playbook on the guest
@@ -245,13 +239,12 @@ class PrepareAnsible(tmt.steps.prepare.PreparePlugin[PrepareAnsibleData]):
         return results
 
     def essential_requires(self) -> list[tmt.base.Dependency]:
-        """
-        Collect all essential requirements of the plugin.
+        """Collect all essential requirements of the plugin.
 
         Essential requirements of a plugin are necessary for the plugin to
         perform its basic functionality.
 
-        :returns: a list of requirements.
+        Returns:
+            a list of requirements.
         """
-
         return tmt.steps.provision.essential_ansible_requires()

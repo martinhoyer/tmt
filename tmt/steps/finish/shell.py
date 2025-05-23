@@ -40,8 +40,7 @@ class FinishShellData(tmt.steps.finish.FinishStepData):
 
 @tmt.steps.provides_method('shell')
 class FinishShell(tmt.steps.finish.FinishPlugin[FinishShellData]):
-    """
-    Perform finishing tasks using shell (bash) scripts.
+    """Perform finishing tasks using shell (bash) scripts.
 
     Execute arbitrary shell commands to finish the testing.
     Default shell options are applied to the script, see the
@@ -72,10 +71,7 @@ class FinishShell(tmt.steps.finish.FinishPlugin[FinishShellData]):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> list[PhaseResult]:
-        """
-        Perform finishing tasks on given guest
-        """
-
+        """Perform finishing tasks on given guest."""
         results = super().go(guest=guest, environment=environment, logger=logger)
 
         # Give a short summary

@@ -102,9 +102,7 @@ def test_get_combined_templates(tmppath: Path) -> None:
 
     assert template_manager.templates['plan']['base'] is not None
     assert template_manager.templates['plan']['custom_plan'] is not None
-    assert (
-        template_manager.templates['plan']['custom_plan'].read_text() == 'Plan template content.'
-    )
+    assert template_manager.templates['plan']['custom_plan'].read_text() == 'Plan template content.'
 
 
 def test_render_template_file(tmppath: Path) -> None:

@@ -23,10 +23,7 @@ def config_path(tmppath: Path, monkeypatch) -> Path:
 
 
 def test_config(config_path: Path, root_logger: Logger):
-    """
-    Config smoke test
-    """
-
+    """Config smoke test."""
     run = Path('/var/tmp/tmt/test')
     config1 = tmt.config.Config(root_logger)
     config1.last_run = run
@@ -35,10 +32,7 @@ def test_config(config_path: Path, root_logger: Logger):
 
 
 def test_last_run_race(tmppath: Path, monkeypatch, root_logger: Logger):
-    """
-    Race in last run symlink shouldn't be fatal
-    """
-
+    """Race in last run symlink shouldn't be fatal."""
     logger = root_logger.clone()
 
     config_path = tmppath / 'config'

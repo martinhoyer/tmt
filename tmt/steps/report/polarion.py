@@ -208,8 +208,7 @@ class ReportPolarionData(tmt.steps.report.ReportStepData):
 
 @tmt.steps.provides_method('polarion')
 class ReportPolarion(tmt.steps.report.ReportPlugin[ReportPolarionData]):
-    """
-    Write test results into an xUnit file and upload to Polarion.
+    """Write test results into an xUnit file and upload to Polarion.
 
     In order to get quickly started create a pylero config
     file ``~/.pylero`` in your home directory with the
@@ -229,8 +228,7 @@ class ReportPolarion(tmt.steps.report.ReportPlugin[ReportPolarionData]):
 
     https://github.com/RedHatQE/pylero
 
-    .. note::
-
+    Note:
         For Polarion report to export correctly you need to
         use password authentication, since exporting the
         report happens through Polarion XUnit importer which
@@ -238,8 +236,7 @@ class ReportPolarion(tmt.steps.report.ReportPlugin[ReportPolarionData]):
         authenticate with token to only generate the report
         using ``--no-upload`` argument.
 
-    .. note::
-
+    Note:
         Your Polarion project might need a custom value format
         for the ``arch``, ``planned-in`` and other fields. The
         format of these fields might differ across Polarion
@@ -270,10 +267,7 @@ class ReportPolarion(tmt.steps.report.ReportPlugin[ReportPolarionData]):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         members = super()._preserved_workdir_members
 
         if self.data.file is None:
@@ -282,10 +276,7 @@ class ReportPolarion(tmt.steps.report.ReportPlugin[ReportPolarionData]):
         return members
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Go through executed tests and report into Polarion
-        """
-
+        """Go through executed tests and report into Polarion."""
         super().go(logger=logger)
 
         from tmt.export.polarion import find_polarion_case_ids, import_polarion

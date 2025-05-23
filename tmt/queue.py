@@ -17,15 +17,13 @@ TaskResultT = TypeVar('TaskResultT')
 
 @container
 class Task(Generic[TaskResultT]):
-    """
-    A base class for queueable actions.
+    """A base class for queueable actions.
 
     The class provides not just the tracking, but the implementation of the said
     action as well. Child classes must implement their action functionality in
     :py:meth:`go`.
 
-    .. note::
-
+    Note:
         This class and its subclasses must provide their own ``__init__``
         methods, and cannot rely on :py:mod:`dataclasses` generating one. This
         is caused by subclasses often adding fields without default values,
@@ -62,18 +60,15 @@ class Task(Generic[TaskResultT]):
 
     @property
     def name(self) -> str:
-        """
-        A name of this task.
+        """A name of this task.
 
         Left for child classes to implement, because the name depends on the
         actual task.
         """
-
         raise NotImplementedError
 
     def go(self) -> Iterator['Self']:
-        """
-        Perform the task.
+        """Perform the task.
 
         Called by :py:class:`Queue` machinery to accomplish the task.
 
@@ -82,7 +77,6 @@ class Task(Generic[TaskResultT]):
             depending on how exactly it was queued, and method would yield
             corresponding results.
         """
-
         raise NotImplementedError
 
 
@@ -90,14 +84,12 @@ TaskT = TypeVar('TaskT', bound='Task')  # type: ignore[type-arg]
 
 
 def prepare_loggers(logger: Logger, labels: list[str]) -> dict[str, Logger]:
-    """
-    Create loggers for a set of labels.
+    """Create loggers for a set of labels.
 
     Guests are assumed to be a group a phase would be executed on, and
     therefore their labels need to be set, to provide context, plus their
     labels need to be properly aligned for more readable output.
     """
-
     loggers: dict[str, Logger] = {}
 
     # First, spawn all loggers, and set their labels if needed.
@@ -122,8 +114,7 @@ def prepare_loggers(logger: Logger, labels: list[str]) -> dict[str, Logger]:
 
 @container
 class GuestlessTask(Task[TaskResultT]):
-    """
-    A task not assigned to a particular set of guests.
+    """A task not assigned to a particular set of guests.
 
     An extension of the :py:class:`Task` class, provides a quite generic wrapper
     for the actual task which takes care of catching exceptions and proper
@@ -135,8 +126,7 @@ class GuestlessTask(Task[TaskResultT]):
         super().__init__(logger, **kwargs)
 
     def run(self, logger: Logger) -> TaskResultT:
-        """
-        Perform the task.
+        """Perform the task.
 
         Called once from :py:meth:`go`. Subclasses of :py:class:`GuestlessTask`
         should implement their logic in this method rather than in
@@ -144,12 +134,10 @@ class GuestlessTask(Task[TaskResultT]):
         handling in :py:class:`go`, it might be better derived directly from
         :py:class:`Task`.
         """
-
         raise NotImplementedError
 
     def go(self) -> Iterator['Self']:
-        """
-        Perform the task.
+        """Perform the task.
 
         Called by :py:class:`Queue` machinery to accomplish the task. It expects
         the child class would implement :py:meth:`run`, with ``go`` taking care
@@ -159,7 +147,6 @@ class GuestlessTask(Task[TaskResultT]):
             only a single instance of the class is yielded to describe the task
             and its outcome.
         """
-
         try:
             self.result = self.run(self.logger)
 
@@ -177,8 +164,7 @@ class GuestlessTask(Task[TaskResultT]):
 
 @container
 class MultiGuestTask(Task[TaskResultT]):
-    """
-    A task assigned to a particular set of guests.
+    """A task assigned to a particular set of guests.
 
     An extension of the :py:class:`Task` class, provides a quite generic wrapper
     for the actual task which takes care of catching exceptions and proper
@@ -198,8 +184,7 @@ class MultiGuestTask(Task[TaskResultT]):
         return sorted([guest.multihost_name for guest in self.guests])
 
     def run_on_guest(self, guest: 'Guest', logger: Logger) -> None:
-        """
-        Perform the task.
+        """Perform the task.
 
         Called from :py:meth:`go` once for every guest to run on. Subclasses of
         :py:class:`GuestlessTask` should implement their logic in this method
@@ -207,12 +192,10 @@ class MultiGuestTask(Task[TaskResultT]):
         requires different handling in :py:class:`go`, it might be better
         derived directly from :py:class:`Task`.
         """
-
         raise NotImplementedError
 
     def go(self) -> Iterator['Self']:
-        """
-        Perform the task.
+        """Perform the task.
 
         Called by :py:class:`Queue` machinery to accomplish the task. It expects
         the child class would implement :py:meth:`run`, with ``go`` taking care
@@ -222,7 +205,6 @@ class MultiGuestTask(Task[TaskResultT]):
             task and their outcome. For each guest, one instance would be
             yielded.
         """
-
         multiple_guests = len(self.guests) > 1
 
         new_loggers = prepare_loggers(self.logger, [guest.multihost_name for guest in self.guests])
@@ -292,9 +274,7 @@ class MultiGuestTask(Task[TaskResultT]):
 
 
 class Queue(list[TaskT]):
-    """
-    Queue class for running tasks
-    """
+    """Queue class for running tasks."""
 
     def __init__(self, name: str, logger: Logger) -> None:
         super().__init__()
@@ -303,10 +283,7 @@ class Queue(list[TaskT]):
         self._logger = logger
 
     def enqueue_task(self, task: TaskT) -> None:
-        """
-        Put new task into a queue
-        """
-
+        """Put new task into a queue."""
         self.append(task)
 
         self._logger.info(
@@ -316,13 +293,11 @@ class Queue(list[TaskT]):
         )
 
     def run(self) -> Iterator[TaskT]:
-        """
-        Start crunching the queued tasks.
+        """Start crunching the queued tasks.
 
         Tasks are executed in the order, for each task/guest
         combination a :py:class:`Task` instance is yielded.
         """
-
         for i, task in enumerate(self):
             self._logger.info('')
 

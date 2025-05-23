@@ -33,10 +33,7 @@ class DnfEngine(PackageManagerEngine):
         return (command, options)
 
     def _extra_dnf_options(self, options: Options, command: Optional[Command] = None) -> Command:
-        """
-        Collect additional options for ``yum``/``dnf`` based on given options
-        """
-
+        """Collect additional options for ``yum``/``dnf`` based on given options."""
         command = command or self._base_command
 
         extra_options = Command()
@@ -236,9 +233,7 @@ class YumEngine(DnfEngine):
     # decorator, it might be messing with the class inheritance as seen by pyright,
     # but mypy sees no issue, pytest sees no issue, everything works. Silencing
     # for now.
-    def install(
-        self, *installables: Installable, options: Optional[Options] = None
-    ) -> ShellScript:
+    def install(self, *installables: Installable, options: Optional[Options] = None) -> ShellScript:
         options = options or Options()
 
         script = cast(  # type: ignore[redundant-cast]

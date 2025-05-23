@@ -83,10 +83,7 @@ REBOOT_TIMEOUT: int = configure_constant(DEFAULT_REBOOT_TIMEOUT, 'TMT_REBOOT_TIM
 
 
 def default_reboot_waiting() -> Waiting:
-    """
-    Create default waiting context for guest reboots.
-    """
-
+    """Create default waiting context for guest reboots."""
     return Waiting(deadline=Deadline.from_seconds(REBOOT_TIMEOUT))
 
 
@@ -97,10 +94,7 @@ RECONNECT_WAIT_TICK_INCREASE = 1.0
 
 
 def default_reconnect_waiting() -> Waiting:
-    """
-    Create default waiting context for guest reconnect.
-    """
-
+    """Create default waiting context for guest reconnect."""
     return Waiting(
         deadline=Deadline.from_seconds(REBOOT_TIMEOUT),
         tick=RECONNECT_WAIT_TICK,
@@ -117,10 +111,7 @@ AnsibleApplicable = Union[AnsibleCollectionPlaybook, AnsiblePlaybook]
 
 
 def configure_ssh_options() -> tmt.utils.RawCommand:
-    """
-    Extract custom SSH options from environment variables
-    """
-
+    """Extract custom SSH options from environment variables."""
     options: tmt.utils.RawCommand = []
 
     for name, value in os.environ.items():
@@ -205,10 +196,7 @@ def _socket_path_trivial(
     limit_size: bool = True,
     logger: tmt.log.Logger,
 ) -> Optional[Path]:
-    """
-    Generate SSH socket path using guest IDs
-    """
-
+    """Generate SSH socket path using guest IDs."""
     socket_path = socket_dir / f'{guest_id}.socket'
 
     logger.debug(f"Possible SSH master socket path '{socket_path}' (trivial method).", level=4)
@@ -226,15 +214,13 @@ def _socket_path_hash(
     limit_size: bool = True,
     logger: tmt.log.Logger,
 ) -> Optional[Path]:
-    """
-    Generate SSH socket path using a hash of guest IDs.
+    """Generate SSH socket path using a hash of guest IDs.
 
     Generates less readable, but hopefully shorter and therefore
     acceptable filename. We try to make sure we create unique
     names for sockets, names that are not shared by multiple
     guests, and we try to make them reasonably short.
     """
-
     # We're using hashing function which should, in theory, be prone to
     # conflicts enough for us to never hit a collision. However, we cannot
     # rule out the chance of getting same hash for different guests, and
@@ -294,18 +280,12 @@ STAT_BTIME_PATTERN = re.compile(r'btime\s+(\d+)')
 # because `tmt.base` needs to be imported and that creates a circular
 # import loop.
 def essential_ansible_requires() -> list['tmt.base.Dependency']:
-    """
-    Return essential requirements for running Ansible modules
-    """
-
+    """Return essential requirements for running Ansible modules."""
     return [tmt.base.DependencySimple('/usr/bin/python3')]
 
 
 def format_guest_full_name(name: str, role: Optional[str]) -> str:
-    """
-    Render guest's full name, i.e. name and its role
-    """
-
+    """Render guest's full name, i.e. name and its role."""
     if role is None:
         return name
 
@@ -313,7 +293,7 @@ def format_guest_full_name(name: str, role: Optional[str]) -> str:
 
 
 class RebootModeNotSupportedError(ProvisionError):
-    """A requested reboot mode is not supported by the guest"""
+    """A requested reboot mode is not supported by the guest."""
 
     def __init__(
         self,
@@ -344,9 +324,7 @@ T = TypeVar('T')
 
 
 class GuestCapability(enum.Enum):
-    """
-    Various Linux capabilities
-    """
+    """Various Linux capabilities."""
 
     # See man 2 syslog:
     #: Read all messages remaining in the ring buffer.
@@ -357,8 +335,7 @@ class GuestCapability(enum.Enum):
 
 @container
 class GuestFacts(SerializableContainer):
-    """
-    Contains interesting facts about the guest.
+    """Contains interesting facts about the guest.
 
     Inspired by Ansible or Puppet facts, interesting guest facts tmt
     discovers while managing the guest are stored in this container,
@@ -418,19 +395,20 @@ class GuestFacts(SerializableContainer):
     # may appear this soon in provisioning. But, would it make sense to put
     # this detection into the `GuestSsh.execute()` method?
     def _execute(self, guest: 'Guest', command: Command) -> Optional[tmt.utils.CommandOutput]:
-        """
-        Run a command on the given guest.
+        """Run a command on the given guest.
 
         On top of the basic :py:meth:`Guest.execute`, this helper is able to
         detect a common issue with guest access. Facts are the first info tmt
         fetches from the guest, and would raise the error as soon as possible.
 
-        :returns: command output if the command quit with a zero exit code,
+        Returns:
+            command output if the command quit with a zero exit code,
             ``None`` otherwise.
-        :raises tmt.units.GeneralError: when logging into the guest fails
-            because of a username mismatch.
-        """
 
+        Raises:
+            tmt.units.GeneralError: when logging into the guest fails
+                because of a username mismatch.
+        """
         try:
             return guest.execute(command, silent=True)
 
@@ -448,8 +426,7 @@ class GuestFacts(SerializableContainer):
         return None
 
     def _fetch_keyval_file(self, guest: 'Guest', filepath: Path) -> dict[str, str]:
-        """
-        Load key/value pairs from a file on the given guest.
+        """Load key/value pairs from a file on the given guest.
 
         Converts file with ``key=value`` pairs into a mapping. Some values might
         be wrapped with quotes.
@@ -466,10 +443,10 @@ class GuestFacts(SerializableContainer):
         See https://www.freedesktop.org/software/systemd/man/os-release.html for
         more details on syntax of these files.
 
-        :returns: mapping with key/value pairs loaded from ``filepath``, or an
+        Returns:
+            mapping with key/value pairs loaded from ``filepath``, or an
             empty mapping if it was impossible to load the content.
         """
-
         content: dict[str, str] = {}
 
         output = self._execute(guest, Command('cat', filepath))
@@ -507,16 +484,19 @@ class GuestFacts(SerializableContainer):
         return dict(_iter_pairs())
 
     def _probe(self, guest: 'Guest', probes: list[tuple[Command, T]]) -> Optional[T]:
-        """
-        Find a first successful command.
+        """Find a first successful command.
 
-        :param guest: the guest to run commands on.
-        :param probes: list of command/mark pairs.
-        :returns: "mark" corresponding to the first command to quit with
-            a zero exit code.
-        :raises tmt.utils.GeneralError: when no command succeeded.
-        """
+        Args:
+            guest: the guest to run commands on.
+            probes: list of command/mark pairs.
 
+        Returns:
+            "mark" corresponding to the first command to quit with a
+            zero exit code.
+
+        Raises:
+            tmt.utils.GeneralError: when no command succeeded.
+        """
         for command, outcome in probes:
             if self._execute(guest, command):
                 return outcome
@@ -524,16 +504,19 @@ class GuestFacts(SerializableContainer):
         return None
 
     def _query(self, guest: 'Guest', probes: list[tuple[Command, str]]) -> Optional[str]:
-        """
-        Find a first successful command, and extract info from its output.
+        """Find a first successful command, and extract info from its output.
 
-        :param guest: the guest to run commands on.
-        :param probes: list of command/pattenr pairs.
-        :returns: substring extracted by the first matching pattern.
-        :raises tmt.utils.GeneralError: when no command succeeded, or when no
-            pattern matched.
-        """
+        Args:
+            guest: the guest to run commands on.
+            probes: list of command/pattenr pairs.
 
+        Returns:
+            substring extracted by the first matching pattern.
+
+        Raises:
+            tmt.utils.GeneralError: when no command succeeded, or when
+                no pattern matched.
+        """
         for command, pattern in probes:
             output = self._execute(guest, command)
 
@@ -639,12 +622,10 @@ class GuestFacts(SerializableContainer):
         return None
 
     def _query_has_selinux(self, guest: 'Guest') -> Optional[bool]:
-        """
-        Detect whether guest uses SELinux.
+        """Detect whether guest uses SELinux.
 
         For detection ``/proc/filesystems`` is used, see ``man 5 filesystems`` for details.
         """
-
         output = self._execute(guest, Command('cat', '/proc/filesystems'))
 
         if output is None or output.stdout is None:
@@ -653,8 +634,8 @@ class GuestFacts(SerializableContainer):
         return 'selinux' in output.stdout
 
     def _query_has_systemd(self, guest: 'Guest') -> Optional[bool]:
-        """
-        Detect whether guest uses systemd.
+        """Detect whether guest uses systemd.
+
         For detection we check if systemctl exists and is executable.
         """
         try:
@@ -731,8 +712,7 @@ class GuestFacts(SerializableContainer):
         return None
 
     def _query_is_container(self, guest: 'Guest') -> Optional[bool]:
-        """
-        Detect whether guest is a container (running systemd)
+        """Detect whether guest is a container (running systemd).
 
         In containers running systemd pid 1 has environment variable ``container`` set
         (e.g. container=podman). See https://systemd.io/CONTAINER_INTERFACE/ for more details.
@@ -753,10 +733,7 @@ class GuestFacts(SerializableContainer):
         }
 
     def sync(self, guest: 'Guest') -> None:
-        """
-        Update stored facts to reflect the given guest
-        """
-
+        """Update stored facts to reflect the given guest."""
         self.os_release_content = self._fetch_keyval_file(guest, Path('/etc/os-release'))
         self.lsb_release_content = self._fetch_keyval_file(guest, Path('/etc/lsb-release'))
 
@@ -777,13 +754,11 @@ class GuestFacts(SerializableContainer):
         self.in_sync = True
 
     def format(self) -> Iterator[tuple[str, str, str]]:
-        """
-        Format facts for pretty printing.
+        """Format facts for pretty printing.
 
         :yields: three-item tuples: the field name, its pretty label, and formatted representation
             of its value.
         """
-
         yield 'arch', 'arch', self.arch or 'unknown'
         yield 'distro', 'distro', self.distro or 'unknown'
         yield 'kernel_release', 'kernel', self.kernel_release or 'unknown'
@@ -818,14 +793,13 @@ def normalize_hardware(
     raw_hardware: Union[None, tmt.hardware.Spec, tmt.hardware.Hardware],
     logger: tmt.log.Logger,
 ) -> Optional[tmt.hardware.Hardware]:
-    """
-    Normalize a ``hardware`` key value.
+    """Normalize a ``hardware`` key value.
 
-    :param key_address: location of the key being that's being normalized.
-    :param logger: logger to use for logging.
-    :param raw_hardware: input from either command line or fmf node.
+    Args:
+        key_address: location of the key being that's being normalized.
+        logger: logger to use for logging.
+        raw_hardware: input from either command line or fmf node.
     """
-
     if raw_hardware is None:
         return None
 
@@ -935,8 +909,7 @@ GuestDataT = TypeVar('GuestDataT', bound='GuestData')
 
 @container
 class GuestData(SerializableContainer):
-    """
-    Keys necessary to describe, create, save and restore a guest.
+    """Keys necessary to describe, create, save and restore a guest.
 
     Very basic set of keys shared across all known guest classes.
     """
@@ -993,14 +966,12 @@ class GuestData(SerializableContainer):
     # but there are containers not backed by options... Maybe a mixin then?
     @classmethod
     def options(cls) -> Iterator[tuple[str, str]]:
-        """
-        Iterate over option names.
+        """Iterate over option names.
 
         Based on :py:meth:`keys`, but skips fields that cannot be set by options.
 
         :yields: two-item tuples, a key and corresponding option name.
         """
-
         for f in dataclasses.fields(cls):
             if f.name in cls._OPTIONLESS_FIELDS:
                 continue
@@ -1012,10 +983,7 @@ class GuestData(SerializableContainer):
         cls,
         container: 'ProvisionPlugin[ProvisionStepDataT]',
     ) -> Self:
-        """
-        Create guest data from plugin and its current configuration
-        """
-
+        """Create guest data from plugin and its current configuration."""
         return cls(
             **{
                 key: container.get(option)
@@ -1032,15 +1000,14 @@ class GuestData(SerializableContainer):
         verbose: int = 0,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Display guest data in a nice way.
+        """Display guest data in a nice way.
 
-        :param keys: if set, only these keys would be shown.
-        :param verbose: desired verbosity. Some fields may be omitted in low
-            verbosity modes.
-        :param logger: logger to use for logging.
+        Args:
+            keys: if set, only these keys would be shown.
+            verbose: desired verbosity. Some fields may be omitted in
+                low verbosity modes.
+            logger: logger to use for logging.
         """
-
         # If all keys are set to their defaults, do not bother showing them - unless
         # forced to do so by the power of `-v`.
         if self.is_bare and not verbose:
@@ -1085,22 +1052,23 @@ class GuestLog:
     guest: "Guest"
 
     def fetch(self, logger: tmt.log.Logger) -> Optional[str]:
-        """
-        Fetch and return content of a log.
+        """Fetch and return content of a log.
 
-        :returns: content of the log, or ``None`` if the log cannot be retrieved.
+        Returns:
+            content of the log, or ``None`` if the log cannot be
+            retrieved.
         """
         raise NotImplementedError
 
     def store(self, logger: tmt.log.Logger, path: Path, logname: Optional[str] = None) -> None:
-        """
-        Save log content to a file.
+        """Save log content to a file.
 
-        :param logger: logger to use for logging.
-        :param path: a path to save into, could be a directory
-            or a file path.
-        :param logname: name of the log, if not set, ``path``
-            is supposed to be a file path.
+        Args:
+            logger: logger to use for logging.
+            path: a path to save into, could be a directory or a file
+                path.
+            logname: name of the log, if not set, ``path`` is supposed
+                to be a file path.
         """
         log_content = self.fetch(logger)
         if log_content:
@@ -1111,16 +1079,13 @@ class GuestLog:
             elif logname:
                 (path / logname).write_text(log_content)
             else:
-                raise tmt.utils.GeneralError(
-                    'Log path is a directory but log name is not defined.'
-                )
+                raise tmt.utils.GeneralError('Log path is a directory but log name is not defined.')
         else:
             logger.warning(f'Failed to fetch log: {self.name}')
 
 
 class Guest(tmt.utils.Common):
-    """
-    Guest provisioned for test execution
+    """Guest provisioned for test execution.
 
     A base class for guest-like classes. Provides some of the basic methods
     and functionality, but note some of the methods are left intentionally
@@ -1142,13 +1107,11 @@ class Guest(tmt.utils.Common):
 
     @classmethod
     def get_data_class(cls) -> type[GuestData]:
-        """
-        Return step data class for this plugin.
+        """Return step data class for this plugin.
 
         By default, :py:attr:`_data_class` is returned, but plugin may
         override this method to provide different class.
         """
-
         return cls._data_class
 
     role: Optional[str]
@@ -1181,19 +1144,14 @@ class Guest(tmt.utils.Common):
         parent: Optional[tmt.utils.Common] = None,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Initialize guest data
-        """
+        """Initialize guest data."""
         self.guest_logs: list[GuestLog] = []
 
         super().__init__(logger=logger, parent=parent, name=name)
         self.load(data)
 
     def _random_name(self, prefix: str = '', length: int = 16) -> str:
-        """
-        Generate a random name
-        """
-
+        """Generate a random name."""
         # Append at least 5 random characters
         min_random_part = max(5, length - len(prefix))
         name = prefix + ''.join(
@@ -1203,10 +1161,7 @@ class Guest(tmt.utils.Common):
         return name[-length:]
 
     def _tmt_name(self) -> str:
-        """
-        Generate a name prefixed with tmt run id
-        """
-
+        """Generate a name prefixed with tmt run id."""
         # FIXME: cast() - https://github.com/teemtee/tmt/issues/1372
         parent = cast(Provision, self.parent)
 
@@ -1217,18 +1172,12 @@ class Guest(tmt.utils.Common):
 
     @functools.cached_property
     def multihost_name(self) -> str:
-        """
-        Return guest's multihost name, i.e. name and its role
-        """
-
+        """Return guest's multihost name, i.e. name and its role."""
         return format_guest_full_name(self.name, self.role)
 
     @property
     def is_ready(self) -> bool:
-        """
-        Detect guest is ready or not
-        """
-
+        """Detect guest is ready or not."""
         raise NotImplementedError
 
     @functools.cached_property
@@ -1257,10 +1206,7 @@ class Guest(tmt.utils.Common):
 
     @functools.cached_property
     def scripts_path(self) -> Path:
-        """
-        Absolute path to tmt scripts directory
-        """
-
+        """Absolute path to tmt scripts directory."""
         import tmt.steps.execute
 
         # For rpm-ostree based distributions use a different default destination directory
@@ -1272,15 +1218,11 @@ class Guest(tmt.utils.Common):
 
     @classmethod
     def options(cls, how: Optional[str] = None) -> list[tmt.options.ClickOptionDecoratorType]:
-        """
-        Prepare command line options related to guests
-        """
-
+        """Prepare command line options related to guests."""
         return []
 
     def load(self, data: GuestData) -> None:
-        """
-        Load guest data into object attributes for easy access
+        """Load guest data into object attributes for easy access.
 
         Called during guest object initialization. Takes care of storing
         all supported keys (see class attribute _keys for the list) from
@@ -1291,56 +1233,46 @@ class Guest(tmt.utils.Common):
         line options / L2 metadata / user configuration and wake up data
         stored by the save() method below.
         """
-
         data.inject_to(self)
 
     def save(self) -> GuestData:
-        """
-        Save guest data for future wake up
+        """Save guest data for future wake up.
 
         Export all essential guest data into a dictionary which will be
         stored in the `guests.yaml` file for possible future wake up of
         the guest. Everything needed to attach to a running instance
         should be added into the data dictionary by child classes.
         """
-
         return self.get_data_class().extract_from(self)
 
     def wake(self) -> None:
-        """
-        Wake up the guest
+        """Wake up the guest.
 
         Perform any actions necessary after step wake up to be able to
         attach to a running guest instance and execute commands. Called
         after load() is completed so all guest data should be prepared.
         """
-
         self.debug(f"Doing nothing to wake up guest '{self.primary_address}'.")
 
     def suspend(self) -> None:
-        """
-        Suspend the guest.
+        """Suspend the guest.
 
         Perform any actions necessary before quitting step and tmt. The
         guest may be reused by future tmt invocations.
         """
-
         self.debug(f"Suspending guest '{self.name}'.")
 
     def start(self) -> None:
-        """
-        Start the guest
+        """Start the guest.
 
         Get a new guest instance running. This should include preparing
         any configuration necessary to get it started. Called after
         load() is completed so all guest data should be available.
         """
-
         self.debug(f"Doing nothing to start guest '{self.primary_address}'.")
 
     def setup(self) -> None:
-        """
-        Setup the guest
+        """Setup the guest.
 
         Setup the guest after it has been started. It is called after :py:meth:`Guest.start`.
         """
@@ -1385,10 +1317,7 @@ class Guest(tmt.utils.Common):
             self.__dict__['facts'] = GuestFacts.from_serialized(facts)
 
     def show(self, show_multihost_name: bool = True) -> None:
-        """
-        Show guest details such as distro and kernel
-        """
-
+        """Show guest details such as distro and kernel."""
         if show_multihost_name:
             self.info('multihost name', self.multihost_name, color='green')
 
@@ -1407,29 +1336,20 @@ class Guest(tmt.utils.Common):
                 self.verbose(key_formatted, value_formatted, color='green')
 
     def _ansible_verbosity(self) -> list[str]:
-        """
-        Prepare verbose level based on the --debug option count
-        """
-
+        """Prepare verbose level based on the --debug option count."""
         if self.debug_level < 3:
             return []
         return ['-' + (self.debug_level - 2) * 'v']
 
     @staticmethod
     def _ansible_extra_args(extra_args: Optional[str]) -> list[str]:
-        """
-        Prepare extra arguments for ansible-playbook
-        """
-
+        """Prepare extra arguments for ansible-playbook."""
         if extra_args is None:
             return []
         return shlex.split(str(extra_args))
 
     def _ansible_summary(self, output: Optional[str]) -> None:
-        """
-        Check the output for ansible result summary numbers
-        """
-
+        """Check the output for ansible result summary numbers."""
         if not output:
             return
         keys = ['ok', 'changed', 'unreachable', 'failed', 'skipped', 'rescued', 'ignored']
@@ -1442,18 +1362,21 @@ class Guest(tmt.utils.Common):
     def _sanitize_ansible_playbook_path(
         self, playbook: AnsibleApplicable, playbook_root: Optional[Path]
     ) -> AnsibleApplicable:
-        """
-        Prepare full ansible playbook path.
+        """Prepare full ansible playbook path.
 
-        :param playbook: path to the playbook to run.
-        :param playbook_root: if set, ``playbook`` path must be located
-            under the given root path.
-        :returns: an absolute path to a playbook.
-        :raises GeneralError: when ``playbook_root`` is set, but
-            ``playbook`` is not located in this filesystem tree, or when
-            the eventual playbook path is not absolute.
-        """
+        Args:
+            playbook: path to the playbook to run.
+            playbook_root: if set, ``playbook`` path must be located
+                under the given root path.
 
+        Returns:
+            an absolute path to a playbook.
+
+        Raises:
+            GeneralError: when ``playbook_root`` is set, but
+                ``playbook`` is not located in this filesystem tree, or
+                when the eventual playbook path is not absolute.
+        """
         # Handle the individual types under the hood of `AnsibleApplicable`.
         # Note that `isinstance()` calls do not use our fancy names,
         # `AnsibleCollectionPlaybook` and `AnsiblePlaybook`. These are
@@ -1490,9 +1413,7 @@ class Guest(tmt.utils.Common):
     def _prepare_environment(
         self, execute_environment: Optional[tmt.utils.Environment] = None
     ) -> tmt.utils.Environment:
-        """
-        Prepare dict of environment variables
-        """
+        """Prepare dict of environment variables."""
         # Prepare environment variables so they can be correctly passed
         # to shell. Create a copy to prevent modifying source.
         environment = tmt.utils.Environment()
@@ -1507,15 +1428,11 @@ class Guest(tmt.utils.Common):
 
     @staticmethod
     def _export_environment(environment: tmt.utils.Environment) -> list[ShellScript]:
-        """
-        Prepare shell export of environment variables
-        """
-
+        """Prepare shell export of environment variables."""
         if not environment:
             return []
         return [
-            ShellScript(f'export {variable}')
-            for variable in tmt.utils.shell_variables(environment)
+            ShellScript(f'export {variable}') for variable in tmt.utils.shell_variables(environment)
         ]
 
     def _run_guest_command(
@@ -1529,31 +1446,35 @@ class Guest(tmt.utils.Common):
         log: Optional[tmt.log.LoggingFunction] = None,
         **kwargs: Any,
     ) -> tmt.utils.CommandOutput:
-        """
-        Run a command, local or remote, related to the guest.
+        """Run a command, local or remote, related to the guest.
 
         A rather thin wrapper of :py:meth:`run` whose purpose is to be a single
         point through all commands related to a guest must go through. We expect
         consistent logging from such commands, be it an ``ansible-playbook`
         running on the control host or a test script on the guest.
 
-        :param command: a command to execute.
-        :param friendly_command: if set, it would be logged instead of the
-            command itself, to improve visibility of the command in logging output.
-        :param silent: if set, logging of steps taken by this function would be
-            reduced.
-        :param cwd: if set, command would be executed in the given directory,
-            otherwise the current working directory is used.
-        :param env: environment variables to combine with the current environment
-            before running the command.
-        :param interactive: if set, the command would be executed in an interactive
-            manner, i.e. with stdout and stdout connected to terminal for live
-            interaction with user.
-        :param log: a logging function to use for logging of command output. By
-            default, ``self._logger.debug`` is used.
-        :returns: command output, bundled in a :py:class:`CommandOutput` tuple.
-        """
+        Args:
+            command: a command to execute.
+            friendly_command: if set, it would be logged instead of the
+                command itself, to improve visibility of the command in
+                logging output.
+            silent: if set, logging of steps taken by this function
+                would be reduced.
+            cwd: if set, command would be executed in the given
+                directory, otherwise the current working directory is
+                used.
+            env: environment variables to combine with the current
+                environment before running the command.
+            interactive: if set, the command would be executed in an
+                interactive manner, i.e. with stdout and stdout
+                connected to terminal for live interaction with user.
+            log: a logging function to use for logging of command
+                output. By default, ``self._logger.debug`` is used.
 
+        Returns:
+            command output, bundled in a :py:class:`CommandOutput`
+            tuple.
+        """
         if friendly_command is None:
             friendly_command = str(command)
 
@@ -1577,25 +1498,25 @@ class Guest(tmt.utils.Common):
         log: Optional[tmt.log.LoggingFunction] = None,
         silent: bool = False,
     ) -> tmt.utils.CommandOutput:
-        """
-        Run an Ansible playbook on the guest.
+        """Run an Ansible playbook on the guest.
 
         This is a main workhorse for :py:meth:`ansible`. It shall run the
         playbook in whatever way is fitting for the guest and infrastructure.
 
-        :param playbook: path to the playbook to run.
-        :param playbook_root: if set, ``playbook`` path must be located
-            under the given root path.
-        :param extra_args: additional arguments to be passed to ``ansible-playbook``
-            via ``--extra-args``.
-        :param friendly_command: if set, it would be logged instead of the
-            command itself, to improve visibility of the command in logging output.
-        :param log: a logging function to use for logging of command output. By
-            default, ``logger.debug`` is used.
-        :param silent: if set, logging of steps taken by this function would be
-            reduced.
+        Args:
+            playbook: path to the playbook to run.
+            playbook_root: if set, ``playbook`` path must be located
+                under the given root path.
+            extra_args: additional arguments to be passed to ``ansible-
+                playbook`` via ``--extra-args``.
+            friendly_command: if set, it would be logged instead of the
+                command itself, to improve visibility of the command in
+                logging output.
+            log: a logging function to use for logging of command
+                output. By default, ``logger.debug`` is used.
+            silent: if set, logging of steps taken by this function
+                would be reduced.
         """
-
         raise NotImplementedError
 
     def ansible(
@@ -1607,25 +1528,25 @@ class Guest(tmt.utils.Common):
         log: Optional[tmt.log.LoggingFunction] = None,
         silent: bool = False,
     ) -> None:
-        """
-        Run an Ansible playbook on the guest.
+        """Run an Ansible playbook on the guest.
 
         A wrapper for :py:meth:`_run_ansible` which is responsible for running
         the playbook while this method makes sure our logging is consistent.
 
-        :param playbook: path to the playbook to run.
-        :param playbook_root: if set, ``playbook`` path must be located
-            under the given root path.
-        :param extra_args: additional arguments to be passed to ``ansible-playbook``
-            via ``--extra-args``.
-        :param friendly_command: if set, it would be logged instead of the
-            command itself, to improve visibility of the command in logging output.
-        :param log: a logging function to use for logging of command output. By
-            default, ``logger.debug`` is used.
-        :param silent: if set, logging of steps taken by this function would be
-            reduced.
+        Args:
+            playbook: path to the playbook to run.
+            playbook_root: if set, ``playbook`` path must be located
+                under the given root path.
+            extra_args: additional arguments to be passed to ``ansible-
+                playbook`` via ``--extra-args``.
+            friendly_command: if set, it would be logged instead of the
+                command itself, to improve visibility of the command in
+                logging output.
+            log: a logging function to use for logging of command
+                output. By default, ``logger.debug`` is used.
+            silent: if set, logging of steps taken by this function
+                would be reduced.
         """
-
         output = self._run_ansible(
             playbook,
             playbook_root=playbook_root,
@@ -1685,15 +1606,16 @@ class Guest(tmt.utils.Common):
         on_process_start: Optional[OnProcessStartCallback] = None,
         **kwargs: Any,
     ) -> tmt.utils.CommandOutput:
-        """
-        Execute a command on the guest.
+        """Execute a command on the guest.
 
-        :param command: either a command or a shell script to execute.
-        :param cwd: if set, execute command in this directory on the guest.
-        :param env: if set, set these environment variables before running the command.
-        :param friendly_command: nice, human-friendly representation of the command.
+        Args:
+            command: either a command or a shell script to execute.
+            cwd: if set, execute command in this directory on the guest.
+            env: if set, set these environment variables before running
+                the command.
+            friendly_command: nice, human-friendly representation of the
+                command.
         """
-
         raise NotImplementedError
 
     def push(
@@ -1703,10 +1625,7 @@ class Guest(tmt.utils.Common):
         options: Optional[list[str]] = None,
         superuser: bool = False,
     ) -> None:
-        """
-        Push files to the guest
-        """
-
+        """Push files to the guest."""
         raise NotImplementedError
 
     def pull(
@@ -1716,21 +1635,16 @@ class Guest(tmt.utils.Common):
         options: Optional[list[str]] = None,
         extend_options: Optional[list[str]] = None,
     ) -> None:
-        """
-        Pull files from the guest
-        """
-
+        """Pull files from the guest."""
         raise NotImplementedError
 
     def stop(self) -> None:
-        """
-        Stop the guest
+        """Stop the guest.
 
         Shut down a running guest instance so that it does not consume
         any memory or cpu resources. If needed, perform any actions
         necessary to store the instance status to disk.
         """
-
         raise NotImplementedError
 
     @overload
@@ -1757,43 +1671,41 @@ class Guest(tmt.utils.Common):
         command: Optional[Union[Command, ShellScript]] = None,
         waiting: Optional[Waiting] = None,
     ) -> bool:
+        """Reboot the guest, and wait for the guest to recover.
+
+        Note:
+            Custom reboot command can be used only in combination with a
+            soft reboot. If both ``hard`` and ``command`` are set, a hard
+            reboot will be requested, and ``command`` will be ignored.
+
+        Args:
+            hard: if set, force the reboot. This may result in a loss of
+                data. The default of ``False`` will attempt a graceful
+                reboot.
+            command: a command to run on the guest to trigger the
+                reboot. If ``hard`` is also set, ``command`` is ignored.
+            timeout: amount of time in which the guest must become
+                available again.
+            tick: how many seconds to wait between two consecutive
+                attempts of contacting the guest.
+            tick_increase: a multiplier applied to ``tick`` after every
+                attempt.
+
+        Returns:
+            ``True`` if the reboot succeeded, ``False`` otherwise.
         """
-        Reboot the guest, and wait for the guest to recover.
-
-        .. note::
-
-           Custom reboot command can be used only in combination with a
-           soft reboot. If both ``hard`` and ``command`` are set, a hard
-           reboot will be requested, and ``command`` will be ignored.
-
-        :param hard: if set, force the reboot. This may result in a loss
-            of data. The default of ``False`` will attempt a graceful
-            reboot.
-        :param command: a command to run on the guest to trigger the
-            reboot. If ``hard`` is also set, ``command`` is ignored.
-        :param timeout: amount of time in which the guest must become available
-            again.
-        :param tick: how many seconds to wait between two consecutive attempts
-            of contacting the guest.
-        :param tick_increase: a multiplier applied to ``tick`` after every
-            attempt.
-        :returns: ``True`` if the reboot succeeded, ``False`` otherwise.
-        """
-
         raise NotImplementedError
 
     def reconnect(
         self,
         wait: Optional[Waiting] = None,
     ) -> bool:
-        """
-        Ensure the connection to the guest is working
+        """Ensure the connection to the guest is working.
 
         The default timeout is 5 minutes. Custom number of seconds can be
         provided in the `timeout` parameter. This may be useful when long
         operations (such as system upgrade) are performed.
         """
-
         wait = wait or default_reconnect_waiting()
 
         self.debug("Wait for a connection to the guest.")
@@ -1815,23 +1727,19 @@ class Guest(tmt.utils.Common):
         return True
 
     def remove(self) -> None:
-        """
-        Remove the guest
+        """Remove the guest.
 
         Completely remove all guest instance data so that it does not
         consume any disk resources.
         """
-
         self.debug(f"Doing nothing to remove guest '{self.primary_address}'.")
 
     def _check_rsync(self) -> CheckRsyncOutcome:
-        """
-        Make sure that rsync is installed on the guest
+        """Make sure that rsync is installed on the guest.
 
         On read-only distros install it under the '/root/pkg' directory.
         Returns 'already installed' when rsync is already present.
         """
-
         # Check for rsync (nothing to do if already installed)
         self.debug("Ensure that rsync is installed on the guest.")
         try:
@@ -1846,25 +1754,22 @@ class Guest(tmt.utils.Common):
 
     @classmethod
     def essential_requires(cls) -> list['tmt.base.Dependency']:
-        """
-        Collect all essential requirements of the guest.
+        """Collect all essential requirements of the guest.
 
         Essential requirements of a guest are necessary for the guest to be
         usable for testing.
 
-        :returns: a list of requirements.
+        Returns:
+            a list of requirements.
         """
-
         return []
 
     @property
     def logdir(self) -> Optional[Path]:
-        """
-        Path to store logs
+        """Path to store logs.
 
         Create the directory if it does not exist yet.
         """
-
         if not self.workdir:
             return None
 
@@ -1879,16 +1784,17 @@ class Guest(tmt.utils.Common):
         dirpath: Optional[Path] = None,
         guest_logs: Optional[list[GuestLog]] = None,
     ) -> None:
-        """
-        Get log content and save it to a directory.
+        """Get log content and save it to a directory.
 
-        :param logger: logger to use for logging.
-        :param dirpath: a directory to save into. If not set, :py:attr:`logdir`,
-            or current working directory will be used.
-        :param guest_logs: optional list of :py:attr:`GuestLog`. If not set,
-            all guest logs from :py:attr:`Guest.guest_logs` would be collected.
+        Args:
+            logger: logger to use for logging.
+            dirpath: a directory to save into. If not set,
+                :py:attr:`logdir`, or current working directory will be
+                used.
+            guest_logs: optional list of :py:attr:`GuestLog`. If not
+                set, all guest logs from :py:attr:`Guest.guest_logs`
+                would be collected.
         """
-
         guest_logs = guest_logs or self.guest_logs
 
         dirpath = dirpath or self.logdir or Path.cwd()
@@ -1927,8 +1833,7 @@ class Guest(tmt.utils.Common):
         template: Optional[str] = None,
         parent: Optional[Path] = None,
     ) -> Iterator[Path]:
-        """
-        Create a temporary directory.
+        """Create a temporary directory.
 
         Modeled after :py:func:`tempfile.mkdtemp`, but creates the
         temporary directory on the guest, by invoking ``mktemp -d``. The
@@ -1946,16 +1851,16 @@ class Guest(tmt.utils.Common):
             with guest.mkdtemp() as path:
                 ...
 
-        :param prefix: if set, the directory name will begin with this
-            string.
-        :param template: if set, the directory name will follow the
-            given naming scheme: the template must end with 6
-            consecutive ``X``s, i.e. ``XXXXXX``. All ``X`` letters will
-            be replaced with random characters.
-        :param parent: if set, new directory will be created under this
-            path. Otherwise, the default directory is used.
+        Args:
+            prefix: if set, the directory name will begin with this
+                string.
+            template: if set, the directory name will follow the given
+                naming scheme: the template must end with 6 consecutive
+                ``X``s, i.e. ``XXXXXX``. All ``X`` letters will be
+                replaced with random characters.
+            parent: if set, new directory will be created under this
+                path. Otherwise, the default directory is used.
         """
-
         output = self.execute(
             self._construct_mkdtemp_command(prefix=prefix, template=template, parent=parent)
         )
@@ -1977,9 +1882,7 @@ class Guest(tmt.utils.Common):
 
 @container
 class GuestSshData(GuestData):
-    """
-    Keys necessary to describe, create, save and restore a guest with SSH
-    capability.
+    """Keys necessary to describe, create, save and restore a guest with SSH capability.
 
     Derived from GuestData, this class adds keys relevant for guests that can be
     reached over SSH.
@@ -2025,8 +1928,7 @@ class GuestSshData(GuestData):
 
 
 class GuestSsh(Guest):
-    """
-    Guest provisioned for test execution, capable of accepting SSH connections
+    """Guest provisioned for test execution, capable of accepting SSH connections.
 
     The following keys are expected in the 'data' dictionary::
 
@@ -2067,18 +1969,12 @@ class GuestSsh(Guest):
 
     @functools.cached_property
     def _ssh_guest(self) -> str:
-        """
-        Return user@guest
-        """
-
+        """Return user@guest."""
         return f'{self.user}@{self.primary_address}'
 
     @functools.cached_property
     def _is_ssh_master_socket_path_acceptable(self) -> bool:
-        """
-        Whether the SSH master socket path we create is acceptable by SSH
-        """
-
+        """Whether the SSH master socket path we create is acceptable by SSH."""
         if len(str(self._ssh_master_socket_path)) >= SSH_MASTER_SOCKET_LENGTH_LIMIT:
             self.warn(
                 "SSH multiplexing will not be used because the SSH master socket path "
@@ -2090,10 +1986,7 @@ class GuestSsh(Guest):
 
     @property
     def is_ssh_multiplexing_enabled(self) -> bool:
-        """
-        Whether SSH multiplexing should be used
-        """
-
+        """Whether SSH multiplexing should be used."""
         if self.primary_address is None:
             return False
 
@@ -2104,10 +1997,7 @@ class GuestSsh(Guest):
 
     @functools.cached_property
     def _ssh_master_socket_path(self) -> Path:
-        """
-        Return path to the SSH master socket
-        """
-
+        """Return path to the SSH master socket."""
         # Can be any step opening the connection
         assert isinstance(self.parent, tmt.steps.Step)
         assert self.parent.plan.my_run is not None
@@ -2149,9 +2039,7 @@ class GuestSsh(Guest):
         )
 
         if socket_path is not None:
-            self.debug(
-                f"SSH master socket path will be '{socket_path}' (trivial method).", level=4
-            )
+            self.debug(f"SSH master socket path will be '{socket_path}' (trivial method).", level=4)
 
             return socket_path
 
@@ -2189,10 +2077,7 @@ class GuestSsh(Guest):
 
     @property
     def _ssh_options(self) -> Command:
-        """
-        Return common SSH options
-        """
-
+        """Return common SSH options."""
         options = BASE_SSH_OPTIONS[:]
 
         if self.key or self.password:
@@ -2223,19 +2108,13 @@ class GuestSsh(Guest):
 
     @property
     def _base_ssh_command(self) -> Command:
-        """
-        A base SSH command shared by all SSH processes
-        """
-
+        """A base SSH command shared by all SSH processes."""
         command = Command(*(["sshpass", "-p", self.password] if self.password else []), "ssh")
 
         return command + self._ssh_options
 
     def _spawn_ssh_master_process(self) -> subprocess.Popen[bytes]:
-        """
-        Spawn the SSH master process
-        """
-
+        """Spawn the SSH master process."""
         # NOTE: do not modify `command`, it might be reused by the caller. To
         # be safe, include it in our own command.
         ssh_master_command = (
@@ -2292,10 +2171,7 @@ class GuestSsh(Guest):
 
     @property
     def _ssh_command(self) -> Command:
-        """
-        A base SSH command shared by all SSH processes
-        """
-
+        """A base SSH command shared by all SSH processes."""
         if self.is_ssh_multiplexing_enabled:
             with self._ssh_master_process_lock:
                 if self._ssh_master_process is None:
@@ -2332,25 +2208,25 @@ class GuestSsh(Guest):
         log: Optional[tmt.log.LoggingFunction] = None,
         silent: bool = False,
     ) -> tmt.utils.CommandOutput:
-        """
-        Run an Ansible playbook on the guest.
+        """Run an Ansible playbook on the guest.
 
         This is a main workhorse for :py:meth:`ansible`. It shall run the
         playbook in whatever way is fitting for the guest and infrastructure.
 
-        :param playbook: path to the playbook to run.
-        :param playbook_root: if set, ``playbook`` path must be located
-            under the given root path.
-        :param extra_args: additional arguments to be passed to ``ansible-playbook``
-            via ``--extra-args``.
-        :param friendly_command: if set, it would be logged instead of the
-            command itself, to improve visibility of the command in logging output.
-        :param log: a logging function to use for logging of command output. By
-            default, ``logger.debug`` is used.
-        :param silent: if set, logging of steps taken by this function would be
-            reduced.
+        Args:
+            playbook: path to the playbook to run.
+            playbook_root: if set, ``playbook`` path must be located
+                under the given root path.
+            extra_args: additional arguments to be passed to ``ansible-
+                playbook`` via ``--extra-args``.
+            friendly_command: if set, it would be logged instead of the
+                command itself, to improve visibility of the command in
+                logging output.
+            log: a logging function to use for logging of command
+                output. By default, ``logger.debug`` is used.
+            silent: if set, logging of steps taken by this function
+                would be reduced.
         """
-
         playbook = self._sanitize_ansible_playbook_path(playbook, playbook_root)
 
         ansible_command = Command('ansible-playbook', *self._ansible_verbosity())
@@ -2387,10 +2263,7 @@ class GuestSsh(Guest):
 
     @property
     def is_ready(self) -> bool:
-        """
-        Detect guest is ready or not
-        """
-
+        """Detect guest is ready or not."""
         # Enough for now, ssh connection can be created later
         return self.primary_address is not None
 
@@ -2423,15 +2296,16 @@ class GuestSsh(Guest):
         on_process_start: Optional[OnProcessStartCallback] = None,
         **kwargs: Any,
     ) -> tmt.utils.CommandOutput:
-        """
-        Execute a command on the guest.
+        """Execute a command on the guest.
 
-        :param command: either a command or a shell script to execute.
-        :param cwd: execute command in this directory on the guest.
-        :param env: if set, set these environment variables before running the command.
-        :param friendly_command: nice, human-friendly representation of the command.
+        Args:
+            command: either a command or a shell script to execute.
+            cwd: execute command in this directory on the guest.
+            env: if set, set these environment variables before running
+                the command.
+            friendly_command: nice, human-friendly representation of the
+                command.
         """
-
         # Abort if guest is unavailable
         if self.primary_address is None and not self.is_dry_run:
             raise tmt.utils.GeneralError('The guest is not available.')
@@ -2506,8 +2380,7 @@ class GuestSsh(Guest):
         options: Optional[list[str]] = None,
         superuser: bool = False,
     ) -> None:
-        """
-        Push files to the guest
+        """Push files to the guest.
 
         By default the whole plan workdir is synced to the same location
         on the guest. Use the 'source' and 'destination' to sync custom
@@ -2517,7 +2390,6 @@ class GuestSsh(Guest):
         Set 'superuser' if rsync command has to run as root or passwordless
         sudo on the Guest (e.g. pushing to r/o destination)
         """
-
         # Abort if guest is unavailable
         if self.primary_address is None and not self.is_dry_run:
             raise tmt.utils.GeneralError('The guest is not available.')
@@ -2538,10 +2410,7 @@ class GuestSsh(Guest):
             self.debug(f"Copy '{source}' to '{destination}' on the guest.")
 
         def rsync() -> None:
-            """
-            Run the rsync command
-            """
-
+            """Run the rsync command."""
             # In closure, mypy has hard times to reason about the state of used variables.
             assert options
             assert source
@@ -2586,8 +2455,7 @@ class GuestSsh(Guest):
         options: Optional[list[str]] = None,
         extend_options: Optional[list[str]] = None,
     ) -> None:
-        """
-        Pull files from the guest
+        """Pull files from the guest.
 
         By default the whole plan workdir is synced from the same
         location on the guest. Use the 'source' and 'destination' to
@@ -2595,7 +2463,6 @@ class GuestSsh(Guest):
         default options :py:data:`DEFAULT_RSYNC_PULL_OPTIONS`
         and 'extend_options' to extend them (e.g. by exclude).
         """
-
         # Abort if guest is unavailable
         if self.primary_address is None and not self.is_dry_run:
             raise tmt.utils.GeneralError('The guest is not available.')
@@ -2618,10 +2485,7 @@ class GuestSsh(Guest):
             self.debug(f"Copy '{source}' from the guest to '{destination}'.")
 
         def rsync() -> None:
-            """
-            Run the rsync command
-            """
-
+            """Run the rsync command."""
             # In closure, mypy has hard times to reason about the state of used variables.
             assert options
             assert source
@@ -2657,13 +2521,11 @@ class GuestSsh(Guest):
                 raise
 
     def suspend(self) -> None:
-        """
-        Suspend the guest.
+        """Suspend the guest.
 
         Perform any actions necessary before quitting step and tmt. The
         guest may be reused by future tmt invocations.
         """
-
         super().suspend()
 
         # Close the master ssh connection
@@ -2673,14 +2535,12 @@ class GuestSsh(Guest):
         self._unlink_ssh_master_socket_path()
 
     def stop(self) -> None:
-        """
-        Stop the guest
+        """Stop the guest.
 
         Shut down a running guest instance so that it does not consume
         any memory or cpu resources. If needed, perform any actions
         necessary to store the instance status to disk.
         """
-
         self.suspend()
 
     def perform_reboot(
@@ -2689,34 +2549,34 @@ class GuestSsh(Guest):
         wait: Waiting,
         fetch_boot_time: bool = True,
     ) -> bool:
-        """
-        Perform the actual reboot and wait for the guest to recover.
+        """Perform the actual reboot and wait for the guest to recover.
 
         This is the core implementation of the common task of triggering
         a reboot and waiting for the guest to recover. :py:meth:`reboot`
         is the public API of guest classes, and feeds
         :py:meth:`perform_reboot` with the right ``action`` callable.
 
-        :param action: a callable which will trigger the requested reboot.
-        :param timeout: amount of time in which the guest must become available
-            again.
-        :param tick: how many seconds to wait between two consecutive attempts
-            of contacting the guest.
-        :param tick_increase: a multiplier applied to ``tick`` after every
-            attempt.
-        :param fetch_boot_time: if set, the current boot time of the
-            guest would be read first, and used for testing whether the
-            reboot has been performed. This will require communication
-            with the guest, therefore it is recommended to use ``False``
-            with hard reboot of unhealthy guests.
-        :returns: ``True`` if the reboot succeeded, ``False`` otherwise.
+        Args:
+            action: a callable which will trigger the requested reboot.
+            timeout: amount of time in which the guest must become
+                available again.
+            tick: how many seconds to wait between two consecutive
+                attempts of contacting the guest.
+            tick_increase: a multiplier applied to ``tick`` after every
+                attempt.
+            fetch_boot_time: if set, the current boot time of the guest
+                would be read first, and used for testing whether the
+                reboot has been performed. This will require
+                communication with the guest, therefore it is
+                recommended to use ``False`` with hard reboot of
+                unhealthy guests.
+
+        Returns:
+            ``True`` if the reboot succeeded, ``False`` otherwise.
         """
 
         def get_boot_time() -> int:
-            """
-            Reads btime from /proc/stat
-            """
-
+            """Reads btime from /proc/stat."""
             stdout = self.execute(Command("cat", "/proc/stat")).stdout
             assert stdout
 
@@ -2791,29 +2651,29 @@ class GuestSsh(Guest):
         command: Optional[Union[Command, ShellScript]] = None,
         waiting: Optional[Waiting] = None,
     ) -> bool:
+        """Reboot the guest, and wait for the guest to recover.
+
+        Note:
+            Custom reboot command can be used only in combination with a
+            soft reboot. If both ``hard`` and ``command`` are set, a hard
+            reboot will be requested, and ``command`` will be ignored.
+
+        Args:
+            hard: if set, force the reboot. This may result in a loss of
+                data. The default of ``False`` will attempt a graceful
+                reboot.
+            command: a command to run on the guest to trigger the
+                reboot. If ``hard`` is also set, ``command`` is ignored.
+            timeout: amount of time in which the guest must become
+                available again.
+            tick: how many seconds to wait between two consecutive
+                attempts of contacting the guest.
+            tick_increase: a multiplier applied to ``tick`` after every
+                attempt.
+
+        Returns:
+            ``True`` if the reboot succeeded, ``False`` otherwise.
         """
-        Reboot the guest, and wait for the guest to recover.
-
-        .. note::
-
-           Custom reboot command can be used only in combination with a
-           soft reboot. If both ``hard`` and ``command`` are set, a hard
-           reboot will be requested, and ``command`` will be ignored.
-
-        :param hard: if set, force the reboot. This may result in a loss
-            of data. The default of ``False`` will attempt a graceful
-            reboot.
-        :param command: a command to run on the guest to trigger the
-            reboot. If ``hard`` is also set, ``command`` is ignored.
-        :param timeout: amount of time in which the guest must become available
-            again.
-        :param tick: how many seconds to wait between two consecutive attempts
-            of contacting the guest.
-        :param tick_increase: a multiplier applied to ``tick`` after every
-            attempt.
-        :returns: ``True`` if the reboot succeeded, ``False`` otherwise.
-        """
-
         if hard:
             raise tmt.utils.ProvisionError(
                 f"Guest '{self.multihost_name}' does not support hard reboot."
@@ -2827,13 +2687,11 @@ class GuestSsh(Guest):
         return self.perform_reboot(lambda: self.execute(command), waiting)
 
     def remove(self) -> None:
-        """
-        Remove the guest
+        """Remove the guest.
 
         Completely remove all guest instance data so that it does not
         consume any disk resources.
         """
-
         self.debug(f"Doing nothing to remove guest '{self.primary_address}'.")
 
 
@@ -2856,9 +2714,7 @@ ProvisionStepDataT = TypeVar('ProvisionStepDataT', bound=ProvisionStepData)
 
 
 class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
-    """
-    Common parent of provision plugins
-    """
+    """Common parent of provision plugins."""
 
     # ignore[assignment]: as a base class, ProvisionStepData is not included in
     # ProvisionStepDataT.
@@ -2881,10 +2737,7 @@ class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         return {*super()._preserved_workdir_members, "logs"}
 
     @classmethod
@@ -2893,10 +2746,7 @@ class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
         usage: str,
         method_class: Optional[type[click.Command]] = None,
     ) -> click.Command:
-        """
-        Create base click command (common for all provision plugins)
-        """
-
+        """Create base click command (common for all provision plugins)."""
         # Prepare general usage message for the step
         if method_class:
             usage = Provision.usage(method_overview=usage)
@@ -2913,18 +2763,12 @@ class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
         return provision
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Perform actions shared among plugins when beginning their tasks
-        """
-
+        """Perform actions shared among plugins when beginning their tasks."""
         self.go_prolog(logger or self._logger)
 
     # TODO: this might be needed until https://github.com/teemtee/tmt/issues/1696 is resolved
     def opt(self, option: str, default: Optional[Any] = None) -> Any:
-        """
-        Get an option from the command line options
-        """
-
+        """Get an option from the command line options."""
         if option == 'ssh-option':
             value = super().opt(option, default=default)
 
@@ -2936,13 +2780,11 @@ class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
         return super().opt(option, default=default)
 
     def wake(self, data: Optional[GuestData] = None) -> None:
-        """
-        Wake up the plugin
+        """Wake up the plugin.
 
         Override data with command line options.
         Wake up the guest based on provided guest data.
         """
-
         super().wake()
 
         if data is not None:
@@ -2955,15 +2797,11 @@ class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
     # TODO: getter. Like in Java. Do we need it?
     @property
     def guest(self) -> Optional[Guest]:
-        """
-        Return the provisioned guest.
-        """
-
+        """Return the provisioned guest."""
         return self._guest
 
     def essential_requires(self) -> list['tmt.base.Dependency']:
-        """
-        Collect all essential requirements of the guest implementation.
+        """Collect all essential requirements of the guest implementation.
 
         Essential requirements of a guest are necessary for the guest to be
         usable for testing.
@@ -2972,25 +2810,19 @@ class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
         is asked to provide the list of required packages via
         :py:meth:`Guest.requires` method.
 
-        :returns: a list of requirements.
+        Returns:
+            a list of requirements.
         """
-
         return self._guest_class.essential_requires()
 
     @classmethod
     def options(cls, how: Optional[str] = None) -> list[tmt.options.ClickOptionDecoratorType]:
-        """
-        Return list of options.
-        """
-
+        """Return list of options."""
         return super().options(how) + cls._guest_class.options(how)
 
     @classmethod
     def clean_images(cls, clean: 'tmt.base.Clean', dry: bool, workdir_root: Path) -> bool:
-        """
-        Remove the images of one particular plugin
-        """
-
+        """Remove the images of one particular plugin."""
         return True
 
     def show(self, keys: Optional[list[str]] = None) -> None:
@@ -3012,9 +2844,7 @@ class ProvisionPlugin(tmt.steps.GuestlessPlugin[ProvisionStepDataT, None]):
 
 @container
 class ProvisionTask(tmt.queue.GuestlessTask[None]):
-    """
-    A task to run provisioning of multiple guests
-    """
+    """A task to run provisioning of multiple guests."""
 
     #: Phases describing guests to provision. In the ``provision`` step,
     #: each phase describes one guest.
@@ -3103,9 +2933,7 @@ class ProvisionTask(tmt.queue.GuestlessTask[None]):
 
 
 class ProvisionQueue(tmt.queue.Queue[ProvisionTask]):
-    """
-    Queue class for running provisioning tasks
-    """
+    """Queue class for running provisioning tasks."""
 
     def enqueue(self, *, phases: list[ProvisionPlugin[ProvisionStepData]], logger: Logger) -> None:
         self.enqueue_task(
@@ -3121,9 +2949,7 @@ class ProvisionQueue(tmt.queue.Queue[ProvisionTask]):
 
 
 class Provision(tmt.steps.Step):
-    """
-    Provision an environment for testing or use localhost.
-    """
+    """Provision an environment for testing or use localhost."""
 
     # Default implementation for provision is a virtual machine
     DEFAULT_HOW = 'virtual'
@@ -3143,8 +2969,7 @@ class Provision(tmt.steps.Step):
 
     @property
     def ready_guests(self) -> list[Guest]:
-        """
-        All successfully provisioned guests.
+        """All successfully provisioned guests.
 
         Most of the time, after ``provision`` step finishes successfully,
         the list should be the same as :py:attr:`guests`, i.e. it should
@@ -3162,7 +2987,6 @@ class Provision(tmt.steps.Step):
           finish their provisioning process, and ``ready_guests`` may
           contain just the finished ones.
         """
-
         if self.is_dry_run:
             return self.guests
 
@@ -3175,10 +2999,7 @@ class Provision(tmt.steps.Step):
         data: tmt.steps.RawStepDataArgument,
         logger: tmt.log.Logger,
     ) -> None:
-        """
-        Initialize provision step data
-        """
-
+        """Initialize provision step data."""
         super().__init__(plan=plan, data=data, logger=logger)
 
         self.guests = []
@@ -3186,10 +3007,7 @@ class Provision(tmt.steps.Step):
 
     @property
     def _preserved_workdir_members(self) -> set[str]:
-        """
-        A set of members of the step workdir that should not be removed.
-        """
-
+        """A set of members of the step workdir that should not be removed."""
         return {*super()._preserved_workdir_members, 'guests.yaml'}
 
     @property
@@ -3197,10 +3015,7 @@ class Provision(tmt.steps.Step):
         return len(self.data) > 1
 
     def get_guests_info(self) -> list[tuple[str, Optional[str]]]:
-        """
-        Get a list containing the names and roles of guests that should be enabled.
-        """
-
+        """Get a list containing the names and roles of guests that should be enabled."""
         phases = [
             cast(ProvisionPlugin[ProvisionStepData], phase)
             for phase in self.phases(classes=ProvisionPlugin)
@@ -3209,10 +3024,7 @@ class Provision(tmt.steps.Step):
         return [(phase.data.name, phase.data.role) for phase in phases]
 
     def load(self) -> None:
-        """
-        Load guest data from the workdir
-        """
-
+        """Load guest data from the workdir."""
         super().load()
         try:
             raw_guest_data = tmt.utils.yaml_to_dict(self.read(Path('guests.yaml')))
@@ -3226,10 +3038,7 @@ class Provision(tmt.steps.Step):
             self.debug('Provisioned guests not found.', level=2)
 
     def save(self) -> None:
-        """
-        Save guest data to the workdir
-        """
-
+        """Save guest data to the workdir."""
         super().save()
         try:
             raw_guest_data = {
@@ -3241,10 +3050,7 @@ class Provision(tmt.steps.Step):
             self.debug('Failed to save provisioned guests.')
 
     def wake(self) -> None:
-        """
-        Wake up the step (process workdir and command line)
-        """
-
+        """Wake up the step (process workdir and command line)."""
         super().wake()
 
         # Choose the right plugin and wake it up
@@ -3275,10 +3081,7 @@ class Provision(tmt.steps.Step):
             guest.suspend()
 
     def summary(self) -> None:
-        """
-        Give a concise summary of the provisioning
-        """
-
+        """Give a concise summary of the provisioning."""
         # Summary of provisioned guests
         guests = fmf.utils.listed(self.ready_guests, 'guest')
         self.info('summary', f'{guests} provisioned', 'green', shift=1)
@@ -3288,10 +3091,7 @@ class Provision(tmt.steps.Step):
                 self.verbose(guest.name, color='red', shift=2)
 
     def go(self, force: bool = False) -> None:
-        """
-        Provision all guests
-        """
-
+        """Provision all guests."""
         super().go(force=force)
 
         # Nothing more to do if already done
@@ -3307,16 +3107,17 @@ class Provision(tmt.steps.Step):
         def _run_provision_phases(
             phases: list[ProvisionPlugin[ProvisionStepData]],
         ) -> tuple[list[ProvisionTask], list[ProvisionTask]]:
-            """
-            Run the given set of ``provision`` phases.
+            """Run the given set of ``provision`` phases.
 
-            :param phases: list of ``provision`` step phases. By "running" them,
-                they would provision their respective guests.
-            :returns: two lists, a list of all :py:class:`ProvisionTask`
-                instances queued, and a subset of the first list collecting only
-                those tasks that failed.
-            """
+            Args:
+                phases: list of ``provision`` step phases. By "running"
+                    them, they would provision their respective guests.
 
+            Returns:
+                two lists, a list of all :py:class:`ProvisionTask`
+                instances queued, and a subset of the first list
+                collecting only those tasks that failed.
+            """
             queue: ProvisionQueue = ProvisionQueue(
                 'provision.provision', self._logger.descend(logger_name=f'{self}.queue')
             )
@@ -3342,16 +3143,17 @@ class Provision(tmt.steps.Step):
             return all_tasks, failed_tasks
 
         def _run_action_phases(phases: list[Action]) -> tuple[list[ActionTask], list[ActionTask]]:
-            """
-            Run the given set of actions.
+            """Run the given set of actions.
 
-            :param phases: list of actions, e.g. ``login`` or ``reboot``, given
-                in the ``provision`` step.
-            :returns: two lists, a list of all :py:class:`ActionTask` instances
-                queued, and a subset of the first list collecting only those
-                tasks that failed.
-            """
+            Args:
+                phases: list of actions, e.g. ``login`` or ``reboot``,
+                    given in the ``provision`` step.
 
+            Returns:
+                two lists, a list of all :py:class:`ActionTask`
+                instances queued, and a subset of the first list
+                collecting only those tasks that failed.
+            """
             queue: PhaseQueue[ProvisionStepData, None] = PhaseQueue(
                 'provision.action', self._logger.descend(logger_name=f'{self}.queue')
             )

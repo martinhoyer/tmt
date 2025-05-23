@@ -103,20 +103,21 @@ def _save_report(
     timestamp: datetime.datetime,
     append: bool = False,
 ) -> Path:
-    """
-    Save the given report into check's report file.
+    """Save the given report into check's report file.
 
-    :param invocation: test invocation to which the check belongs to.
-        The report file path would be in this invocation's
-        :py:attr:`check_files_path`.
-    :param report: lines of the report.
-    :param timestamp: time at which the report has been created. It will
-        be saved in the report file, before the report itself.
-    :param append: if set, the report would be appended to the report
-        file instead of overwriting it.
-    :returns: path to the report file.
-    """
+    Args:
+        invocation: test invocation to which the check belongs to. The
+            report file path would be in this invocation's
+            :py:attr:`check_files_path`.
+        report: lines of the report.
+        timestamp: time at which the report has been created. It will be
+            saved in the report file, before the report itself.
+        append: if set, the report would be appended to the report file
+            instead of overwriting it.
 
+    Returns:
+        path to the report file.
+    """
     report_filepath = invocation.check_files_path / TEST_POST_AVC_FILENAME
 
     full_report = [''] if append else []
@@ -138,18 +139,17 @@ def _run_script(
     needs_sudo: bool = False,
     logger: tmt.log.Logger,
 ) -> Union[tuple[CommandOutput, None], tuple[None, tmt.utils.RunError]]:
-    """
-    A helper to run a script on the guest.
+    """A helper to run a script on the guest.
 
     Instead of letting failed commands to interrupt execution by raising
     exceptions, this helper intercepts them and returns them together
     with command output. This let's us log them in the report file.
 
-    :returns: a tuple of two items, either a command output and
-        ``None``, or ``None`` and captured :py:class:`RunError`
-        describing the command failure.
+    Returns:
+        a tuple of two items, either a command output and ``None``, or
+        ``None`` and captured :py:class:`RunError` describing the
+        command failure.
     """
-
     if needs_sudo and invocation.guest.facts.is_superuser is False:
         script = ShellScript(f'sudo {script.to_shell_command()}')
 
@@ -173,28 +173,19 @@ def _run_script(
 
 
 def _report_success(label: str, output: tmt.utils.CommandOutput) -> list[str]:
-    """
-    Format successful command output for the report
-    """
-
+    """Format successful command output for the report."""
     return list(render_command_report(label=label, output=output))
 
 
 def _report_failure(label: str, exc: tmt.utils.RunError) -> list[str]:
-    """
-    Format failed command output for the report
-    """
-
+    """Format failed command output for the report."""
     return list(render_command_report(label=label, exc=exc))
 
 
 def create_ausearch_mark(
     invocation: 'TestInvocation', check: 'AvcCheck', logger: tmt.log.Logger
 ) -> None:
-    """
-    Save a mark for ``ausearch`` in a file on the guest
-    """
-
+    """Save a mark for ``ausearch`` in a file on the guest."""
     ausearch_mark_filepath = invocation.check_files_path / AUSEARCH_MARK_FILENAME
 
     # Wait one second before storing the mark because ausearch
@@ -227,10 +218,7 @@ def create_final_report(
     check: 'AvcCheck',
     logger: tmt.log.Logger,
 ) -> tuple[ResultOutcome, list[Path]]:
-    """
-    Collect the data, evaluate and create the final report
-    """
-
+    """Collect the data, evaluate and create the final report."""
     if invocation.start_time is None:
         raise tmt.utils.GeneralError(
             "Test does not have start time recorded, cannot run AVC check."
@@ -378,8 +366,7 @@ class AvcDenials(CheckPlugin[AvcCheck]):
     #
     # https://tmt.readthedocs.io/en/stable/contribute.html#docs
     #
-    """
-    Check for SELinux AVC denials raised during the test.
+    """Check for SELinux AVC denials raised during the test.
 
     The check collects SELinux AVC denials from the audit log,
     gathers details about them, and together with versions of
@@ -391,8 +378,7 @@ class AvcDenials(CheckPlugin[AvcCheck]):
         check:
           - name: avc
 
-    .. note::
-
+    Note:
         To work correctly, the check requires SELinux to be enabled on the
         guest, and ``auditd`` must be running. Without SELinux, the
         check will turn into no-op, reporting

@@ -65,7 +65,7 @@ class LogFilterSettings:
 
 
 def _filter_invalid_chars(data: str, settings: LogFilterSettings) -> str:
-    """Filter out invalid unicode characters"""
+    """Filter out invalid unicode characters."""
     return sanitize_string(data)
 
 
@@ -294,8 +294,7 @@ class ReportReportPortalData(tmt.steps.report.ReportStepData):
 
 @tmt.steps.provides_method("reportportal")
 class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
-    """
-    Report test results and their subresults to a ReportPortal instance via API.
+    """Report test results and their subresults to a ReportPortal instance via API.
 
     For communication with Report Portal API is necessary to provide
     following options:
@@ -370,7 +369,8 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
         # Enable ReportPortal report from the command line depending on the use case:
 
         ## Simple upload with all project, url endpoint and user token passed in command line
-        tmt run --all report --how reportportal --project=baseosqe --url="https://reportportal.xxx.com" --token="abc...789"
+        tmt run --all report --how reportportal --project=baseosqe
+        --url="https://reportportal.xxx.com" --token="abc...789"
 
         ## Simple upload with url and token exported in environment variable
         tmt run --all report --how reportportal --project=baseosqe
@@ -380,7 +380,8 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
         tmt run --all report --how reportportal --exclude-variables="^(TMT|PACKIT|TESTING_FARM).*"
 
         ## Upload all plans as suites into one ReportPortal launch
-        tmt run --all report --how reportportal --suite-per-plan --launch=Errata --launch-description="..."
+        tmt run --all report --how reportportal --suite-per-plan --launch=Errata
+        --launch-description="..."
 
         ## Rerun the launch with suite structure for the test results to be uploaded
         ## into the latest launch with the same name as a new 'Retry' tab
@@ -403,7 +404,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
         ## Upload Idle tests, then execute it and add result logs into prepared empty tests
         tmt run discover report --how reportportal --defect-type=Idle
         tmt run --last --all report --how reportportal --again
-    """  # noqa: E501
+    """
 
     _data_class = ReportReportPortalData
 
@@ -417,10 +418,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
     }
 
     def handle_response(self, response: requests.Response) -> None:
-        """
-        Check the endpoint response and raise an exception if needed
-        """
-
+        """Check the endpoint response and raise an exception if needed."""
         self.debug("Response code from the endpoint", response.status_code)
         self.debug("Message from the endpoint", response.text)
 
@@ -431,10 +429,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
             )
 
     def check_options(self) -> None:
-        """
-        Check options for known troublesome combinations
-        """
-
+        """Check options for known troublesome combinations."""
         if self.data.launch_per_plan and self.data.suite_per_plan:
             self.warn(
                 "The options '--launch-per-plan' and '--suite-per-plan' are mutually exclusive. "
@@ -492,9 +487,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
             result_dict = tmp_dict
         return [{'key': key, 'value': value} for key, value in result_dict.items()]
 
-    def get_defect_type_locator(
-        self, session: requests.Session, defect_type: Optional[str]
-    ) -> str:
+    def get_defect_type_locator(self, session: requests.Session, defect_type: Optional[str]) -> str:
         if not defect_type:
             return "ti001"
 
@@ -544,10 +537,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
         return response
 
     def append_description(self, curr_description: str) -> str:
-        """
-        Extend text with the launch description (if provided)
-        """
-
+        """Extend text with the launch description (if provided)."""
         if self.data.launch_description:
             if curr_description:
                 curr_description += "<br>" + self.data.launch_description
@@ -561,10 +551,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
         link_template: str,
         result: tmt.result.Result,
     ) -> str:
-        """
-        Extend text with rendered link template
-        """
-
+        """Extend text with rendered link template."""
         url = tmt.utils.templates.render_template(
             link_template,
             PLAN_NAME=self.step.plan.pathless_safe_name,
@@ -581,10 +568,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
         timestamp: str,
         write_out_failures: bool = True,
     ) -> None:
-        """
-        Upload all result log files into the ReportPortal instance
-        """
-
+        """Upload all result log files into the ReportPortal instance."""
         for log_path in result.log:
             if log_path.name == tmt.steps.execute.TEST_FAILURES_FILENAME:
                 continue
@@ -634,10 +618,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
                     )
 
     def execute_rp_import(self) -> None:
-        """
-        Execute the import of test, results and subresults into ReportPortal
-        """
-
+        """Execute the import of test, results and subresults into ReportPortal."""
         assert self.step.plan.my_run is not None
         # Use the current datetime as a default, but this is the worst case scenario
         # and we should use timestamps from results log as much as possible.
@@ -981,9 +962,7 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
             if is_the_last_plan:
                 self.data.defect_type = None
 
-            if (
-                launch_per_plan or (suite_per_plan and is_the_last_plan)
-            ) and not additional_upload:
+            if (launch_per_plan or (suite_per_plan and is_the_last_plan)) and not additional_upload:
                 # Finish the launch
                 response = self.rp_api_put(
                     session=session,
@@ -997,13 +976,11 @@ class ReportReportPortal(tmt.steps.report.ReportPlugin[ReportReportPortalData]):
             self.data.launch_url = launch_url
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Report test results to the endpoint
+        """Report test results to the endpoint.
 
         Create a ReportPortal launch and its test items,
         fill it with all parts needed and report the logs.
         """
-
         super().go(logger=logger)
 
         if not self.data.url:

@@ -28,10 +28,7 @@ log = fmf.utils.Logging('tmt').logger
 
 
 def import_polarion() -> None:
-    """
-    Import polarion python api - pylero
-    """
-
+    """Import polarion python api - pylero."""
     try:
         global PolarionException, PolarionTestCase, PolarionWorkItem
         from pylero.exceptions import PyleroLibException as PolarionException
@@ -50,10 +47,7 @@ def get_polarion_ids(
     query_result: list[Any],
     preferred_project: Optional[str] = None,
 ) -> tuple[str, Optional[str]]:
-    """
-    Return case and project ids from query results
-    """
-
+    """Return case and project ids from query results."""
     if not query_result:
         return 'None', None
     if len(query_result) == 1:
@@ -81,10 +75,7 @@ def find_polarion_case_ids(
     preferred_project: Optional[str] = None,
     polarion_case_id: Optional[str] = None,
 ) -> tuple[str, Optional[str]]:
-    """
-    Find IDs for Polarion case from data dictionary
-    """
-
+    """Find IDs for Polarion case from data dictionary."""
     assert PolarionWorkItem
 
     case_id = 'None'
@@ -133,10 +124,7 @@ def get_polarion_case(
     preferred_project: Optional[str] = None,
     polarion_case_id: Optional[str] = None,
 ) -> Optional[PolarionTestCase]:
-    """
-    Get Polarion case through couple different methods
-    """
-
+    """Get Polarion case through couple different methods."""
     import_polarion()
 
     assert PolarionTestCase
@@ -153,10 +141,7 @@ def get_polarion_case(
 
 
 def create_polarion_case(summary: str, project_id: str, path: Path) -> PolarionTestCase:
-    """
-    Create new polarion case
-    """
-
+    """Create new polarion case."""
     import tmt.export.nitrate
 
     # Create the new test case
@@ -168,10 +153,7 @@ def create_polarion_case(summary: str, project_id: str, path: Path) -> PolarionT
 
 
 def add_hyperlink(polarion_case: PolarionTestCase, link: str, role: str = 'testscript') -> None:
-    """
-    Add new hyperlink to a Polarion case and check/remove duplicates
-    """
-
+    """Add new hyperlink to a Polarion case and check/remove duplicates."""
     existing_hyperlinks = [link.uri for link in polarion_case.hyperlinks if link.role == role]
     if link not in existing_hyperlinks:
         polarion_case.add_hyperlink(link, role)
@@ -183,10 +165,7 @@ def add_hyperlink(polarion_case: PolarionTestCase, link: str, role: str = 'tests
 
 
 def export_to_polarion(test: tmt.base.Test) -> None:
-    """
-    Export fmf metadata to a Polarion test case
-    """
-
+    """Export fmf metadata to a Polarion test case."""
     import tmt.export.nitrate
 
     import_polarion()
@@ -215,9 +194,7 @@ def export_to_polarion(test: tmt.base.Test) -> None:
                     "Polarion project to use for this test case."
                 )
             if not dry_mode:
-                polarion_case = create_polarion_case(
-                    summary, project_id=project_id, path=test_path
-                )
+                polarion_case = create_polarion_case(summary, project_id=project_id, path=test_path)
             else:
                 echo(style(f"Test case '{summary}' created.", fg='blue'))
             test._metadata['extra-summary'] = summary

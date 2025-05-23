@@ -18,8 +18,7 @@ _PLAN_SHAPER_PLUGIN_REGISTRY: PluginRegistry[PlanShaperClass] = PluginRegistry('
 
 
 def provides_plan_shaper(shaper: str) -> Callable[[PlanShaperClass], PlanShaperClass]:
-    """
-    A decorator for registering plan shaper plugins.
+    """A decorator for registering plan shaper plugins.
 
     Decorate a plan shaper plugin class to register a plan shaper.
     """
@@ -35,37 +34,30 @@ def provides_plan_shaper(shaper: str) -> Callable[[PlanShaperClass], PlanShaperC
 
 
 class PlanShaper(tmt.utils.Common):
-    """
-    A base class for plan shaper plugins.
-    """
+    """A base class for plan shaper plugins."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
     @classmethod
     def run_options(cls) -> list['ClickOptionDecoratorType']:
-        """
-        Return additional options for ``tmt run``.
-        """
-
+        """Return additional options for ``tmt run``."""
         raise NotImplementedError
 
     @classmethod
     def check(cls, plan: 'Plan', tests: list['TestOrigin']) -> bool:
-        """
-        Check whether this shaper should be applied to the given plan.
+        """Check whether this shaper should be applied to the given plan.
 
-        :returns: ``True`` when the shaper would apply to the given plan.
+        Returns:
+            ``True`` when the shaper would apply to the given plan.
         """
-
         raise NotImplementedError
 
     @classmethod
     def apply(cls, plan: 'Plan', tests: list['TestOrigin']) -> Iterator['Plan']:
-        """
-        Apply the shaper to a given plan and a set of tests.
+        """Apply the shaper to a given plan and a set of tests.
 
-        :returns: a sequence of plans replacing the original plan.
+        Returns:
+            a sequence of plans replacing the original plan.
         """
-
         raise NotImplementedError

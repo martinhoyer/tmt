@@ -7,12 +7,10 @@ from ruamel.yaml import YAML
 @click.argument("KEY")
 @click.argument("YAML_FILE")
 def main(key, yaml_file):
-    """
-    Find 'key' somewhere in the yaml_file and print its value
+    """Find 'key' somewhere in the yaml_file and print its value.
 
     If it returns list then prints first item
     """
-
     with open(yaml_file) as f:
         data = YAML(typ="safe").load(f)
 

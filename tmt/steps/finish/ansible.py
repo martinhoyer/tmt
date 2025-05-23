@@ -5,11 +5,8 @@ from tmt.steps.prepare.ansible import PrepareAnsible
 
 
 @tmt.steps.provides_method('ansible')
-class FinishAnsible(
-    tmt.steps.finish.FinishPlugin[tmt.steps.finish.FinishStepData], PrepareAnsible
-):
-    """
-    Perform finishing tasks using ansible.
+class FinishAnsible(tmt.steps.finish.FinishPlugin[tmt.steps.finish.FinishStepData], PrepareAnsible):
+    """Perform finishing tasks using ansible.
 
     One or more playbooks can be provided as a list under the ``playbook``
     attribute.  Each of them will be applied using ``ansible-playbook`` in
@@ -18,18 +15,17 @@ class FinishAnsible(
     Remote playbooks can be referenced as well as the local ones,
     and both kinds can be used at the same time.
 
-    .. warning::
+    Warning:
+        The plugin may be a subject of various limitations, imposed by
+        Ansible itself:
 
-       The plugin may be a subject of various limitations, imposed by
-       Ansible itself:
-
-       * Ansible 2.17+ no longer supports Python 3.6 and older. Guests
-         where Python 3.7+ is not available cannot be prepared with the
-         ``ansible`` plugin. This has been observed when Fedora Rawhide
-         runner is used with CentOS 7 or CentOS Stream 8 guests. Possible
-         workarounds: downgrade Ansible tmt uses, or install Python 3.7+
-         before using ``ansible`` plugin from an alternative repository
-         or local build.
+        * Ansible 2.17+ no longer supports Python 3.6 and older. Guests
+          where Python 3.7+ is not available cannot be prepared with the
+          ``ansible`` plugin. This has been observed when Fedora Rawhide
+          runner is used with CentOS 7 or CentOS Stream 8 guests. Possible
+          workarounds: downgrade Ansible tmt uses, or install Python 3.7+
+          before using ``ansible`` plugin from an alternative repository
+          or local build.
 
     Single playbook config:
 

@@ -278,8 +278,7 @@ class ProvisionArtemisData(ArtemisGuestData, tmt.steps.provision.ProvisionStepDa
 
 
 class ArtemisProvisionError(ProvisionError):
-    """
-    Artemis provisioning error.
+    """Artemis provisioning error.
 
     For some provisioning errors, we can provide more context.
     """
@@ -360,17 +359,16 @@ class ArtemisAPI:
         method: str = 'get',
         request_kwargs: Optional[dict[str, Any]] = None,
     ) -> requests.Response:
-        """
-        Base helper for Artemis API queries.
+        """Base helper for Artemis API queries.
 
         Trivial dispatcher per method, returning retrieved response.
 
-        :param path: API path to contact.
-        :param method: HTTP method to use.
-        :param request_kwargs: optional request options, as supported by
-            :py:mod:`requests` library.
+        Args:
+            path: API path to contact.
+            method: HTTP method to use.
+            request_kwargs: optional request options, as supported by
+                :py:mod:`requests` library.
         """
-
         request_kwargs = request_kwargs or {}
 
         url = f'{self._guest.api_url}{path}'
@@ -395,15 +393,14 @@ class ArtemisAPI:
         data: dict[str, Any],
         request_kwargs: Optional[dict[str, Any]] = None,
     ) -> requests.Response:
-        """
-        Create - or request creation of - a resource.
+        """Create - or request creation of - a resource.
 
-        :param path: API path to contact.
-        :param data: optional key/value data to send with the request.
-        :param request_kwargs: optional request options, as supported by
-            :py:mod:`requests` library.
+        Args:
+            path: API path to contact.
+            data: optional key/value data to send with the request.
+            request_kwargs: optional request options, as supported by
+                :py:mod:`requests` library.
         """
-
         request_kwargs = request_kwargs or {}
         request_kwargs['json'] = data
 
@@ -415,15 +412,14 @@ class ArtemisAPI:
         params: Optional[dict[str, Any]] = None,
         request_kwargs: Optional[dict[str, Any]] = None,
     ) -> requests.Response:
-        """
-        Inspect a resource.
+        """Inspect a resource.
 
-        :param path: API path to contact.
-        :param params: optional key/value query parameters.
-        :param request_kwargs: optional request options, as supported by
-            :py:mod:`requests` library.
+        Args:
+            path: API path to contact.
+            params: optional key/value query parameters.
+            request_kwargs: optional request options, as supported by
+                :py:mod:`requests` library.
         """
-
         request_kwargs = request_kwargs or {}
 
         if params:
@@ -436,20 +432,18 @@ class ArtemisAPI:
         path: str,
         request_kwargs: Optional[dict[str, Any]] = None,
     ) -> requests.Response:
-        """
-        Delete - or request removal of - a resource.
+        """Delete - or request removal of - a resource.
 
-        :param path: API path to contact.
-        :param request_kwargs: optional request options, as supported by
-            :py:mod:`requests` library.
+        Args:
+            path: API path to contact.
+            request_kwargs: optional request options, as supported by
+                :py:mod:`requests` library.
         """
-
         return self.query(path, method='delete', request_kwargs=request_kwargs)
 
 
 class GuestArtemis(tmt.GuestSsh):
-    """
-    Artemis guest instance
+    """Artemis guest instance.
 
     The following keys are expected in the 'data' dictionary:
     """
@@ -490,10 +484,7 @@ class GuestArtemis(tmt.GuestSsh):
 
     @property
     def is_ready(self) -> bool:
-        """
-        Detect the guest is ready or not
-        """
-
+        """Detect the guest is ready or not."""
         # FIXME: A more robust solution should be provided. Currently just
         #        return True if self.guest is not None
         return self.primary_address is not None
@@ -626,14 +617,12 @@ class GuestArtemis(tmt.GuestSsh):
         self.primary_address = self.topology_address = guest_info['address']
 
     def start(self) -> None:
-        """
-        Start the guest
+        """Start the guest.
 
         Get a new guest instance running. This should include preparing
         any configuration necessary to get it started. Called after
         load() is completed so all guest data should be available.
         """
-
         if self.guestname is None or self.primary_address is None:
             self._create()
 
@@ -641,10 +630,7 @@ class GuestArtemis(tmt.GuestSsh):
         self.verbose('topology address', self.topology_address, 'green')
 
     def remove(self) -> None:
-        """
-        Remove the guest
-        """
-
+        """Remove the guest."""
         if self.guestname is None:
             return
 
@@ -670,21 +656,24 @@ class GuestArtemis(tmt.GuestSsh):
         command: Optional[Union[Command, ShellScript]] = None,
         waiting: Optional[Waiting] = None,
     ) -> bool:
-        """
-        Reboot the guest, and wait for the guest to recover.
+        """Reboot the guest, and wait for the guest to recover.
 
-        :param hard: if set, force the reboot. This may result in a loss of
-            data. The default of ``False`` will attempt a graceful reboot.
-        :param command: a command to run on the guest to trigger the reboot.
-        :param timeout: amount of time in which the guest must become available
-            again.
-        :param tick: how many seconds to wait between two consecutive attempts
-            of contacting the guest.
-        :param tick_increase: a multiplier applied to ``tick`` after every
-            attempt.
-        :returns: ``True`` if the reboot succeeded, ``False`` otherwise.
-        """
+        Args:
+            hard: if set, force the reboot. This may result in a loss of
+                data. The default of ``False`` will attempt a graceful
+                reboot.
+            command: a command to run on the guest to trigger the
+                reboot.
+            timeout: amount of time in which the guest must become
+                available again.
+            tick: how many seconds to wait between two consecutive
+                attempts of contacting the guest.
+            tick_increase: a multiplier applied to ``tick`` after every
+                attempt.
 
+        Returns:
+            ``True`` if the reboot succeeded, ``False`` otherwise.
+        """
         waiting = waiting or tmt.steps.provision.default_reboot_waiting()
 
         if hard:
@@ -718,8 +707,7 @@ class GuestArtemis(tmt.GuestSsh):
 
 @tmt.steps.provides_method('artemis')
 class ProvisionArtemis(tmt.steps.provision.ProvisionPlugin[ProvisionArtemisData]):
-    """
-    Provision guest using Artemis backend.
+    """Provision guest using Artemis backend.
 
     Reserve a machine using the Artemis service.
     Users can specify many requirements, mostly regarding the
@@ -745,19 +733,16 @@ class ProvisionArtemis(tmt.steps.provision.ProvisionPlugin[ProvisionArtemisData]
             image: Fedora
             api-url: https://your-artemis.com/
 
-    .. note::
-
+    Note:
         When used together with the :ref:`testing-farm` infrastructure
         some of the options from the first example below will be filled
         for you by the Testing Farm service.
 
-    .. note::
-
+    Note:
         The actual value of ``image`` depends on what images - or "composes" as
         Artemis calls them - supports and can deliver.
 
-    .. note::
-
+    Note:
         The ``api-url`` can be also given via ``TMT_PLUGIN_PROVISION_ARTEMIS_API_URL``
         environment variable.
 
@@ -804,10 +789,7 @@ class ProvisionArtemis(tmt.steps.provision.ProvisionPlugin[ProvisionArtemisData]
     _guest = None
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Provision the guest
-        """
-
+        """Provision the guest."""
         super().go(logger=logger)
 
         if self.data.api_version not in SUPPORTED_API_VERSIONS:

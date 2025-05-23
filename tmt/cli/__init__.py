@@ -1,6 +1,4 @@
-"""
-Basic classes and code for tmt command line interface
-"""
+"""Basic classes and code for tmt command line interface."""
 
 import collections
 import enum
@@ -58,8 +56,7 @@ class TmtExitCode(enum.IntEnum):
 
 @container
 class ContextObject:
-    """
-    Click Context Object container.
+    """Click Context Object container.
 
     In Click terms, this is "an arbitrary object of user data." In this container,
     tmt CLI code stores all structures relevant for the command execution. The
@@ -87,8 +84,7 @@ class ContextObject:
 
 
 class Context(click.Context):
-    """
-    Custom :py:class:`click.Context`-like class for typing purposes.
+    """Custom :py:class:`click.Context`-like class for typing purposes.
 
     Objects of this class are never instantiated, it serves only as a type
     stub in commands below, to simplify handling and static analysis of
@@ -109,8 +105,7 @@ class Context(click.Context):
 
 
 def pass_context(fn: 'Callable[Concatenate[Context, P], R]') -> 'Callable[P, R]':
-    """
-    Custom :py:func:`click.pass_context`-like decorator.
+    """Custom :py:func:`click.pass_context`-like decorator.
 
     Complementing the :py:class:`Context`, the goal of this decorator to
     announce the correct type of the ``context`` parameter. The original
@@ -119,14 +114,12 @@ def pass_context(fn: 'Callable[Concatenate[Context, P], R]') -> 'Callable[P, R]'
     and ``click`` API, we trick type checkers by isolating the necessary
     ``type: ignore[arg-type]``.
     """
-
     return click.pass_context(fn)  # type: ignore[arg-type]
 
 
 @container
 class CliInvocation:
-    """
-    A single CLI invocation of a tmt subcommand.
+    """A single CLI invocation of a tmt subcommand.
 
     Bundles together the Click context and options derived from it.
     A context alone might be good enough, but sometimes tmt needs to
@@ -146,10 +139,7 @@ class CliInvocation:
 
     @classmethod
     def from_options(cls, options: dict[str, Any]) -> 'CliInvocation':
-        """
-        Inject custom options coming from the command line
-        """
-
+        """Inject custom options coming from the command line."""
         invocation = CliInvocation(context=None, options=options)
 
         # ignore[reportGeneralTypeIssues]: pyright has troubles understanding it
@@ -174,17 +164,12 @@ class CliInvocation:
 
 
 class CustomGroup(click.Group):
-    """
-    Custom Click Group
-    """
+    """Custom Click Group."""
 
     # ignore[override]: expected, we want to use more specific `Context`
     # type than the one declared in superclass.
     def list_commands(self, context: Context) -> list[str]:  # type: ignore[override]
-        """
-        Prevent alphabetical sorting
-        """
-
+        """Prevent alphabetical sorting."""
         return list(self.commands.keys())
 
     # ignore[override]: expected, we want to use more specific `Context`
@@ -194,10 +179,7 @@ class CustomGroup(click.Group):
         context: Context,
         cmd_name: str,
     ) -> Optional[click.Command]:
-        """
-        Allow command shortening
-        """
-
+        """Allow command shortening."""
         # Backward-compatible 'test convert' (just temporary for now FIXME)
         cmd_name = cmd_name.replace('convert', 'import')
         # Support both story & stories
@@ -217,9 +199,7 @@ class CustomGroup(click.Group):
 
 
 class HelpFormatter(click.HelpFormatter):
-    """
-    Custom help formatter capable of rendering ReST syntax
-    """
+    """Custom help formatter capable of rendering ReST syntax."""
 
     # Override parent implementation
     def write_dl(

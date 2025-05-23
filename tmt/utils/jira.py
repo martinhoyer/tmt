@@ -38,13 +38,11 @@ tmt.utils.hints.register_hint(
 
 
 def prepare_url_params(tmt_object: 'tmt.base.Core') -> dict[str, str]:
-    """
-    Prepare url parameters prefixed with tmt object type
+    """Prepare url parameters prefixed with tmt object type.
 
     This is the format in which the tmt web API accepts the
     specification of the objects to be displayed to the user.
     """
-
     tmt_type = tmt_object.__class__.__name__.lower()
     fmf_id = tmt_object.fmf_id
 
@@ -62,15 +60,10 @@ def prepare_url_params(tmt_object: 'tmt.base.Core') -> dict[str, str]:
 
 
 class JiraInstance:
-    """
-    A Jira instance configured with url and token
-    """
+    """A Jira instance configured with url and token."""
 
     def __init__(self, issue_tracker: IssueTracker, logger: tmt.log.Logger):
-        """
-        Initialize Jira instance from the issue tracker config
-        """
-
+        """Initialize Jira instance from the issue tracker config."""
         self.url = str(issue_tracker.url)
         self.tmt_web_url = str(issue_tracker.tmt_web_url)
         self.token = issue_tracker.token
@@ -90,10 +83,7 @@ class JiraInstance:
         issue_url: str,
         logger: tmt.log.Logger,
     ) -> Optional['JiraInstance']:
-        """
-        Search configured issues trackers for matching Jira instance
-        """
-
+        """Search configured issues trackers for matching Jira instance."""
         # Check for the 'link' config section, exit if config missing
         try:
             link_config = tmt.config.Config(logger).link
@@ -119,10 +109,7 @@ class JiraInstance:
         issue_url: str,
         tmt_objects: Sequence[TmtObject],
     ) -> None:
-        """
-        Link one or more tmt objects to the given Jira issue
-        """
-
+        """Link one or more tmt objects to the given Jira issue."""
         # Prepare a nice title for the link
         title = "tmt: " + fmf.utils.listed([tmt_object.name for tmt_object in tmt_objects])
 
@@ -145,10 +132,7 @@ def save_link_to_metadata(
     link: 'tmt.base.Link',
     logger: tmt.log.Logger,
 ) -> None:
-    """
-    Store the link into the object metadata on disk
-    """
-
+    """Store the link into the object metadata on disk."""
     # Try to add the link relation to object's data if it is not already there
     #
     # cast & ignore: data is basically a container with test/plan/story
@@ -179,22 +163,21 @@ def link(
     separate: bool = False,
     logger: tmt.log.Logger,
 ) -> None:
-    """
-    Link provided tmt object(s) with related Jira issue(s)
+    """Link provided tmt object(s) with related Jira issue(s).
 
     The link is added to the following two locations:
 
         1. test, plan or story metadata on disk (always)
         2. tmt web link added to the Jira issue (if configured)
 
-    :param tmt_objects: list of tmt tests, plan or stories to be linked
-    :param links: target jira issues to be linked
-    :param separate: by default a single link is created for all
-        provided tmt objects (e.g. test + plan covering an issue), if
-        True, separate links will be created for each tmt object
-    :param logger: a logger instance for logging
+    Args:
+        tmt_objects: list of tmt tests, plan or stories to be linked
+        links: target jira issues to be linked
+        separate: by default a single link is created for all provided
+            tmt objects (e.g. test + plan covering an issue), if True,
+            separate links will be created for each tmt object
+        logger: a logger instance for logging
     """
-
     # TODO: Shall we cover all relations instead?
     for link in links.get("verifies"):
         # Save the link to test/plan/story metadata on disk

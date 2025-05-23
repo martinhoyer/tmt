@@ -92,38 +92,39 @@ class GuestConnect(tmt.steps.provision.GuestSsh):
         command: Optional[Union[Command, ShellScript]] = None,
         waiting: Optional[Waiting] = None,
     ) -> bool:
+        """Reboot the guest, and wait for the guest to recover.
+
+        Note:
+            Custom reboot command can be used only in combination with a
+            soft reboot. If both ``hard`` and ``command`` are set, a hard
+            reboot will be requested, and ``command`` will be ignored.
+
+        Args:
+            hard: if set, force the reboot. This may result in a loss of
+                data. The default of ``False`` will attempt a graceful
+                reboot.
+
+                Plugin will use :py:attr:`ConnectGuestData.hard_reboot`,
+                set via ``hard-reboot`` key. Unlike ``command``, this command
+                would be executed on the runner, **not** on the guest.
+            command: a command to run on the guest to trigger the
+                reboot. If ``hard`` is also set, ``command`` is ignored.
+
+                If not set, plugin would try to use
+                :py:attr:`ConnectGuestData.soft_reboot`, set via
+                ``soft-reboot`` key. Unlike ``command``,
+                this command would be executed on the runner, **not** on the
+                guest.
+            timeout: amount of time in which the guest must become
+                available again.
+            tick: how many seconds to wait between two consecutive
+                attempts of contacting the guest.
+            tick_increase: a multiplier applied to ``tick`` after every
+                attempt.
+
+        Returns:
+            ``True`` if the reboot succeeded, ``False`` otherwise.
         """
-        Reboot the guest, and wait for the guest to recover.
-
-        .. note::
-
-           Custom reboot command can be used only in combination with a
-           soft reboot. If both ``hard`` and ``command`` are set, a hard
-           reboot will be requested, and ``command`` will be ignored.
-
-        :param hard: if set, force the reboot. This may result in a loss of
-            data. The default of ``False`` will attempt a graceful reboot.
-
-            Plugin will use :py:attr:`ConnectGuestData.hard_reboot`,
-            set via ``hard-reboot`` key. Unlike ``command``, this command
-            would be executed on the runner, **not** on the guest.
-        :param command: a command to run on the guest to trigger the
-            reboot. If ``hard`` is also set, ``command`` is ignored.
-
-            If not set, plugin would try to use
-            :py:attr:`ConnectGuestData.soft_reboot`, set via
-            ``soft-reboot`` key. Unlike ``command``,
-            this command would be executed on the runner, **not** on the
-            guest.
-        :param timeout: amount of time in which the guest must become available
-            again.
-        :param tick: how many seconds to wait between two consecutive attempts
-            of contacting the guest.
-        :param tick_increase: a multiplier applied to ``tick`` after every
-            attempt.
-        :returns: ``True`` if the reboot succeeded, ``False`` otherwise.
-        """
-
         waiting = waiting or tmt.steps.provision.default_reboot_waiting()
 
         if hard:
@@ -160,10 +161,7 @@ class GuestConnect(tmt.steps.provision.GuestSsh):
         return super().reboot(hard=False, waiting=waiting)
 
     def start(self) -> None:
-        """
-        Start the guest
-        """
-
+        """Start the guest."""
         self.debug(f"Doing nothing to start guest '{self.primary_address}'.")
 
         self.verbose('primary address', self.primary_address, 'green')
@@ -172,8 +170,7 @@ class GuestConnect(tmt.steps.provision.GuestSsh):
 
 @tmt.steps.provides_method('connect')
 class ProvisionConnect(tmt.steps.provision.ProvisionPlugin[ProvisionConnectData]):
-    """
-    Connect to a provisioned guest using SSH.
+    """Connect to a provisioned guest using SSH.
 
     Do not provision a new system. Instead, use provided
     authentication data to connect to a running machine.
@@ -221,8 +218,7 @@ class ProvisionConnect(tmt.steps.provision.ProvisionPlugin[ProvisionConnectData]
           hard-reboot: virsh reboot my-example-vm
           soft-reboot: ssh root@my-example-vm 'shutdown -r now'
 
-    .. warning::
-
+    Warning:
         Both ``hard-reboot`` and ``soft-reboot`` commands are executed
         on the runner, not on the guest.
     """
@@ -236,10 +232,7 @@ class ProvisionConnect(tmt.steps.provision.ProvisionPlugin[ProvisionConnectData]
     _guest = None
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Prepare the connection
-        """
-
+        """Prepare the connection."""
         super().go(logger=logger)
 
         # Check guest and auth info
@@ -266,7 +259,5 @@ class ProvisionConnect(tmt.steps.provision.ProvisionPlugin[ProvisionConnectData]
             self.warn("The 'connect' provision plugin does not support hardware requirements.")
 
         # And finally create the guest
-        self._guest = GuestConnect(
-            logger=self._logger, data=data, name=self.name, parent=self.step
-        )
+        self._guest = GuestConnect(logger=self._logger, data=data, name=self.name, parent=self.step)
         self._guest.setup()

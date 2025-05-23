@@ -1,5 +1,4 @@
-"""
-Signal handling in tmt.
+"""Signal handling in tmt.
 
 Provides custom signal handler for ``SIGINT`` (aka ``Ctrl+C``) and
 ``SIGTERM``, and delayed actions for these signals.
@@ -51,19 +50,14 @@ INTERRUPT_PENDING = threading.Event()
 
 
 class Interrupted(tmt.utils.GeneralError):
-    """
-    Raised by code that interrupted its work because of tmt shutdown.
-    """
+    """Raised by code that interrupted its work because of tmt shutdown."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__('tmt was interrupted', *args, **kwargs)
 
 
 def _quit_tmt(logger: tmt.log.Logger, repeated: bool = False) -> NoReturn:
-    """
-    Send tmt on the path of quitting by raising an exception.
-    """
-
+    """Send tmt on the path of quitting by raising an exception."""
     if repeated:
         logger.warning(
             textwrap.dedent(
@@ -96,13 +90,12 @@ def _quit_tmt(logger: tmt.log.Logger, repeated: bool = False) -> NoReturn:
 
 
 def _interrupt_handler(signum: int, frame: Optional[FrameType]) -> None:
-    """
-    A signal handler for signals that interrupt tmt, ``SIGINT`` and ``SIGTERM`.
+    """A signal handler for signals that interrupt tmt, ``SIGINT`` and ``SIGTERM`.
 
-    :param signum: delivered signal.
-    :param frame: stack frame active when the signal was received.
+    Args:
+        signum: delivered signal.
+        frame: stack frame active when the signal was received.
     """
-
     logger = tmt.log.Logger.get_bootstrap_logger()
 
     logger.warning(f'Interrupt requested via {signal.Signals(signum).name} signal.')
@@ -121,15 +114,13 @@ def _interrupt_handler(signum: int, frame: Optional[FrameType]) -> None:
 
 
 def install_handlers() -> None:
-    """Install tmt's signal handlers"""
-
+    """Install tmt's signal handlers."""
     signal.signal(signal.SIGINT, _interrupt_handler)
     signal.signal(signal.SIGTERM, _interrupt_handler)
 
 
 class PreventSignals(contextlib.AbstractContextManager['PreventSignals']):
-    """
-    For the duration of this context manager, interrupt signals are postponed.
+    """For the duration of this context manager, interrupt signals are postponed.
 
     If, while the context was active, signals were delivered,
     :py:exc:`KeyboardInterrupt` exception would be raised when leaving

@@ -19,8 +19,7 @@ _FRAMEWORK_PLUGIN_REGISTRY: tmt.plugins.PluginRegistry[TestFrameworkClass] = (
 
 
 def provides_framework(framework: str) -> Callable[[TestFrameworkClass], TestFrameworkClass]:
-    """
-    A decorator for registering test frameworks.
+    """A decorator for registering test frameworks.
 
     Decorate a test framework plugin class to register a test framework.
     """
@@ -38,8 +37,7 @@ def provides_framework(framework: str) -> Callable[[TestFrameworkClass], TestFra
 
 
 class TestFramework:
-    """
-    A base class for test framework plugins.
+    """A base class for test framework plugins.
 
     All methods provide viable default behavior with the exception of
     :py:meth:`extract_results` which must be implemented by the plugin.
@@ -51,14 +49,15 @@ class TestFramework:
         test: 'Test',
         logger: tmt.log.Logger,
     ) -> list['DependencySimple']:
-        """
-        Provide additional test requirements needed by its framework.
+        """Provide additional test requirements needed by its framework.
 
-        :param test: test for which we are asked to provide requirements.
-        :param logger: to use for logging.
-        :returns: a list of additional requirements needed by the framework.
-        """
+        Args:
+            test: test for which we are asked to provide requirements.
+            logger: to use for logging.
 
+        Returns:
+            a list of additional requirements needed by the framework.
+        """
         return []
 
     @classmethod
@@ -67,16 +66,17 @@ class TestFramework:
         invocation: 'TestInvocation',
         logger: tmt.log.Logger,
     ) -> tmt.utils.Environment:
-        """
-        Provide additional environment variables for the test.
+        """Provide additional environment variables for the test.
 
-        :param invocation: test invocation to which the check belongs to.
-        :param logger: to use for logging.
-        :returns: environment variables to expose for the test. Variables
-            would be added on top of any variables the plugin, test or plan
-            might have already collected.
-        """
+        Args:
+            invocation: test invocation to which the check belongs to.
+            logger: to use for logging.
 
+        Returns:
+            environment variables to expose for the test. Variables
+            would be added on top of any variables the plugin, test or
+            plan might have already collected.
+        """
         return tmt.utils.Environment()
 
     @classmethod
@@ -85,14 +85,15 @@ class TestFramework:
         invocation: 'TestInvocation',
         logger: tmt.log.Logger,
     ) -> tmt.utils.ShellScript:
-        """
-        Provide a test command.
+        """Provide a test command.
 
-        :param invocation: test invocation to which the check belongs to.
-        :param logger: to use for logging.
-        :returns: a command to use to run the test.
-        """
+        Args:
+            invocation: test invocation to which the check belongs to.
+            logger: to use for logging.
 
+        Returns:
+            a command to use to run the test.
+        """
         assert invocation.test.test is not None  # narrow type
 
         return invocation.test.test
@@ -103,15 +104,16 @@ class TestFramework:
         invocation: 'TestInvocation',
         logger: tmt.log.Logger,
     ) -> list[str]:
-        """
-        Provide additional options for pulling test data directory.
+        """Provide additional options for pulling test data directory.
 
-        :param invocation: test invocation to which the check belongs to.
-        :param logger: to use for logging.
-        :returns: additional options for the ``rsync`` tmt would use to pull
+        Args:
+            invocation: test invocation to which the check belongs to.
+            logger: to use for logging.
+
+        Returns:
+            additional options for the ``rsync`` tmt would use to pull
             the test data directory from the guest.
         """
-
         return []
 
     @classmethod
@@ -121,13 +123,14 @@ class TestFramework:
         results: list[tmt.result.Result],
         logger: tmt.log.Logger,
     ) -> list[tmt.result.Result]:
-        """
-        Extract test results.
+        """Extract test results.
 
-        :param invocation: test invocation to which the check belongs to.
-        :param results: current list of results as reported by a test
-        :param logger: to use for logging.
-        :returns: list of results produced by the given test.
-        """
+        Args:
+            invocation: test invocation to which the check belongs to.
+            results: current list of results as reported by a test
+            logger: to use for logging.
 
+        Returns:
+            list of results produced by the given test.
+        """
         raise NotImplementedError

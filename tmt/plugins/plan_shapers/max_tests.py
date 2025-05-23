@@ -12,9 +12,7 @@ from tmt.plugins.plan_shapers import PlanShaper, provides_plan_shaper
 
 @provides_plan_shaper('max-tests')
 class MaxTestsPlanShaper(PlanShaper):
-    """
-    Reshape a plan by limiting the number of tests in a plan.
-    """
+    """Reshape a plan by limiting the number of tests in a plan."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)

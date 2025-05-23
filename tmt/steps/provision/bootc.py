@@ -167,8 +167,7 @@ class BootcData(tmt.steps.provision.testcloud.ProvisionTestcloudData):
 
 @tmt.steps.provides_method('bootc')
 class ProvisionBootc(tmt.steps.provision.ProvisionPlugin[BootcData]):
-    """
-    Provision a local virtual machine using a bootc container image
+    """Provision a local virtual machine using a bootc container image.
 
     Minimal config which uses the CentOS Stream 9 bootc image:
 
@@ -223,10 +222,7 @@ class ProvisionBootc(tmt.steps.provision.ProvisionPlugin[BootcData]):
 
     @property
     def is_in_standalone_mode(self) -> bool:
-        """
-        Enable standalone mode when build_disk_image_only is True
-        """
-
+        """Enable standalone mode when build_disk_image_only is True."""
         if self.data.build_disk_image_only:
             return True
         return super().is_in_standalone_mode
@@ -240,19 +236,13 @@ class ProvisionBootc(tmt.steps.provision.ProvisionPlugin[BootcData]):
         return parent.plan.my_run.unique_id
 
     def _expand_path(self, relative_path: str) -> str:
-        """
-        Expand the path to the full path relative to the current working dir
-        """
-
+        """Expand the path to the full path relative to the current working dir."""
         if relative_path.startswith("/"):
             return relative_path
         return f"{os.getcwd()}/{relative_path}"
 
     def _build_derived_image(self, base_image: str) -> str:
-        """
-        Build a "derived" container image from the base image with tmt dependencies added
-        """
-
+        """Build a "derived" container image from the base image with tmt dependencies added."""
         assert self.workdir is not None  # narrow type
 
         self._logger.debug("Build modified container image with necessary tmt packages/config.")
@@ -287,10 +277,7 @@ class ProvisionBootc(tmt.steps.provision.ProvisionPlugin[BootcData]):
         return image_tag
 
     def _build_base_image(self, containerfile: str, workdir: str) -> str:
-        """
-        Build the "base" or user supplied container image
-        """
-
+        """Build the "base" or user supplied container image."""
         image_tag = f'localhost/tmtbase-{self._get_id()}'
         self._logger.debug("Build container image.")
         tmt.utils.Command(
@@ -310,10 +297,7 @@ class ProvisionBootc(tmt.steps.provision.ProvisionPlugin[BootcData]):
         return image_tag
 
     def _build_bootc_disk(self, containerimage: str, image_builder: str, rootfs: str) -> None:
-        """
-        Build the bootc disk from a container image using bootc image builder
-        """
-
+        """Build the bootc disk from a container image using bootc image builder."""
         self._logger.debug("Build bootc disk image.")
 
         tmt.utils.Command(
@@ -369,16 +353,13 @@ class ProvisionBootc(tmt.steps.provision.ProvisionPlugin[BootcData]):
         )
 
     def _check_if_podman_is_rootless(self) -> None:
-        output = tmt.utils.Command(
-            "podman", "info", "--format", "{{.Host.Security.Rootless}}"
-        ).run(cwd=self.workdir, stream_output=True, logger=self._logger)
+        output = tmt.utils.Command("podman", "info", "--format", "{{.Host.Security.Rootless}}").run(
+            cwd=self.workdir, stream_output=True, logger=self._logger
+        )
         self._rootless = output.stdout == "true\n"
 
     def go(self, *, logger: Optional[tmt.log.Logger] = None) -> None:
-        """
-        Provision the bootc instance
-        """
-
+        """Provision the bootc instance."""
         super().go(logger=logger)
 
         self._check_if_podman_is_rootless()

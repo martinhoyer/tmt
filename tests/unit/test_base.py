@@ -17,10 +17,7 @@ runner = CliRunner()
 
 
 def test_invalid_yaml_syntax():
-    """
-    Invalid yaml syntax
-    """
-
+    """Invalid yaml syntax."""
     tmp = tempfile.mkdtemp()
     original_directory = os.getcwd()
     os.chdir(tmp)
@@ -35,10 +32,7 @@ def test_invalid_yaml_syntax():
 
 
 def test_test_defaults(root_logger):
-    """
-    Test default test attributes
-    """
-
+    """Test default test attributes."""
     test = tmt.Test.from_dict(logger=root_logger, mapping={'test': './test.sh'}, name='/smoke')
     assert test.name == '/smoke'
     assert test.component == []
@@ -53,10 +47,7 @@ def test_test_defaults(root_logger):
 
 
 def test_test_invalid(root_logger):
-    """
-    Test invalid test
-    """
-
+    """Test invalid test."""
     # Missing name
     with pytest.raises(tmt.utils.GeneralError):
         tmt.Test.from_dict(logger=root_logger, mapping={}, name='')
@@ -97,10 +88,7 @@ def test_test_invalid(root_logger):
 
 
 def test_link():
-    """
-    Test the link attribute parsing
-    """
-
+    """Test the link attribute parsing."""
     # No link should default to an empty list
     assert Links().get() == []
 
@@ -123,9 +111,7 @@ def test_link():
     ]
 
     # Single dictionary (default relation)
-    assert Links(data={'name': 'foo'}).get() == [
-        Link(relation='relates', target=FmfId(name='foo'))
-    ]
+    assert Links(data={'name': 'foo'}).get() == [Link(relation='relates', target=FmfId(name='foo'))]
     # Single dictionary (explicit relation)
     assert Links(data={'verifies': 'foo'}).get() == [Link(relation='verifies', target='foo')]
     # Multiple dictionaries
@@ -186,20 +172,14 @@ def test_link():
 
 
 def test_pickleable_tree() -> None:
-    """
-    https://github.com/teemtee/tmt/issues/2503
-    """
-
+    """https://github.com/teemtee/tmt/issues/2503."""
     tree = tmt.Tree.grow()
 
     pickle.dumps(tree)
 
 
 def test_expand_node_data(monkeypatch) -> None:
-    """
-    :py:func:`tmt.base.expand_node_data` handles various forms of variables
-    """
-
+    """:py:func:`tmt.base.expand_node_data` handles various forms of variables."""
     # From ``_data` and `_expected` we construct lists with items, including
     # another list and a dictionary, to verify `expand_node_data()` handles
     # nested structures too.

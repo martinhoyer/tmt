@@ -36,8 +36,7 @@ class Shell(TestFramework):
         results: list['tmt.result.RawResult'],
         logger: tmt.log.Logger,
     ) -> list['tmt.result.Result']:
-        """
-        Reduce given results to one outcome.
+        """Reduce given results to one outcome.
 
         This is the default behavior applied to given test results: all results will be reduced to
         the worst outcome possible.
@@ -45,11 +44,13 @@ class Shell(TestFramework):
         Also, convert the ``results`` into the :py:class:`SubResult` instances, and return them as
         part of returned :py:class:`Result` instance.
 
-        :param invocation: test invocation to which the results belong to.
-        :param results: results to reduce and save as tmt subresults.
-        :returns: list of results.
-        """
+        Args:
+            invocation: test invocation to which the results belong to.
+            results: results to reduce and save as tmt subresults.
 
+        Returns:
+            list of results.
+        """
         # The worst result outcome we can find among loaded results...
         original_outcome: Optional[ResultOutcome] = None
         # ... and the actual outcome we decided is the best representing
@@ -116,8 +117,7 @@ class Shell(TestFramework):
         results: list[tmt.result.Result],
         logger: tmt.log.Logger,
     ) -> list[tmt.result.Result]:
-        """
-        Check result of a shell test.
+        """Check result of a shell test.
 
         If there are no extra results (e.g. extracted from the tmt-report-results.yaml), continue
         normally - set the main result outcome according to test exit status.
@@ -125,9 +125,12 @@ class Shell(TestFramework):
         Otherwise, process given results, reduce their outcomes into a single one and set these
         results as tmt subresults.
 
-        :param invocation: test invocation to which the results belong to.
-        :param results: results to reduce and save as tmt subresults.
-        :returns: list of results.
+        Args:
+            invocation: test invocation to which the results belong to.
+            results: results to reduce and save as tmt subresults.
+
+        Returns:
+            list of results.
         """
         assert invocation.return_code is not None
         note: list[str] = []

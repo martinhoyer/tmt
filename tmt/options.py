@@ -1,6 +1,4 @@
-"""
-Common options and the MethodCommand class
-"""
+"""Common options and the MethodCommand class."""
 
 import contextlib
 import pathlib
@@ -34,9 +32,7 @@ if TYPE_CHECKING:
 
 @container(frozen=True)
 class Deprecated:
-    """
-    Version information and hint for obsolete options
-    """
+    """Version information and hint for obsolete options."""
 
     since: str
     hint: Optional[str] = None
@@ -60,9 +56,9 @@ class Path(click.ParamType):
         param: Optional[click.Parameter],
         ctx: Optional[click.Context],
     ) -> Optional[tmt.utils.Path]:
-        """
-        Convert the value to the correct type. This is not called if
-        the value is ``None`` (the missing value).
+        """Convert the value to the correct type.
+
+        This is not called if the value is ``None`` (the missing value).
 
         This must accept string values from the command line, as well as
         values that are already the correct type. It may also convert
@@ -74,13 +70,13 @@ class Path(click.ParamType):
         If the value cannot be converted, call :meth:`fail` with a
         descriptive message.
 
-        :param value: The value to convert.
-        :param param: The parameter that is using this type to convert
-            its value. May be ``None``.
-        :param ctx: The current context that arrived at this value. May
-            be ``None``.
+        Args:
+            value: The value to convert.
+            param: The parameter that is using this type to convert its
+                value. May be ``None``.
+            ctx: The current context that arrived at this value. May be
+                ``None``.
         """
-
         if value is None:
             return None
 
@@ -146,20 +142,19 @@ def option(
     choices: Optional[Sequence[str]] = None,
     deprecated: Optional[Deprecated] = None,
 ) -> ClickOptionDecoratorType:
-    """
-    Attaches an option to the command.
+    """Attaches an option to the command.
 
     This is a wrapper for :py:func:`click.option`, its parameters have the same
     meaning as those of ``click.option()``, and are passed to ``click.option()``,
     with the exception of ``deprecated`` parameter.
 
-    :param choices: if set, it sets ``type`` of the option to
-        :py:class:`click.Choices`, and limits option values to those
-        listed in ``choices``.
-    :param deprecated: if set, it is rendered and appended to ``help``. This
-        parameter is **not** passed to :py:func:`click.option`.
+    Args:
+        choices: if set, it sets ``type`` of the option to
+            :py:class:`click.Choices`, and limits option values to those
+            listed in ``choices``.
+        deprecated: if set, it is rendered and appended to ``help``.
+            This parameter is **not** passed to :py:func:`click.option`.
     """
-
     if help:
         help = textwrap.dedent(help)
 
@@ -536,8 +531,7 @@ def create_options_decorator(options: list[ClickOptionDecoratorType]) -> Callabl
 
 
 def create_method_class(methods: MethodDictType) -> type[click.Command]:
-    """
-    Create special class to handle different options for each method
+    """Create special class to handle different options for each method.
 
     Accepts dictionary with method names and corresponding commands:
     For example: {'fmf', <click.core.Command object at 0x7f3fe04fded0>}
@@ -545,20 +539,14 @@ def create_method_class(methods: MethodDictType) -> type[click.Command]:
     """
 
     def is_likely_subcommand(arg: str, subcommands: list[str]) -> bool:
-        """
-        Return true if arg is the beginning characters of a subcommand
-        """
-
+        """Return true if arg is the beginning characters of a subcommand."""
         return any(subcommand.startswith(arg) for subcommand in subcommands)
 
     class MethodCommand(click.Command):
         _method: Optional[click.Command] = None
 
         def _check_method(self, context: 'tmt.cli.Context', args: list[str]) -> None:
-            """
-            Manually parse the --how option
-            """
-
+            """Manually parse the --how option."""
             # Avoiding circular imports
             import tmt.steps
 

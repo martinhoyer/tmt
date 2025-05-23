@@ -1,5 +1,4 @@
-"""
-Metadata export functionality core.
+"""Metadata export functionality core.
 
 Internal APIs, plugin classes and shared functionality and helpers for metadata
 export of tests, plans or stories.
@@ -70,9 +69,7 @@ class Exporter(Protocol):
 
 
 class Exportable(Generic[ExportableT], tmt.utils._CommonBase):
-    """
-    Mixin class adding support for exportability of class instances
-    """
+    """Mixin class adding support for exportability of class instances."""
 
     # Declare export plugin registry as a class variable, but do not initialize it. If initialized
     # here, the mapping would be shared by all classes, which is not a desirable attribute.
@@ -87,10 +84,7 @@ class Exportable(Generic[ExportableT], tmt.utils._CommonBase):
     # Cannot use @property as this must remain classmethod
     @classmethod
     def get_export_plugin_registry(cls) -> PluginRegistry[ExportClass]:
-        """
-        Return - or initialize - export plugin registry
-        """
-
+        """Return - or initialize - export plugin registry."""
         if not hasattr(cls, '_export_plugin_registry'):
             cls._export_plugin_registry = PluginRegistry(f'export.{cls.__name__.lower()}')
 
@@ -98,8 +92,7 @@ class Exportable(Generic[ExportableT], tmt.utils._CommonBase):
 
     @classmethod
     def provides_export(cls, format: str) -> Callable[[ExportClass], ExportClass]:
-        """
-        A decorator for registering export format.
+        """A decorator for registering export format.
 
         Decorate an export plugin class to register a format.
         """
@@ -117,19 +110,22 @@ class Exportable(Generic[ExportableT], tmt.utils._CommonBase):
 
     @classmethod
     def _get_exporter(cls, format: str) -> Exporter:
-        """
-        Find an exporter for a given format.
+        """Find an exporter for a given format.
 
         Exporter class must be registered first, i.e. the plugin providing
         the format must have used :py:meth:`Exportable.provides_export`
         of this class as a class decorator.
 
-        :param format: export format to look for.
-        :returns: an :py:class:`Exporter`-like class implementing the export.
-        :raises GeneralError: when there is no plugin registered for the given
-            format.
-        """
+        Args:
+            format: export format to look for.
 
+        Returns:
+            an :py:class:`Exporter`-like class implementing the export.
+
+        Raises:
+            GeneralError: when there is no plugin registered for the
+                given format.
+        """
         exporter_class = cls.get_export_plugin_registry().get_plugin(format)
 
         if exporter_class is None:
@@ -140,20 +136,15 @@ class Exportable(Generic[ExportableT], tmt.utils._CommonBase):
         return cast(Exporter, getattr(exporter_class, f'export_{cls.__name__.lower()}_collection'))
 
     def _export(self, *, keys: Optional[list[str]] = None) -> _RawExportedInstance:
-        """
-        Export instance as "raw" dictionary.
+        """Export instance as "raw" dictionary.
 
         The return value is often used by more advanced export methods as their starting
         position.
         """
-
         raise NotImplementedError
 
     def export(self, *, format: str, keys: Optional[list[str]] = None, **kwargs: Any) -> str:
-        """
-        Export this instance in a given format
-        """
-
+        """Export this instance in a given format."""
         return self.export_collection(
             # TODO: adding cast to make mypy happy, it seems to be puzzled by the
             # use of the generic type as a base class for this class. I suppose
@@ -174,10 +165,7 @@ class Exportable(Generic[ExportableT], tmt.utils._CommonBase):
         keys: Optional[list[str]] = None,
         **kwargs: Any,
     ) -> str:
-        """
-        Export collection of instances in a given format
-        """
-
+        """Export collection of instances in a given format."""
         exporter = cls._get_exporter(format)
 
         try:
@@ -190,16 +178,11 @@ class Exportable(Generic[ExportableT], tmt.utils._CommonBase):
 
 
 class ExportPlugin:
-    """
-    Base class for plugins providing metadata export functionality
-    """
+    """Base class for plugins providing metadata export functionality."""
 
     @classmethod
     def export_fmfid_collection(cls, fmf_ids: list['tmt.base.FmfId'], **kwargs: Any) -> str:
-        """
-        Export collection of fmf ids
-        """
-
+        """Export collection of fmf ids."""
         raise NotImplementedError
 
     @classmethod
@@ -209,10 +192,7 @@ class ExportPlugin:
         keys: Optional[list[str]] = None,
         **kwargs: Any,
     ) -> str:
-        """
-        Export collection of tests
-        """
-
+        """Export collection of tests."""
         raise NotImplementedError
 
     @classmethod
@@ -222,10 +202,7 @@ class ExportPlugin:
         keys: Optional[list[str]] = None,
         **kwargs: Any,
     ) -> str:
-        """
-        Export collection of plans
-        """
-
+        """Export collection of plans."""
         raise NotImplementedError
 
     @classmethod
@@ -235,10 +212,7 @@ class ExportPlugin:
         keys: Optional[list[str]] = None,
         **kwargs: Any,
     ) -> str:
-        """
-        Export collection of stories
-        """
-
+        """Export collection of stories."""
         raise NotImplementedError
 
 
@@ -250,8 +224,7 @@ class ExportPlugin:
 
 
 class TrivialExporter(ExportPlugin):
-    """
-    A helper base class for exporters with trivial export procedure.
+    """A helper base class for exporters with trivial export procedure.
 
     Child classes need to implement a single method that performs a conversion
     of a single collection item, and that's all. It is good enough for formats
@@ -261,17 +234,18 @@ class TrivialExporter(ExportPlugin):
 
     @classmethod
     def _export(cls, data: _RawExported) -> str:
-        """
-        Perform the actual conversion of internal data package to desired format.
+        """Perform the actual conversion of internal data package to desired format.
 
         The method is left for child classes to implement, all other public
         methods call this method to perform the conversion for each collection
         item.
 
-        :param data: data package to export.
-        :returns: string representation of the given data.
-        """
+        Args:
+            data: data package to export.
 
+        Returns:
+            string representation of the given data.
+        """
         raise NotImplementedError
 
     @classmethod
@@ -324,10 +298,7 @@ class TrivialExporter(ExportPlugin):
 
 
 def get_bz_instance() -> BugzillaInstance:
-    """
-    Import the bugzilla module and return BZ instance
-    """
-
+    """Import the bugzilla module and return BZ instance."""
     try:
         import bugzilla
     except ImportError:
@@ -348,10 +319,7 @@ def get_bz_instance() -> BugzillaInstance:
 
 
 def bz_set_coverage(bug_ids: list[int], case_id: str, tracker_id: int) -> None:
-    """
-    Set coverage in Bugzilla
-    """
-
+    """Set coverage in Bugzilla."""
     bz_instance = get_bz_instance()
 
     overall_pass = True
@@ -380,9 +348,7 @@ def bz_set_coverage(bug_ids: list[int], case_id: str, tracker_id: int) -> None:
                 log.debug(f"Update flag failed: {err}")
                 echo(style(f"Failed to set qe_test_coverage+ flag for BZ#{bug_id}", fg='red'))
         # Process external tracker - should succeed
-        current = {
-            b['ext_bz_bug_id'] for b in bug['external_bugs'] if b['ext_bz_id'] == tracker_id
-        }
+        current = {b['ext_bz_bug_id'] for b in bug['external_bugs'] if b['ext_bz_id'] == tracker_id}
         if case_id not in current:
             query = {
                 'bug_ids': [bug_id],
@@ -413,12 +379,10 @@ def bz_set_coverage(bug_ids: list[int], case_id: str, tracker_id: int) -> None:
 
 
 def check_md_file_respects_spec(md_path: Path) -> list[str]:
-    """
-    Check that the file respects manual test specification
+    """Check that the file respects manual test specification.
 
     Return list of warnings, empty list if no problems found.
     """
-
     import tmt.base
 
     warnings_list = []

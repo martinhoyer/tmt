@@ -35,9 +35,7 @@ T = TypeVar('T')
 
 
 class InstallBase(tmt.utils.Common):
-    """
-    Base class for installation implementations
-    """
+    """Base class for installation implementations."""
 
     guest: Guest
 
@@ -62,10 +60,7 @@ class InstallBase(tmt.utils.Common):
         logger: tmt.log.Logger,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize installation data
-        """
-
+        """Initialize installation data."""
         super().__init__(logger=logger, parent=parent, relative_indent=0, guest=guest, **kwargs)
 
         if not dependencies and not directories:
@@ -84,10 +79,7 @@ class InstallBase(tmt.utils.Common):
         dependencies: list[tmt.base.DependencySimple],
         directories: list[Path],
     ) -> None:
-        """
-        Process package names and directories
-        """
-
+        """Process package names and directories."""
         self.packages = []
         self.local_packages = []
         self.remote_packages = []
@@ -123,17 +115,11 @@ class InstallBase(tmt.utils.Common):
                     self.local_packages.append(PackagePath(filepath))
 
     def prepare_repository(self) -> None:
-        """
-        Configure additional repository
-        """
-
+        """Configure additional repository."""
         raise NotImplementedError
 
     def list_installables(self, title: str, *installables: Installable) -> Iterator[Installable]:
-        """
-        Show package info and return package names
-        """
-
+        """Show package info and return package names."""
         # Show a brief summary by default
         if not self.verbosity_level:
             summary = fmf.utils.listed(installables, max=3)
@@ -148,10 +134,7 @@ class InstallBase(tmt.utils.Common):
         yield from installables
 
     def prepare_install_local(self) -> None:
-        """
-        Copy packages to the test system
-        """
-
+        """Copy packages to the test system."""
         assert self.parent is not None
         # FIXME: cast() - https://github.com/teemtee/tmt/issues/1372
         workdir = cast(PrepareInstall, self.parent).step.workdir
@@ -168,30 +151,19 @@ class InstallBase(tmt.utils.Common):
         self.guest.push()
 
     def install_from_repository(self) -> None:
-        """
-        Default base install method for packages from repositories
-        """
+        """Default base install method for packages from repositories."""
 
     def install_local(self) -> None:
-        """
-        Default base install method for local packages
-        """
+        """Default base install method for local packages."""
 
     def install_from_url(self) -> None:
-        """
-        Default base install method for packages which are from URL
-        """
+        """Default base install method for packages which are from URL."""
 
     def install_debuginfo(self) -> None:
-        """
-        Default base install method for debuginfo packages
-        """
+        """Default base install method for debuginfo packages."""
 
     def install(self) -> None:
-        """
-        Perform the actual installation
-        """
-
+        """Perform the actual installation."""
         try:
             self._install()
 
@@ -211,10 +183,7 @@ class InstallBase(tmt.utils.Common):
                 raise exc2 from exc1
 
     def _install(self) -> None:
-        """
-        Helper method to perform the actual installation steps
-        """
-
+        """Helper method to perform the actual installation steps."""
         if self.local_packages:
             self.prepare_install_local()
             self.install_local()
@@ -226,12 +195,10 @@ class InstallBase(tmt.utils.Common):
             self.install_debuginfo()
 
     def rpm_check(self, package: str, mode: str = '-q') -> None:
-        """
-        Run rpm command to check package existence
+        """Run rpm command to check package existence.
 
         Throws tmt.utils.RunError
         """
-
         output = self.guest.execute(Command('rpm', mode, package), silent=True)
         assert output.stdout
         self.debug(f"Package '{output.stdout.strip()}' already installed.")
@@ -249,10 +216,7 @@ class Copr(tmt.utils.Common):
         self.guest = guest
 
     def enable_copr_epel6(self, copr: str) -> None:
-        """
-        Manually enable copr repositories for epel6
-        """
-
+        """Manually enable copr repositories for epel6."""
         # Parse the copr repo name
         matched = re.match("^(@)?([^/]+)/([^/]+)$", copr)
         if not matched:
@@ -277,10 +241,7 @@ class Copr(tmt.utils.Common):
             raise
 
     def enable_copr(self, repositories: list[str]) -> None:
-        """
-        Enable requested copr repositories
-        """
-
+        """Enable requested copr repositories."""
         if not repositories:
             return
 
@@ -311,17 +272,12 @@ class Copr(tmt.utils.Common):
 
 
 class InstallDnf(InstallBase, Copr):
-    """
-    Install packages using dnf
-    """
+    """Install packages using dnf."""
 
     copr_plugin = "dnf-plugins-core"
 
     def install_local(self) -> None:
-        """
-        Install packages stored in a local directory
-        """
-
+        """Install packages stored in a local directory."""
         # Use both dnf install/reinstall to get all packages refreshed
         # FIXME Simplify this once BZ#1831022 is fixed/implemented.
         filelist = [
@@ -350,10 +306,7 @@ class InstallDnf(InstallBase, Copr):
         self.info('total', f"{summary} installed", 'green')
 
     def install_from_url(self) -> None:
-        """
-        Install packages stored on a remote URL
-        """
-
+        """Install packages stored on a remote URL."""
         self.guest.package_manager.install(
             *self.list_installables("remote package", *self.remote_packages),
             options=Options(
@@ -363,10 +316,7 @@ class InstallDnf(InstallBase, Copr):
         )
 
     def install_from_repository(self) -> None:
-        """
-        Install packages from a repository
-        """
-
+        """Install packages from a repository."""
         self.guest.package_manager.install(
             *self.list_installables("package", *self.packages),
             options=Options(
@@ -376,10 +326,7 @@ class InstallDnf(InstallBase, Copr):
         )
 
     def install_debuginfo(self) -> None:
-        """
-        Install debuginfo packages
-        """
-
+        """Install debuginfo packages."""
         packages = self.list_installables("debuginfo", *self.debuginfo_packages)
 
         self.guest.package_manager.install_debuginfo(
@@ -399,25 +346,19 @@ class InstallDnf(InstallBase, Copr):
 
 
 class InstallDnf5(InstallDnf):
-    """
-    Install packages using dnf5
-    """
+    """Install packages using dnf5."""
 
     copr_plugin = "dnf5-command(copr)"
 
 
 class InstallYum(InstallDnf):
-    """
-    Install packages using yum
-    """
+    """Install packages using yum."""
 
     copr_plugin = "yum-plugin-copr"
 
 
 class InstallRpmOstree(InstallBase, Copr):
-    """
-    Install packages using rpm-ostree
-    """
+    """Install packages using rpm-ostree."""
 
     copr_plugin = "dnf-plugins-core"
 
@@ -425,10 +366,7 @@ class InstallRpmOstree(InstallBase, Copr):
     required_packages: list[Union[Package, FileSystemPath]]
 
     def enable_copr(self, repositories: list[str]) -> None:
-        """
-        Enable requested copr repositories
-        """
-
+        """Enable requested copr repositories."""
         # rpm-ostree can step outside of its zone of competence, and use
         # another package manager to enable copr. We just need to cheat
         # the `InstallDnf5` & swap guest's package manager for `dnf5`
@@ -447,10 +385,7 @@ class InstallRpmOstree(InstallBase, Copr):
         self.guest.facts.package_manager = 'rpm-ostree'
 
     def sort_packages(self) -> None:
-        """
-        Identify required and recommended packages
-        """
-
+        """Identify required and recommended packages."""
         self.recommended_packages = []
         self.required_packages = []
         for package in self.packages:
@@ -463,17 +398,11 @@ class InstallRpmOstree(InstallBase, Copr):
                     self.required_packages.append(package)
 
     def install_debuginfo(self) -> None:
-        """
-        Install debuginfo packages
-        """
-
+        """Install debuginfo packages."""
         self.warn("Installation of debuginfo packages not supported yet.")
 
     def install_local(self) -> None:
-        """
-        Install copied local packages
-        """
-
+        """Install copied local packages."""
         local_packages_installed: list[PackagePath] = []
         for package in self.local_packages:
             try:
@@ -488,10 +417,7 @@ class InstallRpmOstree(InstallBase, Copr):
         self.info('total', f"{summary} installed", 'green')
 
     def install_from_repository(self) -> None:
-        """
-        Install packages from the repository
-        """
-
+        """Install packages from the repository."""
         self.sort_packages()
 
         # Install recommended packages
@@ -513,15 +439,10 @@ class InstallRpmOstree(InstallBase, Copr):
 
 
 class InstallApt(InstallBase):
-    """
-    Install packages using apt
-    """
+    """Install packages using apt."""
 
     def install_local(self) -> None:
-        """
-        Install packages stored in a local directory
-        """
-
+        """Install packages stored in a local directory."""
         filelist = [
             PackagePath(self.package_directory / filename) for filename in self.local_packages
         ]
@@ -537,10 +458,7 @@ class InstallApt(InstallBase):
         self.info('total', f"{summary} installed", 'green')
 
     def install_from_url(self) -> None:
-        """
-        Install packages stored on a remote URL
-        """
-
+        """Install packages stored on a remote URL."""
         self.guest.package_manager.install(
             *self.list_installables("remote package", *self.remote_packages),
             options=Options(
@@ -550,10 +468,7 @@ class InstallApt(InstallBase):
         )
 
     def install_from_repository(self) -> None:
-        """
-        Install packages from a repository
-        """
-
+        """Install packages from a repository."""
         self.guest.package_manager.install(
             *self.list_installables("package", *self.packages),
             options=Options(
@@ -563,10 +478,7 @@ class InstallApt(InstallBase):
         )
 
     def install_debuginfo(self) -> None:
-        """
-        Install debuginfo packages
-        """
-
+        """Install debuginfo packages."""
         packages = self.list_installables("debuginfo", *self.debuginfo_packages)
 
         self.guest.package_manager.install_debuginfo(
@@ -586,7 +498,7 @@ class InstallApt(InstallBase):
 
 
 class InstallBootc(InstallBase):
-    """Install packages using bootc container image mode"""
+    """Install packages using bootc container image mode."""
 
     @property
     def _engine(self) -> BootcEngine:
@@ -665,7 +577,7 @@ class InstallBootc(InstallBase):
             )
 
     def _install(self) -> None:
-        """Coordinate installation process through containerfile building and switching"""
+        """Coordinate installation process through containerfile building and switching."""
         # Call base install methods to collect all package types
         super()._install()
 
@@ -673,15 +585,10 @@ class InstallBootc(InstallBase):
 
 
 class InstallApk(InstallBase):
-    """
-    Install packages using apk
-    """
+    """Install packages using apk."""
 
     def install_local(self) -> None:
-        """
-        Install packages stored in a local directory
-        """
-
+        """Install packages stored in a local directory."""
         filelist = [
             PackagePath(self.package_directory / filename) for filename in self.local_packages
         ]
@@ -700,20 +607,14 @@ class InstallApk(InstallBase):
         self.info('total', f"{summary} installed", 'green')
 
     def install_from_url(self) -> None:
-        """
-        Install packages stored on a remote URL
-        """
-
+        """Install packages stored on a remote URL."""
         raise tmt.utils.PrepareError(
             f'Package manager "{self.guest.facts.package_manager}" '
             'does not support installing from a remote URL.'
         )
 
     def install_from_repository(self) -> None:
-        """
-        Install packages from a repository
-        """
-
+        """Install packages from a repository."""
         self.guest.package_manager.install(
             *self.list_installables("package", *self.packages),
             options=Options(
@@ -723,10 +624,7 @@ class InstallApk(InstallBase):
         )
 
     def install_debuginfo(self) -> None:
-        """
-        Install debuginfo packages
-        """
-
+        """Install debuginfo packages."""
         raise tmt.utils.PrepareError(
             f'Package manager "{self.guest.facts.package_manager}" does not support '
             'installing debuginfo packages.'
@@ -792,8 +690,7 @@ class PrepareInstallData(tmt.steps.prepare.PrepareStepData):
 
 @tmt.steps.provides_method('install')
 class PrepareInstall(tmt.steps.prepare.PreparePlugin[PrepareInstallData]):
-    """
-    Install packages on the guest.
+    """Install packages on the guest.
 
     Example config:
 
@@ -864,8 +761,7 @@ class PrepareInstall(tmt.steps.prepare.PreparePlugin[PrepareInstallData]):
             directory: tmp/RPMS/noarch
             exclude: tmt+provision-virtual
 
-    .. note::
-
+    Note:
         When testing ostree booted deployments tmt will use
         ``rpm-ostree`` as the package manager to perform the installation of
         requested packages. The current limitations of the ``rpm-ostree``
@@ -884,10 +780,7 @@ class PrepareInstall(tmt.steps.prepare.PreparePlugin[PrepareInstallData]):
         environment: Optional[tmt.utils.Environment] = None,
         logger: tmt.log.Logger,
     ) -> list[PhaseResult]:
-        """
-        Perform preparation for the guests
-        """
-
+        """Perform preparation for the guests."""
         results = super().go(guest=guest, environment=environment, logger=logger)
 
         # Nothing to do in dry mode
