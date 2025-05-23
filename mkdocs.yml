@@ -1,41 +1,43 @@
-site_name: TMT
-site_url: "" # Placeholder for actual site URL if deploying
-repo_url: https://github.com/teemtee/tmt # Assuming this is the repo
+site_name: tmt
+site_url: ''
+repo_url: https://github.com/teemtee/tmt
 repo_name: teemtee/tmt
-edit_uri: edit/main/docs_mkdocs/ # Path to where docs_mkdocs will be in the repo
-
+edit_uri: docs/ # Path to where mkdocs will be in the repo
 theme:
   name: material
   features:
-    - navigation.tabs
+    - content.code.annotate
+    - navigation.instant
+    - navigation.tracking
     - navigation.sections
-    # - navigation.expand # Keep this commented for now, can be too verbose
-    - navigation.top
+    - navigation.expand
     - search.suggest
     - search.highlight
     - content.code.annotate
     - content.tabs.link
+    - content.code.copy
     - toc.follow # Automatically scroll Table of Contents
   palette:
     # Palette toggle for light mode
-    - media: "(prefers-color-scheme: light)"
+    - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: teal
-      accent: purple
+      primary: custom
+      #accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
+    - media: '(prefers-color-scheme: dark)'
       scheme: slate
-      primary: teal
-      accent: purple
+      primary: custom
+      #accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-  # logo: assets/logo.png # Placeholder
-  # favicon: assets/favicon.png # Placeholder
-
+  logo: assets/tmt-logo-dark-background.svg
+  favicon: assets/tmt-logo-dark-background.svg
+extra_css:
+  - stylesheets/extra.css
 plugins:
   - search
   - mkdocstrings:
@@ -48,12 +50,17 @@ plugins:
             members_order: source # Or 'alphabetical'
             # group_by_category: true # Might be useful later
             # show_category_heading: true # Might be useful later
-  - mkdocs-mermaid2-plugin
-
 markdown_extensions:
   - admonition
   - pymdownx.details # must be before superfences
-  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - abbr
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -61,67 +68,78 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.emoji:
-      emoji_index: !!python/name/materialx.emoji.twemoji
-      emoji_generator: !!python/name/materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.magiclink
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tabbed:
       alternate_style: true
+  - tables
   - toc:
       permalink: true
-      slugify: !!python/name/pymdownx.slugs.uslugify # For better anchor generation
-
+  - pymdownx.tabbed:
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
 nav:
   - Home: index.md
   - Overview: overview.md
   - Guide:
-    - guide.md
-    - Test Runner Guest Compatibility: guide/test-runner-guest-compatibility-matrix.md
+      - guide.md
+      - Test Runner Guest Compatibility: guide/test-runner-guest-compatibility-matrix.md
   - Specification:
-    - spec.md
-    - Core Attributes: spec/core.md
-    - Tests: spec/tests.md
-    - Plans: spec/plans.md
-    - Stories: spec/stories.md # This is /spec/stories from generate-stories
-    - Context: spec/context.md
-    - Hardware: spec/hardware.md
-    - Hardware Matrix: spec/hardware-matrix.md
-    - Results: spec/results.md
-    - Lint Checks: spec/lint-checks.md
+      - spec.md
+      - Core Attributes: spec/core.md
+      - Tests: spec/tests.md
+      - Plans: spec/plans.md
+      - Stories: spec/stories.md # This is /spec/stories from generate-stories
+      - Context: spec/context.md
+      - Hardware: spec/hardware.md
+      - Hardware Matrix: spec/hardware-matrix.md
+      - Results: spec/results.md
+      - Lint Checks: spec/lint-checks.md
   - Plugins:
-    - Overview: plugins/index.md # Placeholder created
-    - Discover: plugins/discover.md
-    - Provision: plugins/provision.md
-    - Prepare: plugins/prepare.md
-    - Execute: plugins/execute.md
-    - Report: plugins/report.md
-    - Finish: plugins/finish.md
-    - Prepare Features: plugins/prepare-feature.md
-    - Test Checks: plugins/test-checks.md
+      - Overview: plugins/index.md # Placeholder created
+      - Discover: plugins/discover.md
+      - Provision: plugins/provision.md
+      - Prepare: plugins/prepare.md
+      - Execute: plugins/execute.md
+      - Report: plugins/report.md
+      - Finish: plugins/finish.md
+      - Prepare Features: plugins/prepare-feature.md
+      - Test Checks: plugins/test-checks.md
   - Examples: examples.md
   - Stories: # This is the main /stories section
-    - stories.md # Converted from docs/stories.rst (main intro)
-    - Documentation: stories/docs.md
-    - CLI: stories/cli.md
-    - Installation: stories/install.md
-    - Features: stories/features.md
-    - Deferred: stories/deferred.md
+      - stories.md # Converted from docs/stories.rst (main intro)
+      - Documentation: stories/docs.md
+      - CLI: stories/cli.md
+      - Installation: stories/install.md
+      - Features: stories/features.md
+      - Deferred: stories/deferred.md
   - Questions: questions.md
   - Contribute: contribute.md
   - Code:
-    - index: code/index.md
-    - Class Overview: code/classes.md
-    - Plugin Introduction: code/plugin-introduction.md
-    - Template Extensions: code/template-extensions.md
-    - API - tmt: code/tmt.md
-    - API - tmt.steps: code/tmt.steps.md
+      - index: code/index.md
+      - Class Overview: code/classes.md
+      - Plugin Introduction: code/plugin-introduction.md
+      - Template Extensions: code/template-extensions.md
+      - API - tmt: code/tmt.md
+      - API - tmt.steps: code/tmt.steps.md
   - Releases: releases.md
-
-# copyright: Copyright &copy; 2023 Red Hat, Inc. # Example
-# extra:
-#   social:
-#     - icon: fontawesome/brands/github
-#       link: https://github.com/teemtee
-#     - icon: fontawesome/brands/twitter
-#       link: https://twitter.com/teemtee # Fictional
+copyright: Copyright &copy; 2025 Red Hat
+extra:
+  social:
+    - icon: fontawesome/regular/comment
+      link: https://matrix.to/#/#tmt:fedoraproject.org
+    - icon: fontawesome/brands/fedora
+      link: https://packages.fedoraproject.org/pkgs/tmt/tmt/
+    - icon: fontawesome/brands/redhat
+      link: https://www.redhat.com/
+    - icon: fontawesome/brands/github
+      link: https://github.com/teemtee/tmt

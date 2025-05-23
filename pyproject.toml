@@ -93,18 +93,13 @@ all = [
     ]
 # Needed for readthedocs and man page build. Not being packaged in rpm.
 docs = [
-    # "renku-sphinx-theme==0.4.0", # Removed
-    # "readthedocs-sphinx-ext", # Removed
-    # "docutils>=0.18.1", # Removed (root dependency docutils>=0.16 remains)
-    # "Sphinx==7.3.7", # Removed
-    "fmf>=1.7.0", # Keep fmf as it's not Sphinx-specific
-    "mkdocs>=1.6.0",
-    "mkdocs-material>=9.5.21",
-    "mkdocstrings>=0.25.1",
-    "mkdocstrings-python>=1.9.2",
-    "mkdocs-material-extensions>=1.3.1",
-    "mkdocs-mermaid2-plugin>=1.1.0",
-    "mkdocs-linkcheck>=1.2.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.14",
+    #"mkdocstrings>=0.29.1",
+    "mkdocstrings-python>=1.16.10",
+    "pymdown-extensions",
+    "markdown",
+    "Pygments",
     ]
 
 [project.scripts]
@@ -200,31 +195,22 @@ dependencies = ["tmt[docs]"]
 
 [tool.hatch.envs.docs.scripts]
 generate = [
-  "python docs/scripts/generate-plugins.py discover docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py provision docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py prepare docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py execute docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py report docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py finish docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py prepare-feature docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py test-checks docs_mkdocs_templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-stories.py docs_mkdocs_templates/story.md.j2",
-  "python docs/scripts/generate-hardware-matrix.py docs_mkdocs_templates/hardware-matrix.md.j2 docs_mkdocs/spec/hardware-matrix.md",
-  "python docs/scripts/generate-lint-checks.py docs_mkdocs_templates/lint-checks.md.j2 docs_mkdocs/spec/lint-checks.md",
-  "python docs/scripts/generate-template-extensions.py docs_mkdocs_templates/template-extensions.md.j2 docs_mkdocs/code/template-extensions.md",
-  "python docs/scripts/generate-test-runner-guest-matrix.py docs_mkdocs_templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs_mkdocs/guide/test-runner-guest-compatibility-matrix.md",
+  "python docs/scripts/generate-plugins.py discover docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py provision docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py prepare docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py execute docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py report docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py finish docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py prepare-feature docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py test-checks docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-stories.py docs/templates/story.md.j2",
+  "python docs/scripts/generate-hardware-matrix.py docs/templates/hardware-matrix.md.j2 docs_mkdocs/spec/hardware-matrix.md",
+  "python docs/scripts/generate-lint-checks.py docs/templates/lint-checks.md.j2 docs_mkdocs/spec/lint-checks.md",
+  "python docs/scripts/generate-template-extensions.py docs/templates/template-extensions.md.j2 docs_mkdocs/code/template-extensions.md",
+  "python docs/scripts/generate-test-runner-guest-matrix.py docs/templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs_mkdocs/guide/test-runner-guest-compatibility-matrix.md",
 ]
 build = "mkdocs build --config-file mkdocs.yml --strict"
 linkcheck = "mkdocs linkcheck --config-file mkdocs.yml"
-# Old 'man' script, kept as it might be unrelated to HTML docs
-man = [
-    "cp {root}/docs/header.txt {root}/man.rst",
-    "tail -n+8 docs/overview.rst >> {root}/man.rst", # This path might need adjustment if docs/overview.rst is removed/moved
-    # TODO rst2man cannot process this directive, removed for now
-    "sed '/versionadded::/d' -i {root}/man.rst", # This path might need adjustment if docs/overview.rst is removed/moved
-    "rst2man.py {root}/man.rst > {root}/tmt.1",
-    "rm -f {root}/man.rst",
-    ]
 
 [dirs.env]
 virtual = ".venv"
@@ -313,12 +299,13 @@ reportUnknownMemberType = false
 reportUnnecessaryCast = false  # Unnecessary "cast" call; type is already...
 
 [tool.ruff]
-line-length = 99
+line-length = 100
 src = ["tmt", "tests"]
 target-version = "py39"
 
 [tool.ruff.format]
 quote-style = "preserve"  # TODO: Convert to a specific quote style
+docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
@@ -362,8 +349,6 @@ select = [
     "FURB",  # refurb
     "RUF",  # ruff
     "D",    # pydocstyle
-    # Override docstring convention
-    "D213", # multi-line-summary-second-line
     ]
 ignore = [
     "B904",  # Within an `except` clause, raise exceptions with `raise ... from err` or `raise ...
@@ -383,29 +368,14 @@ ignore = [
     "S105",  # Possible hardcoded password assigned to: "PASS"
     "SIM103",  # Return the condition directly - can hurt readability
     "PERF203", # `try`-`except` within a loop incurs performance overhead
-    "D200",  # One-line docstring should fit on one line
-    "D212",  # Multi-line docstring summary should start at the first line
-
-    # pydocstyle
-    # TODO: the permanent list (drop this comment once the temporary list
-    # below gets to zero items...)
-    "D203",  # 1 blank line required before class docstring
-    # TODO: the temporary list - some of these will be enabled in their
-    # own patches
+    "D417",  # Missing argument description
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in `__init__`
     "D100",  # Missing docstring in public module
     "D101",  # Missing docstring in public class
     "D102",  # Missing docstring in public method
     "D103",  # Missing docstring in public function
     "D104",  # Missing docstring in public package
-    "D105",  # Missing docstring in magic method
-    "D106",  # Missing docstring in public nested class
-    "D107",  # Missing docstring in __init__
-    "D202",  # No blank lines allowed after function docstring
-    "D205",  # 1 blank line required between summary line and description
-    "D301",  # Use r""" if any backslashes in a docstring
-    "D400",  # First line should end with a period
-    "D401",  # First line of docstring should be in imperative mood
-    "D415",  # First line should end with a period, question mark, or exclamation point
     ]
 
 logger-objects = ["tmt.log.Logger"]
@@ -435,13 +405,10 @@ typing-modules = ["tmt._compat.typing"]
 extend-immutable-calls = ["tmt.utils.field"]
 
 [tool.ruff.lint.pydocstyle]
-# "The PEP 257 convention includes all D errors apart from: D203, D212,
-# D213, D214, D215, D404, D405, D406, D407, D408, D409, D410, D411, D413,
-# D415, D416, and D417."
-#
+# The Google convention includes all D errors apart from: D203, D204, D213, D215, D400, D401, D404, D406, D407, D408, D409, and D413.
 # See https://docs.astral.sh/ruff/faq/#does-ruff-support-numpy-or-google-style-docstrings for
 # the most up-to-date info.
-convention = "pep257"
+convention = "google"
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["help", "format", "input", "filter", "copyright", "max"]

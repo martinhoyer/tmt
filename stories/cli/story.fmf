@@ -86,7 +86,7 @@ story: 'As a developer I want to comfortably work with stories'
 
 /export:
     story: 'I need to convert stories into a beautiful format'
-
+    # TODO
     /rst:
         story: 'Export stories into reStructuredText'
         description:

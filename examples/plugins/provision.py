@@ -8,8 +8,7 @@ from tmt.options import option
 
 @tmt.steps.provides_method('example')
 class ProvisionExample(tmt.steps.provision.ProvisionPlugin):
-    """
-    Provision guest using nothing. Just example
+    """Provision guest using nothing. Just example.
 
     Minimal configuration using the latest nothing image:
 
@@ -30,10 +29,7 @@ class ProvisionExample(tmt.steps.provision.ProvisionPlugin):
 
     @classmethod
     def options(cls, how=None):
-        """
-        Prepare command line options for example
-        """
-
+        """Prepare command line options for example."""
         return [
             option(
                 '-w',
@@ -51,10 +47,7 @@ class ProvisionExample(tmt.steps.provision.ProvisionPlugin):
         ]
 
     def default(self, option, default=None):
-        """
-        Return the default value for the given option
-        """
-
+        """Return the default value for the given option."""
         defaults = {
             'what': 'default value',
             'switch': False,
@@ -62,20 +55,15 @@ class ProvisionExample(tmt.steps.provision.ProvisionPlugin):
         return defaults.get(option, default)
 
     def show(self):
-        """
-        Show provision details
-        """
-
+        """Show provision details."""
         super().show(['what', 'switch'])
 
     def wake(self, data=None):
-        """
-        Wake up the plugin
+        """Wake up the plugin.
 
         Override data with command line options.
         Wake up the guest based on provided guest data.
         """
-
         super().wake(['what', 'switch'])
         print("wake() called")
 
@@ -88,10 +76,7 @@ class ProvisionExample(tmt.steps.provision.ProvisionPlugin):
             self._guest.wake()
 
     def go(self):
-        """
-        Provision the container
-        """
-
+        """Provision the container."""
         super().go()
         print("go() called")
 
@@ -110,19 +95,16 @@ class ProvisionExample(tmt.steps.provision.ProvisionPlugin):
         self._guest.setup()
 
     def guest(self):
-        """
-        Return provisioned guest
+        """Return provisioned guest.
 
         Each ProvisionPlugin has to implement this method.
         Should return a provisioned Guest() instance.
         """
-
         return self._guest
 
 
 class GuestExample(tmt.Guest):
-    """
-    Guest provisioned for test execution
+    """Guest provisioned for test execution.
 
     The following keys are expected in the 'data' dictionary::
 
@@ -145,8 +127,7 @@ class GuestExample(tmt.Guest):
     """
 
     def load(self, data):
-        """
-        Load guest data into object attributes for easy access
+        """Load guest data into object attributes for easy access.
 
         Called during guest object initialization. Takes care of storing
         all supported keys (see class attribute _keys in tmt.Guest class
@@ -158,53 +139,43 @@ class GuestExample(tmt.Guest):
         line options / L2 metadata / user configuration and wake up data
         stored by the save() method below.
         """
-
         super().load(data)
         self.what = data.get('what')
         self.switch = data.get('switch')
 
     def wake(self):
-        """
-        Wake up the guest
+        """Wake up the guest.
 
         Perform any actions necessary after step wake up to be able to
         attach to a running guest instance and execute commands. Called
         after load() is completed so all guest data should be prepared.
         """
-
         print("wake() called")
 
     def save(self):
-        """
-        Save guest data for future wake up
+        """Save guest data for future wake up.
 
         Export all essential guest data into a dictionary which will be
         stored in the `guests.yaml` file for possible future wake up of
         the guest. Everything needed to attach to a running instance
         should be added into the data dictionary by child classes.
         """
-
         data = super().save()
         data['what'] = self.what
         data['switch'] = self.switch
         return data
 
     def _some_your_internal_stuff(self):
-        """
-        Do some heavy lifting
-        """
-
+        """Do some heavy lifting."""
         return True
 
     def start(self):
-        """
-        Start the guest
+        """Start the guest.
 
         Get a new guest instance running. This should include preparing
         any configuration necessary to get it started. Called after
         load() is completed so all guest data should be available.
         """
-
         print("start() called")
 
         if self.opt('dry'):
@@ -218,25 +189,23 @@ class GuestExample(tmt.Guest):
         raise tmt.utils.ProvisionError("All attempts to provision a machine with example failed.")
 
     def setup(self):
-        """
-        Setup the guest
+        """Setup the guest.
 
         This should include all necessary configurations inside the instance
         to get the plans to work. For example, ensure the permissions in
         TMT_WORKDIR_ROOT will work if the user is non-root.
         """
-
         print("setup() called")
 
     # For advanced development
     def execute(self, command, **kwargs):
-        """
+        """Execute command on the guest.
+
         Optionally you can overload how commands going to be executed
         on guest (provisioned machine). If you don't want to use
         ssh to connect to guest, you need to overload this method
         however you need to provide some expected information.
 
-        Execute command on the guest
 
             command ... string or list of command arguments (required)
             env ....... dictionary with environment variables
@@ -245,23 +214,16 @@ class GuestExample(tmt.Guest):
         If the command is provided as a list, it will be space-joined.
         If necessary, quote escaping has to be handled by the caller.
         """
-
         print("execute() called. This is an optional overload...")
 
         return ["Fedora", "whatever"]
 
     def delete(self):
-        """
-        Remove the example instance
-        """
-
+        """Remove the example instance."""
         self.debug("You should place code for cleanup here.")
 
     def remove(self):
-        """
-        Remove the guest
-        """
-
+        """Remove the guest."""
         if self.what:
             self.info('guest', 'removed', 'green')
             self.delete()

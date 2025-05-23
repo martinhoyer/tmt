@@ -1,0 +1,78 @@
+[data-md-color-scheme='default'] {
+    /* Primary color: Used for header, navigation, etc. */
+    /* Using tmt Dark Green: #58902f */
+    --md-primary-fg-color: #58902f;
+    --md-primary-fg-color--light: #7cb05d; /* Lighter shade for hover/focus */
+    --md-primary-fg-color--dark: #457325; /* Darker shade for active states */
+
+    /* Accent color: Used for floating action buttons, highlights, etc. */
+    /* Using tmt Yellow: #ffce1b */
+    --md-accent-fg-color: #ffce1b;
+    --md-accent-fg-color--transparent: rgba(255, 206, 27, 0.15); /* For ripples, backgrounds */
+    /* Text on accent elements will be automatically determined for contrast (usually black/dark gray) */
+
+    /* Default text and background colors for the content area */
+    --md-default-fg-color: rgba(0, 0, 0, 0.87); /* Main text color - dark gray */
+    --md-default-fg-color--light: rgba(0, 0, 0, 0.54); /* Lighter text for secondary info */
+    --md-default-fg-color--lighter: rgba(0, 0, 0, 0.32); /* Lightest text */
+    --md-default-bg-color: #ffffff; /* Main background - white */
+    --md-default-bg-color--light: #fafafa; /* Slightly off-white for cards, etc. */
+    --md-default-bg-color--lighter: #efefef; /* Even lighter, for subtle divisions */
+
+    /* Links */
+    /* Using tmt Bright Green: #5ebf17 */
+    --md-typeset-a-color: #5ebf17;
+
+    /* Other useful variables you might want to customize */
+    --md-hue: 100; /* Adjusts overall hue for some derived colors if not overridden, for green-ish base */
+    --md-typeset-table-color: rgba(0, 0, 0, 0.12); /* Table borders */
+    --md-footer-bg-color: #f5f5f5;
+    --md-footer-bg-color--dark: #e0e0e0;
+    --md-footer-fg-color: rgba(0, 0, 0, 0.7);
+    --md-footer-fg-color--light: rgba(0, 0, 0, 0.5);
+    --md-shadow-z1:
+        0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+}
+
+[data-md-color-scheme='slate'] {
+    /* Primary color: Used for header, navigation, etc. */
+    /* Using tmt Dark Green: #58902f */
+    --md-primary-fg-color: #58902f;
+    --md-primary-fg-color--light: #7cb05d; /* Lighter shade for hover/focus */
+    --md-primary-fg-color--dark: #457325; /* Darker shade for active states */
+
+    /* Accent color: Used for floating action buttons, highlights, etc. */
+    /* Using tmt Yellow: #ffce1b */
+    --md-accent-fg-color: #ffce1b;
+    --md-accent-fg-color--transparent: rgba(255, 206, 27, 0.15);
+    /* Text on accent elements will be automatically determined for contrast (usually black/dark gray) */
+
+    /* Default text and background colors for the content area */
+    --md-default-fg-color: rgba(255, 255, 255, 0.87); /* Main text color - light gray */
+    --md-default-fg-color--light: rgba(255, 255, 255, 0.7); /* Lighter text */
+    --md-default-fg-color--lighter: rgba(255, 255, 255, 0.5); /* Lightest text */
+    --md-default-bg-color: #1c1c1c; /* Main background - very dark gray */
+    --md-default-bg-color--light: #232323; /* Slightly lighter for cards */
+    --md-default-bg-color--lighter: #2a2a2a; /* Even lighter */
+
+    /* Code blocks */
+    /* Using tmt Yellow: #ffce1b for text for good contrast on dark */
+    --md-code-fg-color: #ffce1b;
+    --md-code-bg-color: #2e2e2e; /* Dark gray background for code blocks */
+
+    /* Links */
+    /* Using Yellow for better contrast and distinction in dark mode: #ffce1b */
+    --md-typeset-a-color: #ffce1b;
+
+    /* Other useful variables */
+    --md-hue: 90; /* Adjusts overall hue for some derived colors, for green/yellow-ish base */
+    --md-typeset-table-color: rgba(255, 255, 255, 0.12); /* Table borders */
+    --md-footer-bg-color: #232323;
+    --md-footer-bg-color--dark: #1a1a1a;
+    --md-footer-fg-color: rgba(255, 255, 255, 0.7);
+    --md-footer-fg-color--light: rgba(255, 255, 255, 0.5);
+    --md-shadow-z1:
+        0px 2px 1px -1px rgba(0, 0, 0, 0.4), 0px 1px 1px 0px rgba(0, 0, 0, 0.28),
+        0px 1px 3px 0px rgba(0, 0, 0, 0.24);
+}

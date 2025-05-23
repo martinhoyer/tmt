@@ -4,7 +4,7 @@ summary:
 story:
     As a story writer I want to specify a title which should be
     used when generating online documentation from user stories.
-
+# TODO
 description:
     When converting user stories into the reStructuredText format
     in order to render content into online documentation it is
