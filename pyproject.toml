@@ -195,19 +195,19 @@ dependencies = ["tmt[docs]"]
 
 [tool.hatch.envs.docs.scripts]
 generate = [
-  "python docs/scripts/generate-plugins.py discover docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py provision docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py prepare docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py execute docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py report docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py finish docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py prepare-feature docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
-  "python docs/scripts/generate-plugins.py test-checks docs/templates/plugins.md.j2 docs_mkdocs/plugins/",
+  "python docs/scripts/generate-plugins.py discover docs/templates/plugins.md.j2 docs/plugins/",
+  "python docs/scripts/generate-plugins.py provision docs/templates/plugins.md.j2 docs/plugins/",
+  "python docs/scripts/generate-plugins.py prepare docs/templates/plugins.md.j2 docs/plugins/",
+  "python docs/scripts/generate-plugins.py execute docs/templates/plugins.md.j2 docs/plugins/",
+  "python docs/scripts/generate-plugins.py report docs/templates/plugins.md.j2 docs/plugins/",
+  "python docs/scripts/generate-plugins.py finish docs/templates/plugins.md.j2 docs/plugins/",
+  "python docs/scripts/generate-plugins.py prepare-feature docs/templates/plugins.md.j2 docs/plugins/",
+  "python docs/scripts/generate-plugins.py test-checks docs/templates/plugins.md.j2 docs/plugins/",
   "python docs/scripts/generate-stories.py docs/templates/story.md.j2",
-  "python docs/scripts/generate-hardware-matrix.py docs/templates/hardware-matrix.md.j2 docs_mkdocs/spec/hardware-matrix.md",
-  "python docs/scripts/generate-lint-checks.py docs/templates/lint-checks.md.j2 docs_mkdocs/spec/lint-checks.md",
-  "python docs/scripts/generate-template-extensions.py docs/templates/template-extensions.md.j2 docs_mkdocs/code/template-extensions.md",
-  "python docs/scripts/generate-test-runner-guest-matrix.py docs/templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs_mkdocs/guide/test-runner-guest-compatibility-matrix.md",
+  "python docs/scripts/generate-hardware-matrix.py docs/templates/hardware-matrix.md.j2 docs/spec/hardware-matrix.md",
+  "python docs/scripts/generate-lint-checks.py docs/templates/lint-checks.md.j2 docs/spec/lint-checks.md",
+  "python docs/scripts/generate-template-extensions.py docs/templates/template-extensions.md.j2 docs/code/template-extensions.md",
+  "python docs/scripts/generate-test-runner-guest-matrix.py docs/templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs/guide/test-runner-guest-compatibility-matrix.md",
 ]
 build = "mkdocs build --config-file mkdocs.yml --strict"
 linkcheck = "mkdocs linkcheck --config-file mkdocs.yml"

@@ -266,7 +266,7 @@ tags:
 
 clean:  ## Remove all temporary files, packaging artifacts and docs
 	rm -rf $(TMP) build dist tmt.1
-	rm -rf .cache .mypy_cache .ruff_cache site docs_mkdocs/site # Add site and docs_mkdocs/site
+	rm -rf .cache .mypy_cache .ruff_cache site docs/site # Add site and docs/site
 	# make -C docs clean # Removed
 	find . -type f -name "*.py[co]" -delete
 	find . -type f -name "*,cover" -delete

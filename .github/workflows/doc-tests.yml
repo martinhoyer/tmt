@@ -12,7 +12,7 @@ permissions:
 env:
   HATCH_ENV_TYPE_VIRTUAL_PATH: ${{ github.workspace }}/.hatch_envs
   # Define DOCS_DIR for consistency if used in hatch scripts
-  DOCS_DIR: docs_mkdocs
+  DOCS_DIR: docs
   MKDOCS_SITE_DIR: site # Default MkDocs output
 
 jobs:
@@ -45,16 +45,19 @@ jobs:
         run: pip install hatch
 
       - name: Generate Documentation Files
-        run: hatch run docs:generate # This command needs to be defined in pyproject.toml
-                                    # It should run all Python scripts (generate-plugins.py, etc.)
+        run:
+          hatch run docs:generate # This command needs to be defined in pyproject.toml
+          # It should run all Python scripts (generate-plugins.py, etc.)
 
       - name: Build MkDocs site
-        run: hatch run docs:build --strict # This command needs to be defined in pyproject.toml
-                                          # Should run 'mkdocs build --config-file mkdocs.yml --strict'
+        run:
+          hatch run docs:build --strict # This command needs to be defined in pyproject.toml
+          # Should run 'mkdocs build --config-file mkdocs.yml --strict'
 
       - name: Test Links
-        run: hatch run docs:linkcheck # This command needs to be defined in pyproject.toml
-                                      # Should run 'mkdocs linkcheck --config-file mkdocs.yml'
+        run:
+          hatch run docs:linkcheck # This command needs to be defined in pyproject.toml
+          # Should run 'mkdocs linkcheck --config-file mkdocs.yml'
 
       - name: Upload MkDocs site artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only for main branch pushes
@@ -67,8 +70,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only for main branch pushes
     needs: build-test-docs
     permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
