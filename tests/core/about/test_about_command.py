@@ -38,15 +38,17 @@ EXPECTED_PLUGIN_HEADERS = [
     "Report step plugins",
 ]
 
+
 def test_about_plugins_ls_human_readable(cli_runner: PytestClickCliRunner):
-    """ Test 'tmt about plugin ls' human-readable output """
+    """Test 'tmt about plugin ls' human-readable output"""
     result = cli_runner.invoke(tmt.cli._root.main, ['about', 'plugin', 'ls'])
     assert result.exit_code == 0
     for header in EXPECTED_PLUGIN_HEADERS:
         assert header in result.stdout
 
+
 def test_about_plugins_ls_yaml(cli_runner: PytestClickCliRunner):
-    """ Test 'tmt about plugins ls --how yaml' output """
+    """Test 'tmt about plugins ls --how yaml' output"""
     result = cli_runner.invoke(tmt.cli._root.main, ['about', 'plugins', 'ls', '--how', 'yaml'])
     assert result.exit_code == 0
 
@@ -63,7 +65,9 @@ def test_about_plugins_ls_yaml(cli_runner: PytestClickCliRunner):
     actual_plugin_list_str = "\n".join(actual_plugin_list_parts)
 
     # Normalize the expected string (sort lines and handle potential trailing newline)
-    expected_lines = sorted([line.strip() for line in EXPECTED_PLUGIN_LIST_STR.strip().split('\n')])
+    expected_lines = sorted(
+        [line.strip() for line in EXPECTED_PLUGIN_LIST_STR.strip().split('\n')]
+    )
     actual_lines = sorted([line.strip() for line in actual_plugin_list_str.strip().split('\n')])
 
     assert actual_lines == expected_lines, (

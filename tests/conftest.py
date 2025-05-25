@@ -1,15 +1,18 @@
-from typing import Any, Callable, Dict
+from typing import Any, Callable
+
 import pytest
-from tmt._compat.pathlib import Path
-import pytest_container # type: ignore[import-untyped]
+import pytest_container  # type: ignore[import-untyped]
 from ruamel.yaml import YAML
+
+from tmt._compat.pathlib import Path
 from tmt.log import Logger
+
 # import toml # Would be needed for more complex TOML generation
 
 
 @pytest.fixture(scope="session")
 def root_logger() -> Logger:
-    """ Root logger fixture """
+    """Root logger fixture"""
     # Keeping this simple as its definition might vary or be in another conftest
     # For the purpose of this task, a basic logger is fine.
     return Logger.create(verbose=0, debug=0, quiet=False)
@@ -45,7 +48,7 @@ def tmt_mini_container(
         detach=True,
         tty=True,
         interactive=True,
-        working_dir="/src", # Set working directory to where the repo is mounted
+        working_dir="/src",  # Set working directory to where the repo is mounted
     )
 
     yield container
@@ -66,17 +69,18 @@ def basic_maelstrom_config_for_tmt_tests(tmp_path_factory, worker_id) -> Path:
     """
     # Create a unique temporary directory for this worker
     # tmp_path_factory from pytest returns pathlib.Path, which is fine here.
-    # The return type of this fixture is `tmt.utils.Path`, so the conversion is handled by pytest or the fixture code.
+    # The return type of this fixture is `tmt.utils.Path`, so
+    # the conversion is handled by pytest or the fixture code.
     # The actual `Path` object from `tmp_path_factory.mktemp` is a standard `pathlib.Path`.
-    # We are changing the `-> Path` annotation to `-> TmtUtilsPath` (effectively) if we were using `tmt.utils.Path`
-    # but since the fixture is now returning a standard pathlib.Path from tmp_path_factory,
-    # and the type hint for the fixture is `-> Path` (which will now be `tmt._compat.pathlib.Path`),
-    # we should ensure that the returned object `maelstrom_cfg_dir` is compatible or explicitly converted if needed.
-    # However, `tmp_path_factory.mktemp` returns `pathlib.Path`.
-    # The fixture's return type is `Path` (now `tmt._compat.pathlib.Path`).
+    # We are changing the `-> Path` annotation to `-> TmtUtilsPath` (effectively) if we were using
+    # `tmt.utils.Path`, but since the fixture is now returning a standard pathlib.Path from
+    # tmp_path_factory and the type hint for the fixture is `-> Path` (which will now be
+    # `tmt._compat.pathlib.Path`), we should ensure that the returned object `maelstrom_cfg_dir` is
+    # compatible or explicitly converted if needed. However, `tmp_path_factory.mktemp` returns
+    # `pathlib.Path`. The fixture's return type is `Path` (now `tmt._compat.pathlib.Path`).
     # This is fine, as `tmt._compat.pathlib.Path` is essentially `pathlib.Path`.
     maelstrom_cfg_dir_stdlib = tmp_path_factory.mktemp(f"maelstrom_config_{worker_id}")
-    maelstrom_cfg_dir = Path(str(maelstrom_cfg_dir_stdlib)) # Explicitly cast to our Path
+    maelstrom_cfg_dir = Path(str(maelstrom_cfg_dir_stdlib))  # Explicitly cast to our Path
 
     # Define maelstrom-pytest.toml content
     # Note: Paths in `added_layers` are relative to the project root if maelstrom-pytest
@@ -114,18 +118,18 @@ pytest
         f.write(test_requirements_content)
 
     print(f"Maelstrom config generated at: {maelstrom_cfg_dir}")
-    yield maelstrom_cfg_dir
+    return maelstrom_cfg_dir
     # tmp_path_factory handles cleanup of the directory
 
 
 @pytest.fixture(scope="session")
-def fmf_tree(tmp_path_factory, root_logger: Logger) -> Callable[[Dict[str, Any]], Path]:
+def fmf_tree(tmp_path_factory, root_logger: Logger) -> Callable[[dict[str, Any]], Path]:
     """
     Provides a factory function to create FMF tree structures for tests.
     Each call to the factory function creates a new, unique FMF tree.
     """
 
-    def _create_fmf_tree(content: Dict[str, Any]) -> Path:
+    def _create_fmf_tree(content: dict[str, Any]) -> Path:
         """
         Inner factory function to create a specific FMF tree.
         `content` is a dictionary where keys are relative file paths
@@ -143,9 +147,8 @@ def fmf_tree(tmp_path_factory, root_logger: Logger) -> Callable[[Dict[str, Any]]
             (fmf_meta_dir / "version").write_text("1")
             root_logger.debug(f"Created default .fmf/version in {fmf_root}")
 
-
         yaml_writer = YAML()
-        yaml_writer.indent(mapping=2, sequence=4, offset=2) # Common YAML formatting
+        yaml_writer.indent(mapping=2, sequence=4, offset=2)  # Common YAML formatting
 
         for relative_file_path_str, file_content_data in content.items():
             abs_file_path = fmf_root / relative_file_path_str

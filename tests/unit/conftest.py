@@ -1,4 +1,3 @@
-from tmt._compat.pathlib import Path as _SystemPath
 from typing import Any
 
 import _pytest.logging
@@ -8,6 +7,7 @@ import py.path
 import pytest
 from pytest_container.container import ContainerData
 
+from tmt._compat.pathlib import Path as _SystemPath
 from tmt.log import Logger
 from tmt.steps.provision.podman import GuestContainer, PodmanGuestData
 from tmt.utils import Path
@@ -60,7 +60,7 @@ try:
         return TempPathFactory(tmp_path_factory)
 
     @pytest.fixture
-    def tmppath(tmp_path: _SystemPath) -> Path:  # noqa: TID251
+    def tmppath(tmp_path: _SystemPath) -> Path:
         return Path(str(tmp_path))
 
 except ImportError:
