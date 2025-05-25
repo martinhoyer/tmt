@@ -229,7 +229,7 @@ class DiscoverShellData(tmt.steps.discover.DiscoverStepData):
 
 @tmt.steps.provides_method('shell')
 class DiscoverShell(tmt.steps.discover.DiscoverPlugin[DiscoverShellData]):
-    """Use provided list of shell script tests. (Original ReST docstring temporarily removed to avoid parsing errors.)"""
+    """Use provided list of shell script tests. (Original ReST docstring temporarily removed to avoid parsing errors.)."""  # noqa: E501
 
     _data_class = DiscoverShellData
 

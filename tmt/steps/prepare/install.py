@@ -690,7 +690,7 @@ class PrepareInstallData(tmt.steps.prepare.PrepareStepData):
 
 @tmt.steps.provides_method('install')
 class PrepareInstall(tmt.steps.prepare.PreparePlugin[PrepareInstallData]):
-    """Install packages on the guest. (Original ReST docstring temporarily removed to avoid parsing errors.)"""
+    """Install packages on the guest. (Original ReST docstring temporarily removed to avoid parsing errors.)."""  # noqa: E501
 
     _data_class = PrepareInstallData
 

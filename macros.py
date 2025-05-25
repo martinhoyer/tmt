@@ -1,7 +1,9 @@
 import dataclasses
 import importlib
-from typing import Optional, Any
+from typing import Any, Optional
+
 # For tmt.container.FieldMetadata, but we access it via f.metadata.get('tmt')
+
 
 def get_class_from_string(class_path_str: str) -> Optional[type]:
     try:
@@ -12,11 +14,14 @@ def get_class_from_string(class_path_str: str) -> Optional[type]:
         print(f"Error importing class {class_path_str}: {e}")
         return None
 
+
 def define_env(env: Any) -> None:
-    "Hook function for mkdocs-macros."
+    """Hook function for mkdocs-macros."""
 
     @env.macro
-    def render_plugin_options(class_path_str: str, inherited_from_path_str: Optional[str] = None) -> str:
+    def render_plugin_options(
+        class_path_str: str, inherited_from_path_str: Optional[str] = None
+    ) -> str:
         data_class = get_class_from_string(class_path_str)
         if not data_class:
             return f"<p>Error: Could not load class {class_path_str}</p>"
@@ -27,12 +32,14 @@ def define_env(env: Any) -> None:
             if inherited_from_class:
                 inherited_fields = {f.name for f in dataclasses.fields(inherited_from_class)}
             else:
-                return f"<p>Error: Could not load inherited_from class {inherited_from_path_str}</p>"
+                return (
+                    f"<p>Error: Could not load inherited_from class {inherited_from_path_str}</p>"
+                )
 
         markdown_output = []
         fields = dataclasses.fields(data_class)
 
-        for f_obj in fields: # Renamed f to f_obj to avoid conflict with f-string
+        for f_obj in fields:  # Renamed f to f_obj to avoid conflict with f-string
             if f_obj.name in inherited_fields:
                 continue
 
@@ -40,7 +47,9 @@ def define_env(env: Any) -> None:
 
             type_str = str(f_obj.type)
             if 'typing.Optional[' in type_str:
-                type_str = type_str.replace('typing.Optional[', 'Optional[').replace('NoneType', 'None')
+                type_str = type_str.replace('typing.Optional[', 'Optional[').replace(
+                    'NoneType', 'None'
+                )
             type_str = type_str.replace('typing.', '')
             markdown_output.append(f"-   **Type:** `{type_str}`")
 
@@ -48,9 +57,11 @@ def define_env(env: Any) -> None:
             description = 'No description available.'
             if tmt_field_meta and hasattr(tmt_field_meta, 'help') and tmt_field_meta.help:
                 description = tmt_field_meta.help
-            
+
             if description:
-                description_md = description.strip().replace('\n', '<br/>').replace('\n\n', '<br/><br/>')
+                description_md = (
+                    description.strip().replace('\n', '<br/>').replace('\n\n', '<br/><br/>')
+                )
                 markdown_output.append(f"-   **Description:** {description_md}")
 
             if f_obj.default is not dataclasses.MISSING:
@@ -60,30 +71,46 @@ def define_env(env: Any) -> None:
                     default_val = f_obj.default_factory()
                     markdown_output.append(f"-   **Default:** `{default_val}` (from factory)")
                 except TypeError:
-                    markdown_output.append(f"-   **Default:** (complex factory)")
+                    markdown_output.append("-   **Default:** (complex factory)")
 
             actual_cli_options = []
-            if tmt_field_meta and hasattr(tmt_field_meta, 'cli_option') and tmt_field_meta.cli_option:
+            if (
+                tmt_field_meta
+                and hasattr(tmt_field_meta, 'cli_option')
+                and tmt_field_meta.cli_option
+            ):
                 if isinstance(tmt_field_meta.cli_option, str):
                     actual_cli_options.append(tmt_field_meta.cli_option)
-                else: 
+                else:
                     actual_cli_options.extend(tmt_field_meta.cli_option)
-            
-            if actual_cli_options:
-                markdown_output.append(f"-   **CLI Options:** {', '.join(f'`{opt}`' for opt in actual_cli_options)}")
-            
-            step_name_upper = "DISCOVER" 
-            class_name_for_plugin = data_class.__name__
-            plugin_name_upper = class_name_for_plugin.replace('StepData', '').upper() if 'StepData' in class_name_for_plugin else class_name_for_plugin.replace('Data', '').upper()
-            
-            if 'FMF' in plugin_name_upper: plugin_name_upper = "FMF"
-            elif 'SHELL' in plugin_name_upper: plugin_name_upper = "SHELL"
 
-            env_var_name = f"TMT_PLUGIN_{step_name_upper}_{plugin_name_upper}_{f_obj.name.upper().replace('-', '_')}"
-            if "DISCOVERSTEP" in plugin_name_upper or data_class.__name__ == 'DiscoverStepData': # Common keys for discover
-                 env_var_name = f"TMT_PLUGIN_{step_name_upper}_{f_obj.name.upper().replace('-', '_')}"
+            if actual_cli_options:
+                markdown_output.append(
+                    f"-   **CLI Options:** {', '.join(f'`{opt}`' for opt in actual_cli_options)}"
+                )
+
+            step_name_upper = "DISCOVER"
+            class_name_for_plugin = data_class.__name__
+            plugin_name_upper = (
+                class_name_for_plugin.replace('StepData', '').upper()
+                if 'StepData' in class_name_for_plugin
+                else class_name_for_plugin.replace('Data', '').upper()
+            )
+
+            if 'fmf' in plugin_name_upper:
+                plugin_name_upper = "fmf"
+            elif 'SHELL' in plugin_name_upper:
+                plugin_name_upper = "SHELL"
+
+            env_var_name = f"TMT_PLUGIN_{step_name_upper}_{plugin_name_upper}_{f_obj.name.upper().replace('-', '_')}"  # noqa: E501
+            if (
+                "DISCOVERSTEP" in plugin_name_upper or data_class.__name__ == 'DiscoverStepData'
+            ):  # Common keys for discover
+                env_var_name = (
+                    f"TMT_PLUGIN_{step_name_upper}_{f_obj.name.upper().replace('-', '_')}"
+                )
 
             markdown_output.append(f"-   **Env Variable:** `{env_var_name}` (convention-based)")
-            markdown_output.append("") 
+            markdown_output.append("")
 
         return "\n".join(markdown_output)

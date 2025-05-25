@@ -265,7 +265,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
 
 @tmt.steps.provides_method('fmf')
 class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
-    """Discover available tests from fmf metadata. (Original ReST docstring temporarily removed to avoid parsing errors.)"""
+    """Discover available tests from fmf metadata. (Original ReST docstring temporarily removed to avoid parsing errors.)."""  # noqa: E501
 
     _data_class = DiscoverFmfStepData
 
