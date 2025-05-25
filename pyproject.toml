@@ -155,6 +155,10 @@ dependencies = [
     "types-babel",
     "types-docutils",
     "types-lxml",
+    "hypothesis",
+    "pytest-mock",
+    "pytest-benchmark",
+    "pytest-click",
     ]
 features = ["all"]
 

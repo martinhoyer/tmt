@@ -5,6 +5,8 @@ import tempfile
 
 import _pytest.monkeypatch
 import pytest
+from hypothesis import given, strategies as st
+from click.testing import CliRunner as PytestClickCliRunner
 
 import tmt.cli._root
 import tmt.log
@@ -27,13 +29,13 @@ def example(name):
 runner = CliRunner()
 
 
-def test_mini():
+def test_mini(cli_runner: PytestClickCliRunner):
     """
     Minimal smoke test
     """
 
     tmp = tempfile.mkdtemp()
-    result = runner.invoke(
+    result = cli_runner.invoke(
         tmt.cli._root.main, ['--root', example('mini'), 'run', '-i', tmp, '-dv', 'discover']
     )
     assert result.exit_code == 0
@@ -268,3 +270,72 @@ def test_decide_colorization(
     monkeypatch.setattr(sys.stderr, 'isatty', lambda: testcase.simulate_tty)
 
     assert tmt.log.decide_colorization(no_color, force_color) == testcase.expected
+
+
+@given(
+    st.booleans(),
+    st.booleans(),
+    st.booleans(),
+    st.booleans(),
+    st.booleans(),
+    st.booleans(),
+)
+def test_decide_colorization_hypothesis(
+    monkeypatch: _pytest.monkeypatch.MonkeyPatch,
+    no_color_option: bool,
+    force_color_option: bool,
+    no_color_envvar: bool,
+    tmt_no_color_envvar: bool,
+    tmt_force_color_envvar: bool,
+    simulate_tty: bool,
+) -> None:
+    monkeypatch.delenv('NO_COLOR', raising=False)
+    monkeypatch.delenv('TMT_NO_COLOR', raising=False)
+    monkeypatch.delenv('TMT_FORCE_COLOR', raising=False)
+
+    if no_color_envvar:
+        monkeypatch.setenv('NO_COLOR', '')
+
+    if tmt_no_color_envvar:
+        monkeypatch.setenv('TMT_NO_COLOR', '')
+
+    if tmt_force_color_envvar:
+        monkeypatch.setenv('TMT_FORCE_COLOR', '')
+
+    monkeypatch.setattr(sys.stdout, 'isatty', lambda: simulate_tty)
+    monkeypatch.setattr(sys.stderr, 'isatty', lambda: simulate_tty)
+
+    # Determine expected output based on the logic in tmt.log.decide_colorization
+    # (Copied and adapted from tmt.log.decide_colorization)
+    # Disable coloring if NO_COLOR is set (unless TMT_FORCE_COLOR is set)
+    if 'NO_COLOR' in os.environ and 'TMT_FORCE_COLOR' not in os.environ:
+        expected_output = False
+        expected_logging = False
+    # Disable coloring if TMT_NO_COLOR is set (unless TMT_FORCE_COLOR is set)
+    elif 'TMT_NO_COLOR' in os.environ and 'TMT_FORCE_COLOR' not in os.environ:
+        expected_output = False
+        expected_logging = False
+    # --no-color option disables coloring (unless TMT_FORCE_COLOR is set)
+    elif no_color_option and 'TMT_FORCE_COLOR' not in os.environ:
+        expected_output = False
+        expected_logging = False
+    # Force coloring if TMT_FORCE_COLOR is set
+    elif 'TMT_FORCE_COLOR' in os.environ:
+        expected_output = True
+        expected_logging = True
+    # --force-color option forces coloring
+    elif force_color_option:
+        expected_output = True
+        expected_logging = True
+    # Otherwise, enable coloring if running in a TTY
+    elif simulate_tty:
+        expected_output = True
+        expected_logging = True
+    # Otherwise, disable coloring
+    else:
+        expected_output = False
+        expected_logging = False
+
+    assert tmt.log.decide_colorization(
+        no_color_option, force_color_option
+    ) == (expected_output, expected_logging)

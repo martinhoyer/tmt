@@ -7,10 +7,8 @@ import textwrap
 import threading
 import time
 import unittest
-import unittest.mock
 from datetime import timedelta
 from typing import Any, Optional
-from unittest.mock import MagicMock
 
 import fmf
 import pytest
@@ -1022,7 +1020,7 @@ def test_wait_deadline_already_passed(root_logger):
     assert not ticks
 
 
-def test_wait(root_logger):
+def test_wait(root_logger, mocker):
     """
     :py:func:`wait` shall call ``check`` multiple times until ``check`` returns
     successfully.
@@ -1033,7 +1031,7 @@ def test_wait(root_logger):
     ticks = list(range(1, 10))
 
     # Make sure check's return value is propagated correctly, make it unique.
-    return_value = unittest.mock.MagicMock()
+    return_value = mocker.MagicMock()
 
     def check():
         if not ticks:
@@ -1050,13 +1048,13 @@ def test_wait(root_logger):
     assert not ticks
 
 
-def test_wait_timeout(root_logger):
+def test_wait_timeout(root_logger, mocker):
     """
     :py:func:`wait` shall call ``check`` multiple times until ``check`` running
     out of time.
     """
 
-    check = unittest.mock.MagicMock(__name__='mock_check', side_effect=WaitingIncompleteError)
+    check = mocker.MagicMock(__name__='mock_check', side_effect=WaitingIncompleteError)
 
     # We want to reach end of time budget before reaching end of the list.
     with pytest.raises(WaitingTimedOutError):
@@ -1604,17 +1602,17 @@ def test_is_url(url: str, expected: bool) -> None:
     assert tmt.utils.is_url(url) == expected
 
 
-def test_invocation_terminate_process(root_logger: tmt.log.Logger, caplog) -> None:
+def test_invocation_terminate_process(root_logger: tmt.log.Logger, caplog, mocker) -> None:
     from tmt.steps.execute import TestInvocation
 
-    pid = MagicMock(name='process.pid')
+    pid = mocker.MagicMock(name='process.pid')
 
     invocation = TestInvocation(
         logger=root_logger,
-        phase=MagicMock(name='phase'),
-        test=MagicMock(name='test'),
-        guest=MagicMock(name='guest'),
-        process=MagicMock(name='process'),
+        phase=mocker.MagicMock(name='phase'),
+        test=mocker.MagicMock(name='test'),
+        guest=mocker.MagicMock(name='guest'),
+        process=mocker.MagicMock(name='process'),
     )
 
     invocation.process.pid = pid
@@ -1637,9 +1635,9 @@ def test_invocation_terminate_process_not_running_anymore(
 
     invocation = TestInvocation(
         logger=root_logger,
-        phase=MagicMock(name='phase'),
-        test=MagicMock(name='test'),
-        guest=MagicMock(name='guest'),
+        phase=mocker.MagicMock(name='phase'),
+        test=mocker.MagicMock(name='test'),
+        guest=mocker.MagicMock(name='guest'),
         process=None,
     )
 
@@ -1681,9 +1679,9 @@ class TestJiraLink(unittest.TestCase):
         # Cleanup the created files of tmt objects
         shutil.rmtree(self.tmp)
 
-    @unittest.mock.patch('jira.JIRA.add_simple_link')
-    @unittest.mock.patch('tmt.config.Config.fmf_tree', new_callable=unittest.mock.PropertyMock)
-    def test_jira_link_test_only(self, mock_config_tree, mock_add_simple_link) -> None:
+    def test_jira_link_test_only(self, mocker) -> None:
+        mock_add_simple_link = mocker.patch('jira.JIRA.add_simple_link')
+        mock_config_tree = mocker.patch('tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock)
         mock_config_tree.return_value = self.config_tree
         test = tmt.Tree(logger=self.logger, path=self.tmp).tests(names=['tmp/test'])[0]
         tmt.utils.jira.link(
@@ -1697,9 +1695,9 @@ class TestJiraLink(unittest.TestCase):
         assert '&test-name=%2Ftmp%2Ftest' in result['url']
         assert '&test-path=%2Ftests%2Funit%2Ftmp' in result['url']
 
-    @unittest.mock.patch('jira.JIRA.add_simple_link')
-    @unittest.mock.patch('tmt.config.Config.fmf_tree', new_callable=unittest.mock.PropertyMock)
-    def test_jira_link_test_plan_story(self, mock_config_tree, mock_add_simple_link) -> None:
+    def test_jira_link_test_plan_story(self, mocker) -> None:
+        mock_add_simple_link = mocker.patch('jira.JIRA.add_simple_link')
+        mock_config_tree = mocker.patch('tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock)
         mock_config_tree.return_value = self.config_tree
         test = tmt.Tree(logger=self.logger, path=self.tmp).tests(names=['tmp/test'])[0]
         plan = tmt.Tree(logger=self.logger, path=self.tmp).plans(names=['tmp'])[0]
@@ -1724,9 +1722,9 @@ class TestJiraLink(unittest.TestCase):
         assert '&story-name=%2Ftmp%2Fstory' in result['url']
         assert '&story-path=%2Ftests%2Funit%2Ftmp' in result['url']
 
-    @unittest.mock.patch('jira.JIRA.add_simple_link')
-    @unittest.mock.patch('tmt.config.Config.fmf_tree', new_callable=unittest.mock.PropertyMock)
-    def test_create_link_relation(self, mock_config_tree, mock_add_simple_link) -> None:
+    def test_create_link_relation(self, mocker) -> None:
+        mock_add_simple_link = mocker.patch('jira.JIRA.add_simple_link')
+        mock_config_tree = mocker.patch('tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock)
         mock_config_tree.return_value = self.config_tree
         test = tmt.Tree(logger=self.logger, path=self.tmp).tests(names=['tmp/test'])[0]
         tmt.utils.jira.link(
