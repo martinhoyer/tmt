@@ -1,9 +1,10 @@
-import pytest
-import subprocess
-import ruamel.yaml
-from pathlib import Path
 import re
-import os
+import subprocess
+
+import pytest
+import ruamel.yaml
+
+from tmt._compat.pathlib import Path
 
 # Path to the data directory relative to this test file
 # Assuming this test file is in tests/execute/basic/
@@ -14,8 +15,7 @@ DATA_DIR = Path(__file__).parent / "data"
 def tmp_run_dir(tmp_path_factory):
     """Create a temporary directory for tmt run --id."""
     # tmp_path_factory provides a Path object unique to each test function call
-    run_dir = tmp_path_factory.mktemp("tmt_run_")
-    return run_dir
+    return tmp_path_factory.mktemp("tmt_run_")
 
 
 def check_duration(duration_str: str) -> bool:
@@ -51,17 +51,12 @@ def test_check_shell_results(tmp_run_dir: Path):
         "discover",
         "provision",
         "execute",
-        "finish"  # Ensure results.yaml is generated
+        "finish",  # Ensure results.yaml is generated
     ]
 
     # Run the tmt command
     # The original script runs tmt from the 'data' directory
-    process_result = subprocess.run(
-        tmt_command,
-        cwd=DATA_DIR,
-        capture_output=True,
-        text=True
-    )
+    process_result = subprocess.run(tmt_command, cwd=DATA_DIR, capture_output=True, text=True)
 
     # Debugging output
     print(f"tmp_run_dir: {tmp_run_dir}")
@@ -70,8 +65,9 @@ def test_check_shell_results(tmp_run_dir: Path):
     print(f"tmt stdout: {process_result.stdout}")
     print(f"tmt stderr: {process_result.stderr}")
 
-    assert process_result.returncode == 0, \
+    assert process_result.returncode == 0, (
         f"tmt run command failed with exit code {process_result.returncode}"
+    )
 
     # Construct the path to results.yaml
     # The plan name is 'shell' as seen in the original test.sh
@@ -79,13 +75,13 @@ def test_check_shell_results(tmp_run_dir: Path):
     # and the plan is defined in tests/execute/basic/data/plans/shell.fmf
     results_yaml_path = tmp_run_dir / "shell" / "execute" / "results.yaml"
 
-    assert results_yaml_path.is_file(), \
-        f"results.yaml not found at {results_yaml_path}. " \
+    assert results_yaml_path.is_file(), (
+        f"results.yaml not found at {results_yaml_path}. "
         f"Contents of tmp_run_dir / shell / execute: {list((tmp_run_dir / 'shell' / 'execute').iterdir()) if (tmp_run_dir / 'shell' / 'execute').exists() else 'Not found'}"
-
+    )
 
     yaml = ruamel.yaml.YAML()
-    with open(results_yaml_path, 'r') as f:
+    with open(results_yaml_path) as f:
         results_data = yaml.load(f)
 
     assert results_data, "results.yaml is empty or could not be loaded."
@@ -96,31 +92,38 @@ def test_check_shell_results(tmp_run_dir: Path):
     # Assertions for /test/shell/good
     good_test_result = results_by_name.get("/test/shell/good")
     assert good_test_result, "/test/shell/good not found in results."
-    assert good_test_result['result'] == 'pass', \
+    assert good_test_result['result'] == 'pass', (
         f"/test/shell/good expected 'pass', got '{good_test_result['result']}'"
-    assert check_duration(good_test_result['duration']), \
+    )
+    assert check_duration(good_test_result['duration']), (
         f"Invalid duration format for /test/shell/good: {good_test_result['duration']}"
+    )
     # Check for output.txt in logs
     # The original script checks:
     # yq '.[] | select(.name == "/test/shell/good") | .log[] | select(. == "output.txt")'
-    assert "output.txt" in good_test_result.get('log', []), \
+    assert "output.txt" in good_test_result.get('log', []), (
         "/test/shell/good should have 'output.txt' in logs."
+    )
 
     # Assertions for /test/shell/weird
     weird_test_result = results_by_name.get("/test/shell/weird")
     assert weird_test_result, "/test/shell/weird not found in results."
-    assert weird_test_result['result'] == 'error', \
+    assert weird_test_result['result'] == 'error', (
         f"/test/shell/weird expected 'error', got '{weird_test_result['result']}'"
-    assert check_duration(weird_test_result['duration']), \
+    )
+    assert check_duration(weird_test_result['duration']), (
         f"Invalid duration format for /test/shell/weird: {weird_test_result['duration']}"
+    )
 
     # Assertions for /test/shell/bad
     bad_test_result = results_by_name.get("/test/shell/bad")
     assert bad_test_result, "/test/shell/bad not found in results."
-    assert bad_test_result['result'] == 'fail', \
+    assert bad_test_result['result'] == 'fail', (
         f"/test/shell/bad expected 'fail', got '{bad_test_result['result']}'"
-    assert check_duration(bad_test_result['duration']), \
+    )
+    assert check_duration(bad_test_result['duration']), (
         f"Invalid duration format for /test/shell/bad: {bad_test_result['duration']}"
+    )
 
     # Check if the results are as expected based on the original script's yq checks
     # This is implicitly covered by the assertions above, but good to keep in mind.
@@ -146,15 +149,10 @@ def test_check_beakerlib_results(tmp_run_dir: Path):
         "discover",
         "provision",
         "execute",
-        "finish"
+        "finish",
     ]
 
-    process_result = subprocess.run(
-        tmt_command,
-        cwd=DATA_DIR,
-        capture_output=True,
-        text=True
-    )
+    process_result = subprocess.run(tmt_command, cwd=DATA_DIR, capture_output=True, text=True)
 
     print(f"tmp_run_dir (beakerlib): {tmp_run_dir}")
     print(f"tmt command (beakerlib): {' '.join(tmt_command)}")
@@ -174,16 +172,16 @@ def test_check_beakerlib_results(tmp_run_dir: Path):
         # For now, we rely on results.yaml existence.
         pass
 
-
     # The plan name is 'beakerlib' as per tests/execute/basic/data/main.fmf
     results_yaml_path = tmp_run_dir / "beakerlib" / "execute" / "results.yaml"
 
-    assert results_yaml_path.is_file(), \
-        f"results.yaml not found at {results_yaml_path}. " \
+    assert results_yaml_path.is_file(), (
+        f"results.yaml not found at {results_yaml_path}. "
         f"Contents of tmp_run_dir / beakerlib / execute: {list((tmp_run_dir / 'beakerlib' / 'execute').iterdir()) if (tmp_run_dir / 'beakerlib' / 'execute').exists() else 'Not found'}"
+    )
 
     yaml = ruamel.yaml.YAML()
-    with open(results_yaml_path, 'r') as f:
+    with open(results_yaml_path) as f:
         results_data = yaml.load(f)
 
     assert results_data, "BeakerLib results.yaml is empty or could not be loaded."
@@ -193,35 +191,45 @@ def test_check_beakerlib_results(tmp_run_dir: Path):
     # Assertions for /test/beakerlib/good
     good_test_result = results_by_name.get("/test/beakerlib/good")
     assert good_test_result, "/test/beakerlib/good not found in results."
-    assert good_test_result['result'] == 'pass', \
+    assert good_test_result['result'] == 'pass', (
         f"/test/beakerlib/good expected 'pass', got '{good_test_result['result']}'"
-    assert check_beakerlib_duration(good_test_result['duration']), \
+    )
+    assert check_beakerlib_duration(good_test_result['duration']), (
         f"Invalid duration format for /test/beakerlib/good: {good_test_result['duration']}"
-    assert "output.txt" in good_test_result.get('log', []), \
+    )
+    assert "output.txt" in good_test_result.get('log', []), (
         "/test/beakerlib/good should have 'output.txt' in logs."
-    assert "journal.txt" in good_test_result.get('log', []), \
+    )
+    assert "journal.txt" in good_test_result.get('log', []), (
         "/test/beakerlib/good should have 'journal.txt' in logs."
+    )
 
     # Assertions for /test/beakerlib/need
     need_test_result = results_by_name.get("/test/beakerlib/need")
     assert need_test_result, "/test/beakerlib/need not found in results."
-    assert need_test_result['result'] == 'warn', \
+    assert need_test_result['result'] == 'warn', (
         f"/test/beakerlib/need expected 'warn', got '{need_test_result['result']}'"
-    assert check_beakerlib_duration(need_test_result['duration']), \
+    )
+    assert check_beakerlib_duration(need_test_result['duration']), (
         f"Invalid duration format for /test/beakerlib/need: {need_test_result['duration']}"
+    )
 
     # Assertions for /test/beakerlib/weird
     weird_test_result = results_by_name.get("/test/beakerlib/weird")
     assert weird_test_result, "/test/beakerlib/weird not found in results."
-    assert weird_test_result['result'] == 'error', \
+    assert weird_test_result['result'] == 'error', (
         f"/test/beakerlib/weird expected 'error', got '{weird_test_result['result']}'"
-    assert check_beakerlib_duration(weird_test_result['duration']), \
+    )
+    assert check_beakerlib_duration(weird_test_result['duration']), (
         f"Invalid duration format for /test/beakerlib/weird: {weird_test_result['duration']}"
+    )
 
     # Assertions for /test/beakerlib/bad
     bad_test_result = results_by_name.get("/test/beakerlib/bad")
     assert bad_test_result, "/test/beakerlib/bad not found in results."
-    assert bad_test_result['result'] == 'fail', \
+    assert bad_test_result['result'] == 'fail', (
         f"/test/beakerlib/bad expected 'fail', got '{bad_test_result['result']}'"
-    assert check_beakerlib_duration(bad_test_result['duration']), \
+    )
+    assert check_beakerlib_duration(bad_test_result['duration']), (
         f"Invalid duration format for /test/beakerlib/bad: {bad_test_result['duration']}"
+    )

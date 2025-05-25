@@ -1574,7 +1574,9 @@ class TestJiraLink(unittest.TestCase):
 
     def test_jira_link_test_only(self, mocker) -> None:
         mock_add_simple_link = mocker.patch('jira.JIRA.add_simple_link')
-        mock_config_tree = mocker.patch('tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock)
+        mock_config_tree = mocker.patch(
+            'tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock
+        )
         mock_config_tree.return_value = self.config_tree
         test = tmt.Tree(logger=self.logger, path=self.tmp).tests(names=['tmp/test'])[0]
         tmt.utils.jira.link(
@@ -1590,7 +1592,9 @@ class TestJiraLink(unittest.TestCase):
 
     def test_jira_link_test_plan_story(self, mocker) -> None:
         mock_add_simple_link = mocker.patch('jira.JIRA.add_simple_link')
-        mock_config_tree = mocker.patch('tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock)
+        mock_config_tree = mocker.patch(
+            'tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock
+        )
         mock_config_tree.return_value = self.config_tree
         test = tmt.Tree(logger=self.logger, path=self.tmp).tests(names=['tmp/test'])[0]
         plan = tmt.Tree(logger=self.logger, path=self.tmp).plans(names=['tmp'])[0]
@@ -1616,8 +1620,10 @@ class TestJiraLink(unittest.TestCase):
         assert '&story-path=%2Ftests%2Funit%2Ftmp' in result['url']
 
     def test_create_link_relation(self, mocker) -> None:
-        mock_add_simple_link = mocker.patch('jira.JIRA.add_simple_link')
-        mock_config_tree = mocker.patch('tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock)
+        mocker.patch('jira.JIRA.add_simple_link')
+        mock_config_tree = mocker.patch(
+            'tmt.config.Config.fmf_tree', new_callable=mocker.PropertyMock
+        )
         mock_config_tree.return_value = self.config_tree
         test = tmt.Tree(logger=self.logger, path=self.tmp).tests(names=['tmp/test'])[0]
         tmt.utils.jira.link(

@@ -1,4 +1,5 @@
 import pytest
+
 import tmt
 from tmt.log import Logger
 from tmt.utils import Path
@@ -6,7 +7,7 @@ from tmt.utils import Path
 
 @pytest.fixture(scope="module")
 def root_logger() -> Logger:
-    """ Root logger fixture """
+    """Root logger fixture"""
     return Logger.create()
 
 

@@ -5,8 +5,9 @@ import tempfile
 
 import _pytest.monkeypatch
 import pytest
-from hypothesis import given, strategies as st
 from click.testing import CliRunner as PytestClickCliRunner
+from hypothesis import given
+from hypothesis import strategies as st
 
 import tmt.cli._root
 import tmt.log
@@ -291,27 +292,15 @@ def test_decide_colorization_hypothesis(
     # Determine expected output based on the logic in tmt.log.decide_colorization
     # (Copied and adapted from tmt.log.decide_colorization)
     # Disable coloring if NO_COLOR is set (unless TMT_FORCE_COLOR is set)
-    if 'NO_COLOR' in os.environ and 'TMT_FORCE_COLOR' not in os.environ:
-        expected_output = False
-        expected_logging = False
-    # Disable coloring if TMT_NO_COLOR is set (unless TMT_FORCE_COLOR is set)
-    elif 'TMT_NO_COLOR' in os.environ and 'TMT_FORCE_COLOR' not in os.environ:
-        expected_output = False
-        expected_logging = False
-    # --no-color option disables coloring (unless TMT_FORCE_COLOR is set)
-    elif no_color_option and 'TMT_FORCE_COLOR' not in os.environ:
+    if (
+        ('NO_COLOR' in os.environ and 'TMT_FORCE_COLOR' not in os.environ)
+        or ('TMT_NO_COLOR' in os.environ and 'TMT_FORCE_COLOR' not in os.environ)
+        or (no_color_option and 'TMT_FORCE_COLOR' not in os.environ)
+    ):
         expected_output = False
         expected_logging = False
     # Force coloring if TMT_FORCE_COLOR is set
-    elif 'TMT_FORCE_COLOR' in os.environ:
-        expected_output = True
-        expected_logging = True
-    # --force-color option forces coloring
-    elif force_color_option:
-        expected_output = True
-        expected_logging = True
-    # Otherwise, enable coloring if running in a TTY
-    elif simulate_tty:
+    elif 'TMT_FORCE_COLOR' in os.environ or force_color_option or simulate_tty:
         expected_output = True
         expected_logging = True
     # Otherwise, disable coloring
@@ -319,6 +308,7 @@ def test_decide_colorization_hypothesis(
         expected_output = False
         expected_logging = False
 
-    assert tmt.log.decide_colorization(
-        no_color_option, force_color_option
-    ) == (expected_output, expected_logging)
+    assert tmt.log.decide_colorization(no_color_option, force_color_option) == (
+        expected_output,
+        expected_logging,
+    )
