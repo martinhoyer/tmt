@@ -1,4 +1,4 @@
-import pathlib
+from tmt._compat.pathlib import Path as _SystemPath
 from typing import Any
 
 import _pytest.logging
@@ -60,7 +60,7 @@ try:
         return TempPathFactory(tmp_path_factory)
 
     @pytest.fixture
-    def tmppath(tmp_path: pathlib.Path) -> Path:  # noqa: TID251
+    def tmppath(tmp_path: _SystemPath) -> Path:  # noqa: TID251
         return Path(str(tmp_path))
 
 except ImportError:
