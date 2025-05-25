@@ -1679,17 +1679,14 @@ class Guest(tmt.utils.Common):
             reboot will be requested, and ``command`` will be ignored.
 
         Args:
-            hard: if set, force the reboot. This may result in a loss of
+            hard: If set, force the reboot. This may result in a loss of
                 data. The default of ``False`` will attempt a graceful
                 reboot.
-            command: a command to run on the guest to trigger the
+            command: A command to run on the guest to trigger the
                 reboot. If ``hard`` is also set, ``command`` is ignored.
-            timeout: amount of time in which the guest must become
-                available again.
-            tick: how many seconds to wait between two consecutive
-                attempts of contacting the guest.
-            tick_increase: a multiplier applied to ``tick`` after every
-                attempt.
+            waiting: A ``tmt.utils.wait.Waiting`` instance to control
+                reconnection attempts, including timeout, tick, and tick_increase.
+                If not provided, ``default_reboot_waiting()`` is used.
 
         Returns:
             ``True`` if the reboot succeeded, ``False`` otherwise.
@@ -1698,15 +1695,19 @@ class Guest(tmt.utils.Common):
 
     def reconnect(
         self,
-        wait: Optional[Waiting] = None,
+        waiting: Optional[Waiting] = None,
     ) -> bool:
         """Ensure the connection to the guest is working.
 
-        The default timeout is 5 minutes. Custom number of seconds can be
-        provided in the `timeout` parameter. This may be useful when long
-        operations (such as system upgrade) are performed.
+        Args:
+            waiting: A ``tmt.utils.wait.Waiting`` instance to control
+                reconnection attempts, including timeout, tick, and tick_increase.
+                If not provided, ``default_reconnect_waiting()`` is used.
+
+        Returns:
+            ``True`` if the connection succeeded, ``False`` otherwise.
         """
-        wait = wait or default_reconnect_waiting()
+        waiting = waiting or default_reconnect_waiting()
 
         self.debug("Wait for a connection to the guest.")
 
@@ -1718,7 +1719,7 @@ class Guest(tmt.utils.Common):
                 raise tmt.utils.wait.WaitingIncompleteError
 
         try:
-            wait.wait(try_whoami, self._logger)
+            waiting.wait(try_whoami, self._logger)
 
         except tmt.utils.wait.WaitingTimedOutError:
             self.debug("Connection to guest failed after reboot.")
@@ -2546,7 +2547,7 @@ class GuestSsh(Guest):
     def perform_reboot(
         self,
         action: Callable[[], Any],
-        wait: Waiting,
+        waiting: Waiting,
         fetch_boot_time: bool = True,
     ) -> bool:
         """Perform the actual reboot and wait for the guest to recover.
@@ -2557,14 +2558,10 @@ class GuestSsh(Guest):
         :py:meth:`perform_reboot` with the right ``action`` callable.
 
         Args:
-            action: a callable which will trigger the requested reboot.
-            timeout: amount of time in which the guest must become
-                available again.
-            tick: how many seconds to wait between two consecutive
-                attempts of contacting the guest.
-            tick_increase: a multiplier applied to ``tick`` after every
-                attempt.
-            fetch_boot_time: if set, the current boot time of the guest
+            action: A callable which will trigger the requested reboot.
+            waiting: A ``tmt.utils.wait.Waiting`` instance to control
+                reconnection attempts, including timeout, tick, and tick_increase.
+            fetch_boot_time: If set, the current boot time of the guest
                 would be read first, and used for testing whether the
                 reboot has been performed. This will require
                 communication with the guest, therefore it is
@@ -2618,7 +2615,7 @@ class GuestSsh(Guest):
                 raise tmt.utils.wait.WaitingIncompleteError
 
         try:
-            wait.wait(check_boot_time, self._logger)
+            waiting.wait(check_boot_time, self._logger)
 
         except tmt.utils.wait.WaitingTimedOutError:
             self.debug("Connection to guest failed after reboot.")
@@ -2659,17 +2656,14 @@ class GuestSsh(Guest):
             reboot will be requested, and ``command`` will be ignored.
 
         Args:
-            hard: if set, force the reboot. This may result in a loss of
+            hard: If set, force the reboot. This may result in a loss of
                 data. The default of ``False`` will attempt a graceful
                 reboot.
-            command: a command to run on the guest to trigger the
+            command: A command to run on the guest to trigger the
                 reboot. If ``hard`` is also set, ``command`` is ignored.
-            timeout: amount of time in which the guest must become
-                available again.
-            tick: how many seconds to wait between two consecutive
-                attempts of contacting the guest.
-            tick_increase: a multiplier applied to ``tick`` after every
-                attempt.
+            waiting: A ``tmt.utils.wait.Waiting`` instance to control
+                reconnection attempts, including timeout, tick, and tick_increase.
+                If not provided, ``default_reboot_waiting()`` is used.
 
         Returns:
             ``True`` if the reboot succeeded, ``False`` otherwise.
@@ -2680,11 +2674,11 @@ class GuestSsh(Guest):
             )
 
         command = command or tmt.steps.DEFAULT_REBOOT_COMMAND
-        waiting = waiting or default_reboot_waiting()
+        effective_waiting = waiting or default_reboot_waiting()
 
         self.debug(f"Soft reboot using command '{command}'.")
 
-        return self.perform_reboot(lambda: self.execute(command), waiting)
+        return self.perform_reboot(lambda: self.execute(command), effective_waiting)
 
     def remove(self) -> None:
         """Remove the guest.

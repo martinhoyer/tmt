@@ -50,6 +50,8 @@ plugins:
             members_order: source # Or 'alphabetical'
             # group_by_category: true # Might be useful later
             # show_category_heading: true # Might be useful later
+  - macros:
+      module_name: macros
 markdown_extensions:
   - admonition
   - pymdownx.details # must be before superfences

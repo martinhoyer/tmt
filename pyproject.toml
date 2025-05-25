@@ -188,6 +188,7 @@ dependencies = [
     "pymdown-extensions",
     "markdown",
     "Pygments",
+    "mkdocs-macros-plugin",
     "griffe-inherited-docstrings",
     "griffe-pydantic",
     "griffe-typingdoc",
