@@ -229,7 +229,59 @@ class DiscoverShellData(tmt.steps.discover.DiscoverStepData):
 
 @tmt.steps.provides_method('shell')
 class DiscoverShell(tmt.steps.discover.DiscoverPlugin[DiscoverShellData]):
-    """Use provided list of shell script tests. (Original ReST docstring temporarily removed to avoid parsing errors.)"""
+    """Use provided list of shell script tests.
+
+    List of test cases to be executed can be defined manually directly
+    in the plan as a list of dictionaries containing test `name` and
+    actual `test` script. It is also possible to define here any other
+    test metadata such as the `duration` or a `path` to the test.
+    The default duration for tests defined directly in the discover step
+    is `1h`.
+
+    Example config:
+    ```yaml
+    discover:
+        how: shell
+        tests:
+          - name: /help/main
+            test: tmt --help
+          - name: /help/test
+            test: tmt test --help
+          - name: /help/smoke
+            test: ./smoke.sh
+            path: /tests/shell
+    ```
+
+    For DistGit repo one can download sources and use code from them in
+    the tests. Sources are extracted into `$TMT_SOURCE_DIR` path,
+    patches are applied by default. See options to install build
+    dependencies or to just download sources without applying patches.
+    To apply patches, special `prepare` phase with order `60` is
+    added, and `prepare` step has to be enabled for it to run.
+
+    ```yaml
+    discover:
+        how: shell
+        dist-git-source: true
+        tests:
+          - name: /upstream
+            test: cd $TMT_SOURCE_DIR/*/tests && make test
+    ```
+
+    To clone a remote repository and use it as a source specify `url`.
+    It accepts also `ref` to checkout provided reference. Dynamic
+    reference feature is supported as well.
+
+    ```yaml
+    discover:
+        how: shell
+        url: https://github.com/teemtee/tmt.git
+        ref: "1.18.0"
+        tests:
+          - name: first test
+            test: ./script-from-the-repo.sh
+    ```
+    """
 
     _data_class = DiscoverShellData
 

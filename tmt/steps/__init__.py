@@ -1233,11 +1233,8 @@ class Method:
 
         self.name = name
         self.class_ = class_
-        self.doc = (
-            tmt.utils.rest.render_rst(doc, tmt.log.Logger.get_bootstrap_logger())
-            if tmt.utils.rest.REST_RENDERING_ALLOWED
-            else doc
-        )
+        # Store the raw docstring (expected to be Markdown)
+        self.doc = doc
         self.order = order
 
         # Parse summary and description from provided doc string

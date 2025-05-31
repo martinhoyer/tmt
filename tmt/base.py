@@ -3057,7 +3057,7 @@ class Story(
         )
         self._update_metadata()
 
-    # Override the parent implementation - it would try to call `Tree.storys()`...
+    # Override the parent implementation - it would try to call `Tree.story()`...
     @classmethod
     def from_tree(cls, tree: 'tmt.Tree') -> list['Story']:
         return tree.stories()

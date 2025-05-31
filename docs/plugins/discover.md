@@ -6,7 +6,7 @@ This page documents the available discover plugins and their configuration optio
 
 {{ render_plugin_options('tmt.steps.discover.DiscoverStepData') }}
 
-## FMF Plugin
+## fmf Plugin
 
 ::: tmt.steps.discover.fmf.DiscoverFmf
     options:
@@ -14,7 +14,7 @@ This page documents the available discover plugins and their configuration optio
       show_bases: true
       heading_level: 3
 
-### FMF Configuration
+### fmf Configuration
 
 {{ render_plugin_options('tmt.steps.discover.fmf.DiscoverFmfStepData', inherited_from_path_str='tmt.steps.discover.DiscoverStepData') }}
 

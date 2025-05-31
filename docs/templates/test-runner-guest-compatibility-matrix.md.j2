@@ -12,7 +12,7 @@
 | Runner / Guest | {% for runner in MATRIX.keys() %}**{{ runner }}** |{% endfor %}
 |----------------|{% for runner in MATRIX.keys() %}:---:|{% endfor %}
 {% for runner, guests in MATRIX.items() %}
-| {{ runner }} | {% for state, note in guests %}{% if state == 'supported' %}✅{% elif state == 'supported-with-caveats' %}❗{% if note %} See [{{note.title}}](#note-{{ note.title | urlencode }}){% endif %}{% elif state == 'unknown' %}❓{% elif state == 'unsupported' %}❌{% endif %} |{% endfor %}
+| {{ runner }} | {% for state, note in guests %}{% if state == 'supported' %}✅{% elif state == 'supported-with-caveats' %}❗{% if note %} See [{{ note.title }}](#note-{{ note.title | urlencode }}){% endif %}{% elif state == 'unknown' %}❓{% elif state == 'unsupported' %}❌{% endif %} |{% endfor %}
 {% endfor %}
 
 {% for note in NOTES %}

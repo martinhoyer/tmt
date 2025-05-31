@@ -314,9 +314,7 @@ linkcheck_request_headers = {
 github_token = os.environ.get('GITHUB_TOKEN')
 
 if github_token:
-    linkcheck_request_headers[r"https://github\.com/.*"]["Authorization"] = (
-        f"Bearer {github_token}"
-    )
+    linkcheck_request_headers[r"https://github\.com/.*"]["Authorization"] = f"Bearer {github_token}"
     print("INFO: Using GITHUB_TOKEN for linkcheck requests to github.com")
 else:
     print("INFO: GITHUB_TOKEN not found. linkcheck requests to github will be unauthenticated.")
@@ -335,10 +333,7 @@ linkcheck_ignore = [
 
 
 def generate_tmt_docs(app: Sphinx, config: Any) -> None:
-    """
-    Run `make generate` to populate the auto-generated sources
-    """
-
+    """Run `make generate` to populate the auto-generated sources."""
     conf_dir = Path(app.confdir)
     subprocess.run(["make", "generate"], cwd=conf_dir, check=True)
 
