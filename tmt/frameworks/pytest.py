@@ -1,8 +1,8 @@
+import shlex
 from typing import TYPE_CHECKING
 
 import tmt.log
 import tmt.result
-import tmt.steps.execute
 import tmt.utils
 from tmt.base import DependencySimple
 from tmt.frameworks import TestFramework, provides_framework
@@ -11,20 +11,13 @@ from tmt.steps.execute import TEST_OUTPUT_FILENAME, TestInvocation
 
 if TYPE_CHECKING:
     from tmt.base import Test
-from tmt.utils import Path
 
 
 @provides_framework('pytest')
 class Pytest(TestFramework):
     @classmethod
-    def get_requirements(
-        cls,
-        test: 'Test',
-        logger: tmt.log.Logger
-            ) -> list[DependencySimple]:
+    def get_requirements(cls, test: 'Test', logger: tmt.log.Logger) -> list[DependencySimple]:
         return [DependencySimple('uv')]
-
-import shlex
 
     @classmethod
     def get_test_command(
@@ -41,7 +34,10 @@ import shlex
         # invocation.phase is an instance of ExecuteInternal plugin,
         # its 'data' attribute holds ExecuteInternalData.
         # Need to ensure that 'pytest_plugins' attribute exists and is populated.
-        if hasattr(invocation.phase.data, 'pytest_plugins') and invocation.phase.data.pytest_plugins:
+        if (
+            hasattr(invocation.phase.data, 'pytest_plugins')
+            and invocation.phase.data.pytest_plugins
+        ):
             logger.debug(f"Pytest plugins found: {invocation.phase.data.pytest_plugins}")
             for plugin in invocation.phase.data.pytest_plugins:
                 command_parts.append("--with")
@@ -61,15 +57,17 @@ import shlex
     def extract_results(
         cls,
         invocation: 'TestInvocation',
-        results: list[tmt.result.Result],  # This is for tmt-report-result, might not be directly used by pytest output
+        results: list[
+            tmt.result.Result
+        ],  # This is for tmt-report-result, might not be directly used by pytest output
         logger: tmt.log.Logger,
     ) -> list[tmt.result.Result]:
-        '''
+        """
         Check result of a pytest test.
         Parse pytest output to determine the result.
         This will likely involve parsing JUnit XML output if pytest is configured to produce it,
         or parsing stdout for specific patterns.
-        '''
+        """
         assert invocation.return_code is not None
         note: list[str] = []
 
@@ -77,7 +75,7 @@ import shlex
         # This needs to be enhanced to parse pytest's rich output (e.g., JUnit XML).
         if invocation.return_code == 0:
             result_outcome = ResultOutcome.PASS
-        elif invocation.return_code == 5: # Exit code 5 means no tests were collected
+        elif invocation.return_code == 5:  # Exit code 5 means no tests were collected
             result_outcome = ResultOutcome.INFO
             note.append("No tests found by pytest.")
         else:
@@ -97,7 +95,7 @@ import shlex
             tmt.Result.from_test_invocation(
                 invocation=invocation,
                 result=result_outcome,
-                log=[log_path], # Potentially add JUnit XML path here
+                log=[log_path],  # Potentially add JUnit XML path here
                 note=note,
             )
         ]
