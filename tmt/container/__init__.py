@@ -8,13 +8,11 @@ from collections.abc import Iterator, Sequence
 from typing import TYPE_CHECKING, Any, Callable, Generic, Optional, TypeVar, Union, cast, overload
 
 import fmf
+from pydantic import BaseModel, ConfigDict, ValidationError
 
-from tmt._compat.pydantic import BaseModel, Extra, ValidationError
 from tmt._compat.typing import Self
 
 if TYPE_CHECKING:
-    from _typeshed import DataclassInstance
-
     import tmt.log
     import tmt.options
     from tmt._compat.typing import TypeAlias
@@ -61,8 +59,8 @@ UnserializeCallback: 'TypeAlias' = Callable[[Any], T]
 #: reduces to data classes and data class instances. Our :py:class:`DataContainer`
 #: are perfectly compatible data classes, but some helper methods may be used
 #: on raw data classes, not just on ``DataContainer`` instances.
-ContainerClass: 'TypeAlias' = type['DataclassInstance']
-ContainerInstance: 'TypeAlias' = 'DataclassInstance'
+ContainerClass: 'TypeAlias' = type['DataContainer']
+ContainerInstance: 'TypeAlias' = 'DataContainer'
 Container: 'TypeAlias' = Union[ContainerClass, ContainerInstance]
 
 
@@ -848,19 +846,17 @@ MetadataContainerT = TypeVar(
 class MetadataContainer(BaseModel):
     """A base class of containers backed by fmf nodes."""
 
-    class Config:
-        """Configuration for Pydantic model."""
-
-        # Accept only keys with dashes instead of underscores
-        alias_generator = key_to_option
-        extra = Extra.forbid
-        validate_all = True
-        validate_assignment = True
+    model_config = ConfigDict(
+        alias_generator=key_to_option,
+        extra="forbid",
+        validate_default=True,
+        validate_assignment=True,
+    )
 
     @classmethod
     def from_fmf(cls, tree: fmf.Tree) -> Self:
         try:
-            return cls.parse_obj(tree.data)
+            return cls.model_validate(tree.data)
 
         except ValidationError as error:
             import tmt.utils

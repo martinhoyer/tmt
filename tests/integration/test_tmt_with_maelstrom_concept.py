@@ -12,10 +12,11 @@ import sys
 # Import pytest for potential use of its features, though not strictly needed for this simple test
 import pytest
 
+from tmt._compat.pathlib import Path
+
 
 def test_tmt_import_and_basic_presence_in_maelstrom_env():
-    """
-    A conceptual test to verify that tmt can be imported and its source code
+    """A conceptual test to verify that tmt can be imported and its source code
     is present in the Maelstrom container environment as configured by the
     basic_maelstrom_config_for_tmt_tests fixture.
     """
@@ -38,7 +39,7 @@ def test_tmt_import_and_basic_presence_in_maelstrom_env():
         # For debugging in the Maelstrom environment, list contents of /src
         # to understand what's actually there.
         src_contents = "N/A (could not list /src or /src does not exist)"
-        if os.path.exists("/src"):
+        if Path("/src").exists():
             try:
                 src_contents = str(os.listdir("/src"))
             except Exception as list_e:

@@ -4,9 +4,7 @@ from pytest_container.container import Container  # For type hinting
 
 
 def test_tmt_help_in_container(tmt_mini_container: Container):
-    """
-    Tests that `tmt --help` can be successfully run inside the tmt_mini_container.
-    """
+    """Tests that `tmt --help` can be successfully run inside the tmt_mini_container."""
     # Execute `tmt --help` inside the container
     # The working directory is already set to /src in the fixture
     result = tmt_mini_container.connection.run("tmt --help")

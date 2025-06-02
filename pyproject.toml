@@ -8,18 +8,10 @@ dynamic = ["version"]
 description = "Test Management Tool"
 readme = "README.rst"
 license = "MIT"
-license-file = "LICENSE"
 requires-python = ">=3.9"
-authors = [
-    { name = "Petr Splichal", email = "psplicha@redhat.com" },
-    ]
-maintainers = [
-    { name = "Petr Splichal", email = "psplicha@redhat.com" },
-    ]
-keywords = [
-    "metadata",
-    "testing",
-    ]
+authors = [{ name = "Petr Splichal", email = "psplicha@redhat.com" }]
+maintainers = [{ name = "Petr Splichal", email = "psplicha@redhat.com" }]
+keywords = ["metadata", "testing"]
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
@@ -31,7 +23,7 @@ classifiers = [
     "Topic :: Utilities",
     "Topic :: Software Development :: Testing",
     "Operating System :: POSIX :: Linux",
-    ]
+]
 dependencies = [
     # Minimal versions based on c9s rpms
     "click>=8.0.3",
@@ -40,46 +32,33 @@ dependencies = [
     "jinja2>=2.11.3",
     "packaging>=20.9",
     "pint>=0.16.1",
-    "pydantic>=1.10.14",
+    "pydantic>=2",
     "pygments>=2.7.4",
     "requests>=2.25.1",
     "ruamel.yaml>=0.16.6",
     "urllib3>=1.26.5, <3.0",
     "typing-extensions>=4.12.2; python_version < '3.13'",
-    ]
+]
 
 [project.optional-dependencies]
-ansible = [
-    "ansible-core>=2.14.18",
-    ]
+ansible = ["ansible-core>=2.14.18"]
 test-convert = [
     "html2text>=2020.1.16",
     "markdown>=3.3.4",
     "nitrate>=1.9.0",
     "python-bugzilla>=3.2.0",
-    ]
-export-polarion = [
-    "pylero>=0.1.0",
-    ]
-provision-beaker = [
-    "mrack>=1.23.2",
-    ]
-provision-virtual = [
-    "testcloud>=0.11.7",
-    ]
+]
+export-polarion = ["pylero>=0.1.0"]
+provision-beaker = ["mrack>=1.23.2"]
+provision-virtual = ["testcloud>=0.11.7"]
 provision-container = []
 provision-bootc = []
 report-junit = [
     # Required to support XML parsing and checking the XSD schemas.
     "lxml>=4.6.5",
-    ]
-report-polarion = [
-    "tmt[report-junit]",
-    "tmt[export-polarion]",
-    ]
-link-jira = [
-    "jira>=3.5.0, <4",
-    ]
+]
+report-polarion = ["tmt[report-junit]", "tmt[export-polarion]"]
+link-jira = ["jira>=3.5.0, <4"]
 all = [
     "tmt[test-convert]",
     "tmt[export-polarion]",
@@ -90,7 +69,7 @@ all = [
     "tmt[report-junit]",
     "tmt[report-polarion]",
     "tmt[link-jira]",
-    ]
+]
 
 [project.scripts]
 tmt = "tmt.__main__:run_cli"
@@ -113,7 +92,7 @@ include = [
     "/tmt.1",
     "/completions",
     "/.fmf",
-    ]
+]
 
 artifacts = ["tmt.1"]
 
@@ -151,7 +130,7 @@ dependencies = [
     "pytest-mock",
     "pytest-benchmark",
     "pytest-click",
-    ]
+]
 features = ["all"]
 
 [tool.hatch.envs.dev.scripts]
@@ -165,12 +144,12 @@ cov = [
     "coverage run --source=tmt -m pytest -vvv -ra --showlocals -n 0 tests",
     "coverage report",
     "coverage annotate",
-    ]
+]
 requre = [
     "cd {root}/tests/integration",
     "pytest -vvv -ra --showlocals -n 0",
     "requre-patch purge --replaces :milestone_url:str:SomeText --replaces :latency:float:0 tests/integration/test_data/test_nitrate/*",
-    ]
+]
 
 [tool.hatch.envs.dev-not-editable]
 template = "dev"
@@ -197,34 +176,32 @@ dependencies = [
     "griffe-pydantic",
     "griffe-typingdoc",
     "griffe-warnings-deprecated",
-    "griffe-fieldz",  # attrs, etc
-    ]
+    "griffe-fieldz",               # attrs, etc
+]
 
 [tool.hatch.envs.docs.scripts]
 generate = [
-  "python docs/scripts/generate-plugins.py discover docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-plugins.py provision docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-plugins.py prepare docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-plugins.py execute docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-plugins.py report docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-plugins.py finish docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-plugins.py prepare-feature docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-plugins.py test-checks docs/templates/plugins.md.j2 docs/plugins/",
-  "python docs/scripts/generate-stories.py docs/templates/story.md.j2",
-  "python docs/scripts/generate-hardware-matrix.py docs/templates/hardware-matrix.md.j2 docs/spec/hardware-matrix.md",
-  "python docs/scripts/generate-lint-checks.py docs/templates/lint-checks.md.j2 docs/spec/lint-checks.md",
-  "python docs/scripts/generate-template-extensions.py docs/templates/template-extensions.md.j2 docs/code/template-extensions.md",
-  "python docs/scripts/generate-test-runner-guest-matrix.py docs/templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs/guide/test-runner-guest-compatibility-matrix.md",
+    "python docs/scripts/generate-plugins.py discover docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-plugins.py provision docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-plugins.py prepare docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-plugins.py execute docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-plugins.py report docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-plugins.py finish docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-plugins.py prepare-feature docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-plugins.py test-checks docs/templates/plugins.md.j2 docs/plugins/",
+    "python docs/scripts/generate-stories.py docs/templates/story.md.j2",
+    "python docs/scripts/generate-hardware-matrix.py docs/templates/hardware-matrix.md.j2 docs/spec/hardware-matrix.md",
+    "python docs/scripts/generate-lint-checks.py docs/templates/lint-checks.md.j2 docs/spec/lint-checks.md",
+    "python docs/scripts/generate-template-extensions.py docs/templates/template-extensions.md.j2 docs/code/template-extensions.md",
+    "python docs/scripts/generate-test-runner-guest-matrix.py docs/templates/test-runner-guest-compatibility-matrix.md.j2 docs/test-runner-guest-compatibility.yaml docs/guide/test-runner-guest-compatibility-matrix.md",
 ]
 build = "mkdocs build --config-file mkdocs.yml --strict"
 serve = "mkdocs serve"
 
-[dirs.env]
-virtual = ".venv"
-
 [tool.mypy]
 # Be vewy, vewy stwict, we'we hunting wabbits^Wbugs.
 strict = true
+plugins = ['pydantic.mypy']
 
 # Automagically make imported object part of mypy's view of module's namespace.
 implicit_reexport = true
@@ -252,18 +229,11 @@ module = [
     "pylero.*",
     "testcloud.*",
     "mrack.*",
-    ]
+]
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-# Workaround for https://github.com/python/mypy/issues/12664
-module = "ruamel.*"
-cache_dir = "/dev/null"
-
 [tool.pyright]
-include = [
-    "tmt/**/*.py",
-]
+include = ["tmt/**/*.py"]
 ignore = [
     "docs/**",
     "examples/**",
@@ -289,7 +259,8 @@ ignore = [
     "tmt/queue.py",
     "tmt/utils/__init__.py",
     "tmt/utils/structured_field.py",
-    "tmt/hardware.py",  # pyright does not pick up pint's _typing.py or something :/
+    "tmt/hardware.py",                       # pyright does not pick up pint's _typing.py or something :/
+    "tmt/macros.py",
 ]
 
 pythonVersion = "3.9"
@@ -303,7 +274,7 @@ typeCheckingMode = "strict"
 reportMissingTypeStubs = false  # Stub file not found for "foo.bar"
 reportPrivateUsage = false
 reportUnknownMemberType = false
-reportUnnecessaryCast = false  # Unnecessary "cast" call; type is already...
+reportUnnecessaryCast = false   # Unnecessary "cast" call; type is already...
 
 [tool.ruff]
 line-length = 100
@@ -311,79 +282,81 @@ src = ["tmt", "tests"]
 target-version = "py39"
 
 [tool.ruff.format]
-quote-style = "preserve"  # TODO: Convert to a specific quote style
+quote-style = "preserve"     # TODO: Convert to a specific quote style
 docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
-    "F",  # pyflakes
-    "E",  # pycodestyle error
-    "W",  # pycodestyle warning
-    "I",  # isort
-    "N",  # pep8-naming
+    "F",     # pyflakes
+    "E",     # pycodestyle error
+    "W",     # pycodestyle warning
+    "I",     # isort
+    "N",     # pep8-naming
     "PERF",  # Perflint
-    "D",    # pydocstyle
-    "UP",  # pyupgrade
-    "YTT",  # flake8-2020
-    "ASYNC",  # flake8-async
-    "S",  # flake8-bandit
-    "B",  # flake8-bugbear
-    "A",  # flake8-builtins
-    "COM",  # flake8-commas
-    "C4",  # flake8-comprehensions
-    "DTZ",  # flake8-datetimez
-    "T10",  # flake8-debugger
-    "EXE",  # flake8-executable
-    "ISC",  # flake8-implicit-str-concat
-    "ICN",  # flake8-import-conventions
-    "LOG",  # flake8-logging
-    "G",  # flake8-logging-format
-    "PIE",  # flake8-pie
-    "PYI",  # flake8-pyi
-    "PT",  # flake8-pytest-style
+    "D",     # pydocstyle
+    "UP",    # pyupgrade
+    "YTT",   # flake8-2020
+    "ASYNC", # flake8-async
+    "S",     # flake8-bandit
+    "B",     # flake8-bugbear
+    "A",     # flake8-builtins
+    "COM",   # flake8-commas
+    "C4",    # flake8-comprehensions
+    "DTZ",   # flake8-datetimez
+    "T10",   # flake8-debugger
+    "EXE",   # flake8-executable
+    "ISC",   # flake8-implicit-str-concat
+    "ICN",   # flake8-import-conventions
+    "LOG",   # flake8-logging
+    "G",     # flake8-logging-format
+    "PIE",   # flake8-pie
+    "PYI",   # flake8-pyi
+    "PT",    # flake8-pytest-style
     "Q003",  # avoidable-escaped-quote
     "Q004",  # unnecessary-escaped-quote
-    "RSE",  # flake8-raise
-    "RET",  # flake8-return
-    "SIM",  # flake8-simplify
-    "TID",  # flake8-tidy-imports
-    "INT",  # flake8-gettext
-    "PGH",  # pygrep-hooks
-    "PLC",  # pylint-convention
-    "PLE",  # pylint-error
-    "PLR",  # pylint-refactor
-    "FLY",  # flynt
+    "RSE",   # flake8-raise
+    "RET",   # flake8-return
+    "SIM",   # flake8-simplify
+    "TID",   # flake8-tidy-imports
+    "INT",   # flake8-gettext
+    "PGH",   # pygrep-hooks
+    "PLC",   # pylint-convention
+    "PLE",   # pylint-error
+    "PLR",   # pylint-refactor
+    "FLY",   # flynt
     "FURB",  # refurb
-    "RUF",  # ruff
-    "D",    # pydocstyle
-    ]
+    "RUF",   # ruff
+    "D",     # pydocstyle
+]
 ignore = [
-    "B904",  # Within an `except` clause, raise exceptions with `raise ... from err` or `raise ...
+    "B904",    # Within an `except` clause, raise exceptions with `raise ... from err` or `raise ...
     "COM812",  # Trailing comma missing
-    "G004",  # Logging statement uses f-string
+    "G004",    # Logging statement uses f-string
     "PIE790",  # Unnecessary `pass` statement
-    "PLC1901",  # `{}` can be simplified to `{}` as an empty string is falsey
-    "PLE1205",  # Too many arguments for `logging` format string
-    "PLR09",  # Too many branches/statements/arguments/returns
-    "PLR2004",  # Magic value used in comparison
+    "PLC1901", # `{}` can be simplified to `{}` as an empty string is falsey
+    "PLE1205", # Too many arguments for `logging` format string
+    "PLR09",   # Too many branches/statements/arguments/returns
+    "PLR2004", # Magic value used in comparison
     "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
     "RUF013",  # PEP 484 prohibits implicit `Optional`
     # flake8-bandit (S) https://docs.astral.sh/ruff/rules/#flake8-bandit-s
-    "S101",  # Use of `assert` detected
-    "S603",  # `subprocess` call: check for execution of untrusted input
-    "S607",  # Starting a process with a partial executable path
-    "S105",  # Possible hardcoded password assigned to: "PASS"
+    "S101",    # Use of `assert` detected
+    "S603",    # `subprocess` call: check for execution of untrusted input
+    "S607",    # Starting a process with a partial executable path
+    "S105",    # Possible hardcoded password assigned to: "PASS"
     "SIM103",  # Return the condition directly - can hurt readability
     "PERF203", # `try`-`except` within a loop incurs performance overhead
-    "D417",  # Missing argument description
-    "D105",  # Missing docstring in magic method
-    "D107",  # Missing docstring in `__init__`
-    "D100",  # Missing docstring in public module
-    "D101",  # Missing docstring in public class
-    "D102",  # Missing docstring in public method
-    "D103",  # Missing docstring in public function
-    "D104",  # Missing docstring in public package
-    ]
+    "D417",    # Missing argument description
+    "D105",    # Missing docstring in magic method
+    "D107",    # Missing docstring in `__init__`
+    "D100",    # Missing docstring in public module
+    "D101",    # Missing docstring in public class
+    "D102",    # Missing docstring in public method
+    "D103",    # Missing docstring in public function
+    "D104",    # Missing docstring in public package
+    #TODO TEMPORARY
+    "D",
+]
 
 logger-objects = ["tmt.log.Logger"]
 typing-modules = ["tmt._compat.typing"]
@@ -391,12 +364,12 @@ typing-modules = ["tmt._compat.typing"]
 [tool.ruff.lint.per-file-ignores]
 # Less strict security checks in tests
 "tests/unit*" = [
-    "S604",  # Function call with shell=True parameter identified, security issue
-    "S605",  # Starting a process with a shell: seems safe, but may be changed in the future
-    "S318",  # Using xml to parse untrusted data is known to be vulnerable to XML attacks
-    "S108",  # Probable insecure usage of temporary file or directory: "{}"
-    "FLY002",  # Use f-string instead of .join
-    ]
+    "S604",   # Function call with shell=True parameter identified, security issue
+    "S605",   # Starting a process with a shell: seems safe, but may be changed in the future
+    "S318",   # Using xml to parse untrusted data is known to be vulnerable to XML attacks
+    "S108",   # Probable insecure usage of temporary file or directory: "{}"
+    "FLY002", # Use f-string instead of .join
+]
 # The naming scheme of tmt/_compat will overshadow stdlib modules
 "tmt/_compat/pathlib.py" = ["A005"]
 "tmt/_compat/typing.py" = ["A005"]
@@ -427,7 +400,6 @@ builtins-ignorelist = ["help", "format", "input", "filter", "copyright", "max"]
 "typing_extensions.Self".msg = "Use tmt._compat.typing.Self instead."
 "pathlib.Path".msg = "Use tmt._compat.pathlib.Path instead."
 "pathlib.PosixPath".msg = "Use tmt._compat.pathlib.Path instead."
-"pydantic".msg = "Use tmt._compat.pydantic instead."
 "warnings.deprecated".msg = "Use tmt._compat.warnings.deprecated instead."
 "os.path".msg = "Use tmt._compat.pathlib.Path and pathlib instead."
 # Banning builtins is not yet supported: https://github.com/astral-sh/ruff/issues/10079
@@ -445,8 +417,8 @@ known-first-party = ["tmt"]
 [tool.pytest.ini_options]
 markers = [
     "containers: tests which need to spawn containers",
-    "web: tests which need to access the web"
-    ]
+    "web: tests which need to access the web",
+]
 
 [tool.codespell]
 ignore-words = "docs/codespell.dic"
@@ -454,5 +426,5 @@ exclude-file = "docs/codespell.ignore"
 skip = "tests/execute/weird/data/weird.txt,tests/lint/plan/data/invalid_attr.fmf,tests/lint/plan/test.sh"
 
 [tool.djlint]
-use_gitignore=true
-ignore="H005,H030,H031"
+use_gitignore = true
+ignore = "H005,H030,H031"

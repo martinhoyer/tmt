@@ -2,9 +2,9 @@ from typing import Any, Optional, Union
 
 # TID251: this use of `click.style()` is expected, and on purpose.
 from click import style as _style  # noqa: TID251
+from pydantic import ValidationError
 
 import tmt.utils
-from tmt._compat.pydantic import ValidationError
 from tmt._compat.typing import TypeAlias
 from tmt.container import MetadataContainer
 
@@ -25,7 +25,7 @@ class Style(MetadataContainer):
 
     def apply(self, text: str) -> str:
         """Apply this style to a given string."""
-        return _style(text, **self.dict())
+        return _style(text, **self.model_dump())
 
 
 _DEFAULT_STYLE = Style()
@@ -48,7 +48,7 @@ class Theme(MetadataContainer):
     restructuredtext_admonition_warning: Style = _DEFAULT_STYLE
 
     def to_spec(self) -> dict[str, Any]:
-        return {key.replace('_', '-'): value for key, value in self.dict().items()}
+        return {key.replace('_', '-'): value for key, value in self.model_dump().items()}
 
     def to_minimal_spec(self) -> dict[str, Any]:
         spec: dict[str, Any] = {}
@@ -66,7 +66,7 @@ class Theme(MetadataContainer):
     @classmethod
     def from_spec(cls: type['Theme'], data: Any) -> 'Theme':
         try:
-            return Theme.parse_obj(data)
+            return Theme.model_validate(data)
 
         except ValidationError as error:
             raise tmt.utils.SpecificationError("Invalid theme configuration.") from error

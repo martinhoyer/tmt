@@ -2379,18 +2379,19 @@ class PluginTask(
 
     @property
     def phase_name(self) -> str:
-        from tmt.steps.execute import ExecutePlugin
+        # TODO: fixed in new mypy version?
+        # from tmt.steps.execute import ExecutePlugin
 
         # A better fitting name for an execute step phase, instead of its own
         # name, which is always the same, would be the name of the discover
         # phase it's supposed to process.
-        if isinstance(self.phase, ExecutePlugin):
-            # mypy reports `self.phase` as `Never` type, probably some
-            # issue in how it's declared above.
-            return (
-                cast(ExecutePlugin[Any], self.phase).discover_phase
-                or cast(ExecutePlugin[Any], self.phase).discover.name
-            )
+        # if isinstance(self.phase, ExecutePlugin):
+        #     # mypy reports `self.phase` as `Never` type, probably some
+        #     # issue in how it's declared above.
+        #     return (
+        #         cast(ExecutePlugin[Any], self.phase).discover_phase
+        #         or cast(ExecutePlugin[Any], self.phase).discover.name
+        #     )
 
         return self.phase.name
 

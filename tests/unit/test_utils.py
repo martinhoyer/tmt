@@ -921,11 +921,9 @@ def test_wait_deadline_already_passed(root_logger):
 
 
 def test_wait(root_logger, mocker):
-    """
-    :py:func:`wait` shall call ``check`` multiple times until ``check`` returns
+    """:py:func:`wait` shall call ``check`` multiple times until ``check`` returns
     successfully.
     """
-
     # Every tick of wait()'s loop, pop one item. Once we get to the end,
     # consider the condition to be fulfilled.
     ticks = list(range(1, 10))
@@ -948,15 +946,10 @@ def test_wait(root_logger, mocker):
     assert not ticks
 
 
-def test_wait_timeout(root_logger):
-    """:py:func:`wait` shall call ``check`` multiple times until ``check`` running out of time."""
-    check = unittest.mock.MagicMock(__name__='mock_check', side_effect=WaitingIncompleteError)
 def test_wait_timeout(root_logger, mocker):
-    """
-    :py:func:`wait` shall call ``check`` multiple times until ``check`` running
+    """:py:func:`wait` shall call ``check`` multiple times until ``check`` running
     out of time.
     """
-
     check = mocker.MagicMock(__name__='mock_check', side_effect=WaitingIncompleteError)
 
     # We want to reach end of time budget before reaching end of the list.
@@ -1524,7 +1517,7 @@ def test_invocation_terminate_process(root_logger: tmt.log.Logger, caplog, mocke
 
 
 def test_invocation_terminate_process_not_running_anymore(
-    root_logger: tmt.log.Logger, caplog
+    root_logger: tmt.log.Logger, caplog, mocker
 ) -> None:
     from tmt.steps.execute import TestInvocation
 

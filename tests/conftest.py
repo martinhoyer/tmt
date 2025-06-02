@@ -12,7 +12,7 @@ from tmt.log import Logger
 
 @pytest.fixture(scope="session")
 def root_logger() -> Logger:
-    """Root logger fixture"""
+    """Root logger fixture."""
     # Keeping this simple as its definition might vary or be in another conftest
     # For the purpose of this task, a basic logger is fine.
     return Logger.create(verbose=0, debug=0, quiet=False)
@@ -22,8 +22,7 @@ def root_logger() -> Logger:
 def tmt_mini_container(
     docker_client, container_runtime: pytest_container.runtime.PodmanRuntime, tmp_path_factory
 ) -> pytest_container.Container:
-    """
-    Builds and runs a container with tmt installed from the current repository,
+    """Builds and runs a container with tmt installed from the current repository,
     using the minimal Containerfile.
     """
     image_name = "tmt/mini-test-fixture:latest"
@@ -64,9 +63,7 @@ def tmt_mini_container(
 
 @pytest.fixture(scope="session")
 def basic_maelstrom_config_for_tmt_tests(tmp_path_factory, worker_id) -> Path:
-    """
-    Creates a basic Maelstrom configuration directory for running tmt tests.
-    """
+    """Creates a basic Maelstrom configuration directory for running tmt tests."""
     # Create a unique temporary directory for this worker
     # tmp_path_factory from pytest returns pathlib.Path, which is fine here.
     # The return type of this fixture is `tmt.utils.Path`, so
@@ -124,14 +121,12 @@ pytest
 
 @pytest.fixture(scope="session")
 def fmf_tree(tmp_path_factory, root_logger: Logger) -> Callable[[dict[str, Any]], Path]:
-    """
-    Provides a factory function to create FMF tree structures for tests.
+    """Provides a factory function to create FMF tree structures for tests.
     Each call to the factory function creates a new, unique FMF tree.
     """
 
     def _create_fmf_tree(content: dict[str, Any]) -> Path:
-        """
-        Inner factory function to create a specific FMF tree.
+        """Inner factory function to create a specific FMF tree.
         `content` is a dictionary where keys are relative file paths
         and values are either strings (for direct write) or dicts (for YAML dump).
         """

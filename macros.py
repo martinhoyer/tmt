@@ -24,13 +24,13 @@ def define_env(env: Any) -> None:
     ) -> str:
         data_class = get_class_from_string(class_path_str)
         if data_class is None:
-            return f"<p>Error: Macro could not load class {class_path_str} due to an internal error (likely an import issue).</p>" # noqa: E501
+            return f"<p>Error: Macro could not load class {class_path_str} due to an internal error (likely an import issue).</p>"  # noqa: E501
 
         inherited_fields = set()
         if inherited_from_path_str:
             inherited_from_class = get_class_from_string(inherited_from_path_str)
             if inherited_from_class is None:
-                return f"<p>Error: Macro could not load inherited_from class {inherited_from_path_str} due to an internal error (likely an import issue).</p>" # noqa: E501
+                return f"<p>Error: Macro could not load inherited_from class {inherited_from_path_str} due to an internal error (likely an import issue).</p>"  # noqa: E501
             inherited_fields = {f.name for f in dataclasses.fields(inherited_from_class)}
 
         markdown_output = []

@@ -33,8 +33,7 @@ def check_beakerlib_duration(duration_str: str) -> bool:
 
 
 def test_check_shell_results(tmp_run_dir: Path):
-    """
-    Checks the results of the shell tests execution.
+    """Checks the results of the shell tests execution.
     Corresponds to the "Check shell results" phase in test.sh.
     """
     # Ensure the data directory exists
@@ -77,7 +76,7 @@ def test_check_shell_results(tmp_run_dir: Path):
 
     assert results_yaml_path.is_file(), (
         f"results.yaml not found at {results_yaml_path}. "
-        f"Contents of tmp_run_dir / shell / execute: {list((tmp_run_dir / 'shell' / 'execute').iterdir()) if (tmp_run_dir / 'shell' / 'execute').exists() else 'Not found'}"
+        f"Contents of tmp_run_dir / shell / execute: {list((tmp_run_dir / 'shell' / 'execute').iterdir()) if (tmp_run_dir / 'shell' / 'execute').exists() else 'Not found'}"  # noqa: E501
     )
 
     yaml = ruamel.yaml.YAML()
@@ -134,8 +133,7 @@ def test_check_shell_results(tmp_run_dir: Path):
 
 
 def test_check_beakerlib_results(tmp_run_dir: Path):
-    """
-    Checks the results of the BeakerLib tests execution.
+    """Checks the results of the BeakerLib tests execution.
     Corresponds to the "Check beakerlib results" phase in test.sh.
     """
     assert DATA_DIR.is_dir(), f"Data directory not found: {DATA_DIR}"
@@ -177,7 +175,7 @@ def test_check_beakerlib_results(tmp_run_dir: Path):
 
     assert results_yaml_path.is_file(), (
         f"results.yaml not found at {results_yaml_path}. "
-        f"Contents of tmp_run_dir / beakerlib / execute: {list((tmp_run_dir / 'beakerlib' / 'execute').iterdir()) if (tmp_run_dir / 'beakerlib' / 'execute').exists() else 'Not found'}"
+        f"Contents of tmp_run_dir / beakerlib / execute: {list((tmp_run_dir / 'beakerlib' / 'execute').iterdir()) if (tmp_run_dir / 'beakerlib' / 'execute').exists() else 'Not found'}"  # noqa: E501
     )
 
     yaml = ruamel.yaml.YAML()

@@ -4,6 +4,7 @@ from typing import Any, Optional, TypeVar, cast
 
 import click
 import fmf
+from pydantic import BaseModel, ConfigDict, Field
 
 import tmt
 import tmt.base
@@ -13,21 +14,18 @@ import tmt.steps
 import tmt.steps.discover
 import tmt.utils
 import tmt.utils.git
-from tmt._compat.pydantic import BaseModel, Field
-from tmt._compat.typing import Self
 from tmt.steps.prepare.distgit import insert_to_prepare_step
 from tmt.utils import (
-    Command,
     TYPE_CHECKING,
+    Command,
     Environment,
     EnvVarValue,
     Path,
     ShellScript,
 )
 
-from typing import Any # Add Any
 if TYPE_CHECKING:
-    from tmt.base import Links, Dependency, _RawAdjustRule
+    pass
 
 T = TypeVar('T', bound='TestDescription')
 
@@ -47,13 +45,13 @@ class TestDescription(BaseModel):
         json_schema_extra={
             'normalize_callback': lambda key_address, raw_value, logger: ShellScript(raw_value),
             'serialize_callback': lambda test: str(test),
-            'unserialize_callback': lambda serialized_test: ShellScript(serialized_test)
-        }
+            'unserialize_callback': lambda serialized_test: ShellScript(serialized_test),
+        },
     )
 
     # Core attributes (supported across all levels)
     summary: Optional[str] = None
-    description: Optional[str] = None # Field description for Pydantic if needed
+    description: Optional[str] = None  # Field description for Pydantic if needed
     enabled: bool = True
     order: int = Field(
         default=tmt.steps.PHASE_ORDER_DEFAULT,
@@ -61,20 +59,20 @@ class TestDescription(BaseModel):
             'normalize_callback': lambda key_address, raw_value, logger: 50
             if raw_value is None
             else int(raw_value)
-        }
+        },
     )
-    link: Optional[Any] = Field( # Was Optional['Links']
+    link: Optional[Any] = Field(  # Was Optional['Links']
         default=None,
-        json_schema_extra={ # Callbacks temporarily neutralized
-            'normalize_callback': None, # lambda key_address, raw_value, logger: tmt.base.Links(data=raw_value),
-            'serialize_callback': None, # lambda link: link.to_spec() if link else None,
-            'unserialize_callback': None # lambda serialized_link: tmt.base.Links(data=serialized_link)
-        }
+        json_schema_extra={  # Callbacks temporarily neutralized
+            'normalize_callback': None,  # lambda key_address, raw_value, logger: tmt.base.Links(data=raw_value),  # noqa: E501
+            'serialize_callback': None,  # lambda link: link.to_spec() if link else None,
+            'unserialize_callback': None,  # lambda serialized_link: tmt.base.Links(data=serialized_link)  # noqa: E501
+        },
     )
     id: Optional[str] = None
     tag: list[str] = Field(
         default_factory=list,
-        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'},
     )
     tier: Optional[str] = Field(
         default=None,
@@ -82,27 +80,27 @@ class TestDescription(BaseModel):
             'normalize_callback': lambda key_address, raw_value, logger: None
             if raw_value is None
             else str(raw_value)
-        }
+        },
     )
-    adjust: Optional[list[Any]] = Field( # Was Optional[list['_RawAdjustRule']]
+    adjust: Optional[list[Any]] = Field(  # Was Optional[list['_RawAdjustRule']]
         default=None,
-        json_schema_extra={ # Callbacks temporarily neutralized
-            'normalize_callback': None # lambda key_address, raw_value, logger: [] if raw_value is None else ([raw_value] if not isinstance(raw_value, list) else raw_value)
-        }
+        json_schema_extra={  # Callbacks temporarily neutralized
+            'normalize_callback': None  # lambda key_address, raw_value, logger: [] if raw_value is None else ([raw_value] if not isinstance(raw_value, list) else raw_value)  # noqa: E501
+        },
     )
 
     # Basic test information
     author: list[str] = Field(
         default_factory=list,
-        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'},
     )
     contact: list[str] = Field(
         default_factory=list,
-        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'},
     )
     component: list[str] = Field(
         default_factory=list,
-        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'},
     )
 
     # Test execution data
@@ -110,49 +108,43 @@ class TestDescription(BaseModel):
     framework: Optional[str] = None
     manual: bool = False
     tty: bool = False
-    require: list[Any] = Field( # Was list['Dependency']
+    require: list[Any] = Field(  # Was list['Dependency']
         default_factory=list,
-        json_schema_extra={ # Callbacks temporarily neutralized
-            'normalize_callback': None, # 'tmt.base.normalize_require',
-            'serialize_callback': None, # lambda requires: [require.to_spec() for require in requires],
-            'unserialize_callback': None # lambda serialized_requires: [tmt.base.dependency_factory(require) for require in serialized_requires]
-        }
+        json_schema_extra={  # Callbacks temporarily neutralized
+            'normalize_callback': None,  # 'tmt.base.normalize_require',
+            'serialize_callback': None,  # lambda requires: [require.to_spec() for require in requires],  # noqa: E501
+            'unserialize_callback': None,  # lambda serialized_requires: [tmt.base.dependency_factory(require) for require in serialized_requires]  # noqa: E501
+        },
     )
-    recommend: list[Any] = Field( # Was list['Dependency']
+    recommend: list[Any] = Field(  # Was list['Dependency']
         default_factory=list,
-        json_schema_extra={ # Callbacks temporarily neutralized
-            'normalize_callback': None, # 'tmt.base.normalize_require',
-            'serialize_callback': None, # lambda recommends: [recommend.to_spec() for recommend in recommends],
-            'unserialize_callback': None # lambda serialized_recommends: [tmt.base.DependencySimple.from_spec(recommend) if isinstance(recommend, str) else tmt.base.DependencyFmfId.from_spec(recommend) for recommend in serialized_recommends]
-        }
+        json_schema_extra={  # Callbacks temporarily neutralized
+            'normalize_callback': None,  # 'tmt.base.normalize_require',
+            'serialize_callback': None,  # lambda recommends: [recommend.to_spec() for recommend in recommends],  # noqa: E501
+            'unserialize_callback': None,  # lambda serialized_recommends: [tmt.base.DependencySimple.from_spec(recommend) if isinstance(recommend, str) else tmt.base.DependencyFmfId.from_spec(recommend) for recommend in serialized_recommends]  # noqa: E501
+        },
     )
-    environment: 'tmt.utils.Environment' = Field( # String literal for tmt.utils.Environment
-        default_factory=tmt.utils.Environment, # Keep factory as is
-        json_schema_extra={ # Callbacks temporarily neutralized for tmt.utils.Environment as well
-            'normalize_callback': None, # 'tmt.utils.Environment.normalize',
-            'serialize_callback': None, # lambda environment: environment.to_fmf_spec(),
-            'unserialize_callback': None, # lambda serialized: tmt.utils.Environment.from_fmf_spec(serialized),
-            'exporter': None # lambda environment: environment.to_fmf_spec()
-        }
+    environment: 'tmt.utils.Environment' = Field(  # String literal for tmt.utils.Environment
+        default_factory=tmt.utils.Environment,  # Keep factory as is
+        json_schema_extra={  # Callbacks temporarily neutralized for tmt.utils.Environment as well
+            'normalize_callback': None,  # 'tmt.utils.Environment.normalize',
+            'serialize_callback': None,  # lambda environment: environment.to_fmf_spec(),
+            'unserialize_callback': None,  # lambda serialized: tmt.utils.Environment.from_fmf_spec(serialized),  # noqa: E501
+            'exporter': None,  # lambda environment: environment.to_fmf_spec()
+        },
     )
-    check: list[Any] = Field( # Was list[tmt.checks.Check]
+    check: list[Any] = Field(  # Was list[tmt.checks.Check]
         default_factory=list,
-        json_schema_extra={ # Callbacks temporarily neutralized
-            'normalize_callback': None, # 'tmt.checks.normalize_test_checks',
-            'serialize_callback': None, # lambda checks: [check.to_spec() for check in checks],
-            'unserialize_callback': None, # lambda serialized: [tmt.checks.Check.from_spec(**check) for check in serialized],
-            'exporter': None # lambda value: [check.to_minimal_spec() for check in value]
-        }
+        json_schema_extra={  # Callbacks temporarily neutralized
+            'normalize_callback': None,  # 'tmt.checks.normalize_test_checks',
+            'serialize_callback': None,  # lambda checks: [check.to_spec() for check in checks],
+            'unserialize_callback': None,  # lambda serialized: [tmt.checks.Check.from_spec(**check) for check in serialized],  # noqa: E501
+            'exporter': None,  # lambda value: [check.to_minimal_spec() for check in value]
+        },
     )
     duration: str = '1h'
     result: str = 'respect'
-
-    # TODO: Review from_spec and to_spec methods. Pydantic's model_validate and model_dump
-    # might handle these cases, or custom serializers/validators might be needed.
-    # For now, these methods are removed as Pydantic has its own ways.
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # @classmethod
     # def from_spec(cls, raw_data: dict[str, Any], logger: tmt.log.Logger) -> Self:
@@ -175,23 +167,21 @@ class DiscoverShellData(tmt.steps.discover.DiscoverStepData):
         # Custom (un)serialization might be needed if Pydantic's default is not sufficient
         json_schema_extra={
             'normalize_callback': lambda key_address, raw_value, logger: [
-                TestDescription.model_validate(raw_datum) # Assuming direct validation
+                TestDescription.model_validate(raw_datum)  # Assuming direct validation
                 for raw_datum in cast(list[dict[str, Any]], raw_value)
-                ],
+            ],
             'serialize_callback': lambda tests_list: [test.model_dump() for test in tests_list],
             'unserialize_callback': lambda serialized_tests_list: [
-                TestDescription.model_validate(serialized_test) for serialized_test in serialized_tests_list
-                ]
-        }
+                TestDescription.model_validate(serialized_test)
+                for serialized_test in serialized_tests_list
+            ],
+        },
     )
 
     url: Optional[str] = Field(
         default=None,
         description="URL of the git repository with tests to be fetched.",
-        json_schema_extra={
-            'cli_options': ["--url"],
-            'metavar': 'REPOSITORY'
-            }
+        json_schema_extra={'cli_options': ["--url"], 'metavar': 'REPOSITORY'},
     )
 
     ref: Optional[str] = Field(
@@ -200,10 +190,7 @@ class DiscoverShellData(tmt.steps.discover.DiscoverStepData):
             Branch, tag or commit specifying the desired git revision.
             Defaults to the remote repository's default branch.
             """,
-        json_schema_extra={
-            'cli_options': ["--ref"],
-            'metavar': 'REVISION'
-            }
+        json_schema_extra={'cli_options': ["--ref"], 'metavar': 'REVISION'},
     )
 
     keep_git_metadata: bool = Field(
@@ -213,10 +200,7 @@ class DiscoverShellData(tmt.steps.discover.DiscoverStepData):
             Set to ``true`` to sync the git metadata to guest as well.
             Implicit if ``dist-git-source`` is used.
             """,
-        json_schema_extra={
-            'cli_options': ["--keep-git-metadata"],
-            'is_flag': True
-            }
+        json_schema_extra={'cli_options': ["--keep-git-metadata"], 'is_flag': True},
     )
 
     # def to_spec(self) -> tmt.steps._RawStepData:

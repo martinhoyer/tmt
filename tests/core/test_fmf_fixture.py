@@ -16,9 +16,7 @@ def test_tmt_plan_ls_with_custom_fmf_tree(
     # Though not directly used in this test, it's part of the fmf_tree signature
     root_logger: Logger,
 ):
-    """
-    Tests 'tmt plan ls' with a dynamically created FMF tree using the fmf_tree fixture.
-    """
+    """Tests 'tmt plan ls' with a dynamically created FMF tree using the fmf_tree fixture."""
     plan_name_fmf_path = "my/example/plan"  # This will become /my/example/plan in tmt
     plan_file_path = f"plans/{plan_name_fmf_path}.fmf"
     expected_plan_name_in_output = f"/{plan_name_fmf_path}"

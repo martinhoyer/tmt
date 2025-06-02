@@ -1,11 +1,17 @@
 from collections.abc import Iterator
-from typing import TYPE_CHECKING, Any, Optional, TypeVar, cast, ForwardRef # ForwardRef for tmt.Test
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+    TypeVar,
+    cast,
+)  # ForwardRef for tmt.Test
 
 import click
 from fmf.utils import listed
+from pydantic import BaseModel, ConfigDict, Field
 
 import tmt
-from tmt._compat.pydantic import BaseModel, Field
 from tmt.container import key_to_option
 
 if TYPE_CHECKING:
@@ -29,10 +35,8 @@ class TestOrigin(BaseModel):
     phase: str
 
     #: The test in question.
-    test: Any # Was 'tmt.Test', changed to Any to break circular import for docs
-
-    class Config:
-        arbitrary_types_allowed = True
+    test: Any = None  # Was 'tmt.Test', changed to Any to break circular import for docs
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData, BaseModel):
@@ -42,7 +46,7 @@ class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData, BaseMode
         json_schema_extra={
             'cli_options': ['--dist-git-source'],
             'is_flag': True,
-            }
+        },
     )
 
     # TODO: use enum!
@@ -55,7 +59,7 @@ class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData, BaseMode
         json_schema_extra={
             'cli_options': ['--dist-git-type'],
             'choices': tmt.utils.git.get_distgit_handler_names,
-            }
+        },
     )
 
     dist_git_download_only: bool = Field(
@@ -65,7 +69,7 @@ class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData, BaseMode
         json_schema_extra={
             'cli_options': ["--dist-git-download-only"],
             'is_flag': True,
-            }
+        },
     )
 
     dist_git_install_builddeps: bool = Field(
@@ -74,7 +78,7 @@ class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData, BaseMode
         json_schema_extra={
             'cli_options': ["--dist-git-install-builddeps"],
             'is_flag': True,
-            }
+        },
     )
 
     dist_git_require: list['tmt.base.DependencySimple'] = Field(
@@ -91,8 +95,8 @@ class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData, BaseMode
             'serialize_callback': lambda packages: [package.to_spec() for package in packages],
             'unserialize_callback': lambda serialized: [
                 tmt.base.DependencySimple.from_spec(package) for package in serialized
-                ]
-            }
+            ],
+        },
     )
 
 

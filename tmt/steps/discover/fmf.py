@@ -7,6 +7,7 @@ import subprocess
 from typing import Any, Optional, cast
 
 import fmf
+from pydantic import Field
 
 import tmt
 import tmt.base
@@ -18,7 +19,6 @@ import tmt.steps.discover
 import tmt.utils
 import tmt.utils.git
 from tmt.base import _RawAdjustRule
-from tmt._compat.pydantic import Field
 from tmt.steps.prepare.distgit import insert_to_prepare_step
 from tmt.utils import Command, Environment, EnvVarValue, Path
 
@@ -45,10 +45,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             Git repository containing the metadata tree.
             Current git repository used by default.
             """,
-        json_schema_extra={
-            'cli_options': ('-u', '--url'),
-            'metavar': 'REPOSITORY'
-            }
+        json_schema_extra={'cli_options': ('-u', '--url'), 'metavar': 'REPOSITORY'},
     )
 
     ref: Optional[str] = Field(
@@ -71,8 +68,8 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
         json_schema_extra={
             'cli_options': ('-r', '--ref'),
             'metavar': 'REVISION',
-            'normalize_callback': 'normalize_ref'
-            }
+            'normalize_callback': 'normalize_ref',
+        },
     )
 
     path: Optional[str] = Field(
@@ -82,10 +79,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             the git repository root if ``url`` was provided, absolute
             local filesystem path otherwise. By default ``.`` is used.
             """,
-        json_schema_extra={
-            'cli_options': ('-p', '--path'),
-            'metavar': 'ROOT'
-            }
+        json_schema_extra={'cli_options': ('-p', '--path'), 'metavar': 'ROOT'},
     )
 
     # Selecting tests
@@ -101,8 +95,8 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             'cli_options': ('-t', '--test'),
             'metavar': 'NAMES',
             'multiple': True,
-            'normalize_callback': 'tmt.utils.normalize_string_list'
-            }
+            'normalize_callback': 'tmt.utils.normalize_string_list',
+        },
     )
 
     link: list[str] = Field(
@@ -118,8 +112,8 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
         json_schema_extra={
             'cli_options': ['--link'],
             'metavar': "RELATION:TARGET",
-            'multiple': True
-            }
+            'multiple': True,
+        },
     )
 
     filter: list[str] = Field(
@@ -132,8 +126,8 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             'cli_options': ('-F', '--filter'),
             'metavar': 'FILTERS',
             'multiple': True,
-            'normalize_callback': 'tmt.utils.normalize_string_list'
-            }
+            'normalize_callback': 'tmt.utils.normalize_string_list',
+        },
     )
     exclude: list[str] = Field(
         default_factory=list,
@@ -142,8 +136,8 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             'cli_options': ('-x', '--exclude'),
             'metavar': 'REGEXP',
             'multiple': True,
-            'normalize_callback': 'tmt.utils.normalize_string_list'
-            }
+            'normalize_callback': 'tmt.utils.normalize_string_list',
+        },
     )
 
     # Modified only
@@ -154,10 +148,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             only. The test is modified if its name starts with
             the name of any directory modified since ``modified-ref``.
             """,
-        json_schema_extra={
-            'cli_options': ('-m', '--modified-only'),
-            'is_flag': True
-            }
+        json_schema_extra={'cli_options': ('-m', '--modified-only'), 'is_flag': True},
     )
 
     modified_url: Optional[str] = Field(
@@ -167,10 +158,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             reference for comparison. Will be fetched as a
             reference remote in the test dir.
             """,
-        json_schema_extra={
-            'cli_options': ['--modified-url'],
-            'metavar': 'REPOSITORY'
-            }
+        json_schema_extra={'cli_options': ['--modified-url'], 'metavar': 'REPOSITORY'},
     )
 
     modified_ref: Optional[str] = Field(
@@ -180,10 +168,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             default branch is used). Note that you need to specify ``reference/<branch>`` to
             compare to a branch from the repository specified in ``modified-url``.
             """,
-        json_schema_extra={
-            'cli_options': ['--modified-ref'],
-            'metavar': 'REVISION'
-            }
+        json_schema_extra={'cli_options': ['--modified-ref'], 'metavar': 'REVISION'},
     )
 
     # Dist git integration
@@ -195,10 +180,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
              sources contain fmf files (for example tests) but do not have an
              associated fmf root.
              """,
-        json_schema_extra={
-            'cli_options': ['--dist-git-init'],
-            'is_flag': True
-            }
+        json_schema_extra={'cli_options': ['--dist-git-init'], 'is_flag': True},
     )
     dist_git_remove_fmf_root: bool = Field(
         default=False,
@@ -206,10 +188,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
              Remove fmf root from extracted source (top one or selected by copy-path, happens
              before dist-git-extract.
              """,
-        json_schema_extra={
-            'cli_options': ['--dist-git-remove-fmf-root'],
-            'is_flag': True
-            }
+        json_schema_extra={'cli_options': ['--dist-git-remove-fmf-root'], 'is_flag': True},
     )
     dist_git_merge: bool = Field(
         default=False,
@@ -219,10 +198,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             and other resources from the downloaded sources. Any plans in extracted sources
             will not be processed.
             """,
-        json_schema_extra={
-            'cli_options': ['--dist-git-merge'],
-            'is_flag': True
-            }
+        json_schema_extra={'cli_options': ['--dist-git-merge'], 'is_flag': True},
     )
     dist_git_extract: Optional[str] = Field(
         default=cast(Optional[str], None),
@@ -230,7 +206,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
              What to copy from extracted sources, globbing is supported. Defaults to the top fmf
              root if it is present, otherwise top directory (shortcut "/").
              """,
-        json_schema_extra={'cli_options': ['--dist-git-extract']}
+        json_schema_extra={'cli_options': ['--dist-git-extract']},
     )
 
     # Special options
@@ -240,18 +216,12 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
              Force the sync of the whole git repo. By default, the repo is copied only if the used
              options require it.
              """,
-        json_schema_extra={
-            'cli_options': ['--sync-repo'],
-            'is_flag': True
-            }
+        json_schema_extra={'cli_options': ['--sync-repo'], 'is_flag': True},
     )
     fmf_id: bool = Field(
         default=False,
-        description='Only print fmf identifiers of discovered tests to the standard output and exit.',
-        json_schema_extra={
-            'cli_options': ['--fmf-id'],
-            'is_flag': True
-            }
+        description='Only print fmf identifiers of discovered tests to the standard output and exit.',  # noqa: E501
+        json_schema_extra={'cli_options': ['--fmf-id'], 'is_flag': True},
     )
     prune: bool = Field(
         default=False,
@@ -259,8 +229,8 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
         json_schema_extra={
             'cli_options': ('--prune / --no-prune'),
             'is_flag': True,
-            'show_default': True
-            }
+            'show_default': True,
+        },
     )
 
     # Edit discovered tests
@@ -270,7 +240,7 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
              Modify metadata of discovered tests from the plan itself. Use the
              same format as for adjust rules.
              """,
-        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_adjust'}
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_adjust'},
     )
 
     # Upgrade plan path so the plan is not pruned

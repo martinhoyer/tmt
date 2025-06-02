@@ -27,6 +27,7 @@ def example(name):
 
 runner = CliRunner()
 
+
 @contextlib.contextmanager
 def patch_environment_and_tty(env_vars=None, simulate_tty=False):
     """Context manager for patching environment variables and TTY simulation."""
@@ -69,10 +70,7 @@ def patch_environment_and_tty(env_vars=None, simulate_tty=False):
 
 
 def test_mini(cli_runner: PytestClickCliRunner):
-    """
-    Minimal smoke test
-    """
-
+    """Minimal smoke test."""
     tmp = tempfile.mkdtemp()
     result = cli_runner.invoke(
         tmt.cli._root.main, ['--root', example('mini'), 'run', '-i', tmp, '-dv', 'discover']
