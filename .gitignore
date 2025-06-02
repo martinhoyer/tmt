@@ -39,6 +39,7 @@ tmt.1
 # Created by pytest-html reporting plugin
 /assets/style.css
 /report.html
+.hypothesis/
 
 # Virtual environment
 .env

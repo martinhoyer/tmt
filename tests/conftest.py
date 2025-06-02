@@ -20,7 +20,7 @@ def root_logger() -> Logger:
 
 @pytest.fixture(scope="session")
 def tmt_mini_container(
-    docker_client, container_runtime: pytest_container.ContainerRuntime, tmp_path_factory
+    docker_client, container_runtime: pytest_container.runtime.PodmanRuntime, tmp_path_factory
 ) -> pytest_container.Container:
     """
     Builds and runs a container with tmt installed from the current repository,
