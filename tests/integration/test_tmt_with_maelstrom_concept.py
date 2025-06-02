@@ -8,6 +8,7 @@
 
 import os
 import sys
+from pathlib import Path  # noqa: TID251
 
 # Import pytest for potential use of its features, though not strictly needed for this simple test
 import pytest
@@ -38,7 +39,7 @@ def test_tmt_import_and_basic_presence_in_maelstrom_env():
         # For debugging in the Maelstrom environment, list contents of /src
         # to understand what's actually there.
         src_contents = "N/A (could not list /src or /src does not exist)"
-        if os.path.exists("/src"):
+        if Path("/src").exists():
             try:
                 src_contents = str(os.listdir("/src"))
             except Exception as list_e:

@@ -1629,7 +1629,7 @@ def test_invocation_terminate_process(root_logger: tmt.log.Logger, caplog, mocke
 
 
 def test_invocation_terminate_process_not_running_anymore(
-    root_logger: tmt.log.Logger, caplog
+    root_logger: tmt.log.Logger, caplog, mocker
 ) -> None:
     from tmt.steps.execute import TestInvocation
 

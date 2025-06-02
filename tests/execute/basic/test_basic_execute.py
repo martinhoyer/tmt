@@ -1,10 +1,9 @@
 import re
 import subprocess
+from pathlib import Path  # noqa: TID251  TODO _compat for tests?
 
 import pytest
 import ruamel.yaml
-
-from tmt._compat.pathlib import Path
 
 # Path to the data directory relative to this test file
 # Assuming this test file is in tests/execute/basic/
@@ -77,7 +76,11 @@ def test_check_shell_results(tmp_run_dir: Path):
 
     assert results_yaml_path.is_file(), (
         f"results.yaml not found at {results_yaml_path}. "
-        f"Contents of tmp_run_dir / shell / execute: {list((tmp_run_dir / 'shell' / 'execute').iterdir()) if (tmp_run_dir / 'shell' / 'execute').exists() else 'Not found'}"
+        f"Contents of tmp_run_dir / shell / execute: {
+            list((tmp_run_dir / 'shell' / 'execute').iterdir())
+            if (tmp_run_dir / 'shell' / 'execute').exists()
+            else 'Not found'
+        }"
     )
 
     yaml = ruamel.yaml.YAML()
@@ -177,7 +180,11 @@ def test_check_beakerlib_results(tmp_run_dir: Path):
 
     assert results_yaml_path.is_file(), (
         f"results.yaml not found at {results_yaml_path}. "
-        f"Contents of tmp_run_dir / beakerlib / execute: {list((tmp_run_dir / 'beakerlib' / 'execute').iterdir()) if (tmp_run_dir / 'beakerlib' / 'execute').exists() else 'Not found'}"
+        f"Contents of tmp_run_dir / beakerlib / execute: {
+            list((tmp_run_dir / 'beakerlib' / 'execute').iterdir())
+            if (tmp_run_dir / 'beakerlib' / 'execute').exists()
+            else 'Not found'
+        }"
     )
 
     yaml = ruamel.yaml.YAML()
