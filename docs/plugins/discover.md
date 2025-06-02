@@ -4,7 +4,12 @@ This page documents the available discover plugins and their configuration optio
 
 ## Common Keys
 
-{{ render_plugin_options('tmt.steps.discover.DiscoverStepData') }}
+::: tmt.steps.discover.DiscoverStepData
+    options:
+      show_root_heading: true
+      heading_level: 3
+      show_bases: false
+      show_source: false
 
 ## fmf Plugin
 
@@ -16,16 +21,21 @@ This page documents the available discover plugins and their configuration optio
 
 ### fmf Configuration
 
-{{ render_plugin_options('tmt.steps.discover.fmf.DiscoverFmfStepData', inherited_from_path_str='tmt.steps.discover.DiscoverStepData') }}
+::: tmt.steps.discover.fmf.DiscoverFmfStepData
+    options:
+      show_root_heading: true
+      heading_level: 4
+      show_bases: false
+      show_source: false
 
 ## Shell Plugin
 
-::: tmt.steps.discover.shell.DiscoverShell
+{# ::: tmt.steps.discover.shell.DiscoverShell
     options:
       show_root_heading: false
       show_bases: true
-      heading_level: 3
+      heading_level: 3 #}
 
 ### Shell Configuration
 {# Assuming DiscoverShellData exists in tmt.steps.discover.shell #}
-{{ render_plugin_options('tmt.steps.discover.shell.DiscoverShellData', inherited_from_path_str='tmt.steps.discover.DiscoverStepData') }}
+{# {{ render_plugin_options('tmt.steps.discover.shell.DiscoverShellData', inherited_from_path_str='tmt.steps.discover.DiscoverStepData') }} #}

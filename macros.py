@@ -10,8 +10,8 @@ def get_class_from_string(class_path_str: str) -> Optional[type]:
         module_path, class_name = class_path_str.rsplit('.', 1)
         module = importlib.import_module(module_path)
         return getattr(module, class_name)
-    except (ImportError, AttributeError, ValueError) as e:
-        print(f"Error importing class {class_path_str}: {e}")
+    except Exception as e:
+        print(f"Error importing/introspecting class {class_path_str}: {e}")
         return None
 
 
@@ -23,18 +23,15 @@ def define_env(env: Any) -> None:
         class_path_str: str, inherited_from_path_str: Optional[str] = None
     ) -> str:
         data_class = get_class_from_string(class_path_str)
-        if not data_class:
-            return f"<p>Error: Could not load class {class_path_str}</p>"
+        if data_class is None:
+            return f"<p>Error: Macro could not load class {class_path_str} due to an internal error (likely an import issue).</p>" # noqa: E501
 
         inherited_fields = set()
         if inherited_from_path_str:
             inherited_from_class = get_class_from_string(inherited_from_path_str)
-            if inherited_from_class:
-                inherited_fields = {f.name for f in dataclasses.fields(inherited_from_class)}
-            else:
-                return (
-                    f"<p>Error: Could not load inherited_from class {inherited_from_path_str}</p>"
-                )
+            if inherited_from_class is None:
+                return f"<p>Error: Macro could not load inherited_from class {inherited_from_path_str} due to an internal error (likely an import issue).</p>" # noqa: E501
+            inherited_fields = {f.name for f in dataclasses.fields(inherited_from_class)}
 
         markdown_output = []
         fields = dataclasses.fields(data_class)

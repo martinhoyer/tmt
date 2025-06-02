@@ -9,6 +9,7 @@ if pydantic.__version__.startswith('1.'):
         Extra,
         HttpUrl,
         ValidationError,
+        Field,
     )
 else:
     from pydantic.v1 import (
@@ -16,10 +17,12 @@ else:
         Extra,
         HttpUrl,
         ValidationError,
+        Field,
     )
 
 __all__ = [
     "BaseModel",
+    "Field",
     "Extra",
     "HttpUrl",
     "ValidationError",

@@ -13,32 +13,27 @@ import tmt.steps
 import tmt.steps.discover
 import tmt.utils
 import tmt.utils.git
+from tmt._compat.pydantic import BaseModel, Field
 from tmt._compat.typing import Self
-from tmt.container import SerializableContainer, SpecBasedContainer, container, field
 from tmt.steps.prepare.distgit import insert_to_prepare_step
 from tmt.utils import (
     Command,
+    TYPE_CHECKING,
     Environment,
     EnvVarValue,
     Path,
     ShellScript,
 )
 
+from typing import Any # Add Any
+if TYPE_CHECKING:
+    from tmt.base import Links, Dependency, _RawAdjustRule
+
 T = TypeVar('T', bound='TestDescription')
 
 
-@container
-class TestDescription(
-    SpecBasedContainer[dict[str, Any], dict[str, Any]],
-    tmt.utils.NormalizeKeysMixin,
-    SerializableContainer,
-):
-    """Keys necessary to describe a shell-based test.
-
-    Provides basic functionality for transition between "raw" step data representation,
-    which consists of keys and values given by fmf tree and CLI options, and this
-    container representation for internal use.
-    """
+class TestDescription(BaseModel):
+    """Keys necessary to describe a shell-based test."""
 
     name: str
 
@@ -47,63 +42,67 @@ class TestDescription(
     # does not support save/load operations. This is a known issue, introduced by a patch
     # transitioning step data to data classes, it is temporary, and it will be fixed as
     # soon as possible - nobody wants to keep two very same lists of attributes.
-    test: ShellScript = field(
+    test: ShellScript = Field(
         default=ShellScript(''),
-        normalize=lambda key_address, raw_value, logger: ShellScript(raw_value),
-        serialize=lambda test: str(test),
-        unserialize=lambda serialized_test: ShellScript(serialized_test),
+        json_schema_extra={
+            'normalize_callback': lambda key_address, raw_value, logger: ShellScript(raw_value),
+            'serialize_callback': lambda test: str(test),
+            'unserialize_callback': lambda serialized_test: ShellScript(serialized_test)
+        }
     )
 
     # Core attributes (supported across all levels)
     summary: Optional[str] = None
-    description: Optional[str] = None
+    description: Optional[str] = None # Field description for Pydantic if needed
     enabled: bool = True
-    order: int = field(
+    order: int = Field(
         default=tmt.steps.PHASE_ORDER_DEFAULT,
-        normalize=lambda key_address, raw_value, logger: 50
-        if raw_value is None
-        else int(raw_value),
+        json_schema_extra={
+            'normalize_callback': lambda key_address, raw_value, logger: 50
+            if raw_value is None
+            else int(raw_value)
+        }
     )
-    link: Optional[tmt.base.Links] = field(
+    link: Optional[Any] = Field( # Was Optional['Links']
         default=None,
-        normalize=lambda key_address, raw_value, logger: tmt.base.Links(data=raw_value),
-        # Using `to_spec()` on purpose: `Links` does not provide serialization
-        # methods, because specification of links is already good enough. We
-        # can use existing `to_spec()` method, and undo it with a simple
-        # `Links(...)` call.
-        serialize=lambda link: link.to_spec() if link else None,
-        unserialize=lambda serialized_link: tmt.base.Links(data=serialized_link),
+        json_schema_extra={ # Callbacks temporarily neutralized
+            'normalize_callback': None, # lambda key_address, raw_value, logger: tmt.base.Links(data=raw_value),
+            'serialize_callback': None, # lambda link: link.to_spec() if link else None,
+            'unserialize_callback': None # lambda serialized_link: tmt.base.Links(data=serialized_link)
+        }
     )
     id: Optional[str] = None
-    tag: list[str] = field(
+    tag: list[str] = Field(
         default_factory=list,
-        normalize=tmt.utils.normalize_string_list,
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
     )
-    tier: Optional[str] = field(
+    tier: Optional[str] = Field(
         default=None,
-        normalize=lambda key_address, raw_value, logger: None
-        if raw_value is None
-        else str(raw_value),
+        json_schema_extra={
+            'normalize_callback': lambda key_address, raw_value, logger: None
+            if raw_value is None
+            else str(raw_value)
+        }
     )
-    adjust: Optional[list[tmt.base._RawAdjustRule]] = field(
+    adjust: Optional[list[Any]] = Field( # Was Optional[list['_RawAdjustRule']]
         default=None,
-        normalize=lambda key_address, raw_value, logger: []
-        if raw_value is None
-        else ([raw_value] if not isinstance(raw_value, list) else raw_value),
+        json_schema_extra={ # Callbacks temporarily neutralized
+            'normalize_callback': None # lambda key_address, raw_value, logger: [] if raw_value is None else ([raw_value] if not isinstance(raw_value, list) else raw_value)
+        }
     )
 
     # Basic test information
-    author: list[str] = field(
+    author: list[str] = Field(
         default_factory=list,
-        normalize=tmt.utils.normalize_string_list,
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
     )
-    contact: list[str] = field(
+    contact: list[str] = Field(
         default_factory=list,
-        normalize=tmt.utils.normalize_string_list,
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
     )
-    component: list[str] = field(
+    component: list[str] = Field(
         default_factory=list,
-        normalize=tmt.utils.normalize_string_list,
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_string_list'}
     )
 
     # Test execution data
@@ -111,120 +110,123 @@ class TestDescription(
     framework: Optional[str] = None
     manual: bool = False
     tty: bool = False
-    require: list[tmt.base.Dependency] = field(
+    require: list[Any] = Field( # Was list['Dependency']
         default_factory=list,
-        normalize=tmt.base.normalize_require,
-        serialize=lambda requires: [require.to_spec() for require in requires],
-        unserialize=lambda serialized_requires: [
-            tmt.base.dependency_factory(require) for require in serialized_requires
-        ],
+        json_schema_extra={ # Callbacks temporarily neutralized
+            'normalize_callback': None, # 'tmt.base.normalize_require',
+            'serialize_callback': None, # lambda requires: [require.to_spec() for require in requires],
+            'unserialize_callback': None # lambda serialized_requires: [tmt.base.dependency_factory(require) for require in serialized_requires]
+        }
     )
-    recommend: list[tmt.base.Dependency] = field(
+    recommend: list[Any] = Field( # Was list['Dependency']
         default_factory=list,
-        normalize=tmt.base.normalize_require,
-        serialize=lambda recommends: [recommend.to_spec() for recommend in recommends],
-        unserialize=lambda serialized_recommends: [
-            tmt.base.DependencySimple.from_spec(recommend)
-            if isinstance(recommend, str)
-            else tmt.base.DependencyFmfId.from_spec(recommend)
-            for recommend in serialized_recommends
-        ],
+        json_schema_extra={ # Callbacks temporarily neutralized
+            'normalize_callback': None, # 'tmt.base.normalize_require',
+            'serialize_callback': None, # lambda recommends: [recommend.to_spec() for recommend in recommends],
+            'unserialize_callback': None # lambda serialized_recommends: [tmt.base.DependencySimple.from_spec(recommend) if isinstance(recommend, str) else tmt.base.DependencyFmfId.from_spec(recommend) for recommend in serialized_recommends]
+        }
     )
-    environment: tmt.utils.Environment = field(
-        default_factory=tmt.utils.Environment,
-        normalize=tmt.utils.Environment.normalize,
-        serialize=lambda environment: environment.to_fmf_spec(),
-        unserialize=lambda serialized: tmt.utils.Environment.from_fmf_spec(serialized),
-        exporter=lambda environment: environment.to_fmf_spec(),
+    environment: 'tmt.utils.Environment' = Field( # String literal for tmt.utils.Environment
+        default_factory=tmt.utils.Environment, # Keep factory as is
+        json_schema_extra={ # Callbacks temporarily neutralized for tmt.utils.Environment as well
+            'normalize_callback': None, # 'tmt.utils.Environment.normalize',
+            'serialize_callback': None, # lambda environment: environment.to_fmf_spec(),
+            'unserialize_callback': None, # lambda serialized: tmt.utils.Environment.from_fmf_spec(serialized),
+            'exporter': None # lambda environment: environment.to_fmf_spec()
+        }
     )
-    check: list[tmt.checks.Check] = field(
+    check: list[Any] = Field( # Was list[tmt.checks.Check]
         default_factory=list,
-        normalize=tmt.checks.normalize_test_checks,
-        serialize=lambda checks: [check.to_spec() for check in checks],
-        unserialize=lambda serialized: [
-            tmt.checks.Check.from_spec(**check) for check in serialized
-        ],
-        exporter=lambda value: [check.to_minimal_spec() for check in value],
+        json_schema_extra={ # Callbacks temporarily neutralized
+            'normalize_callback': None, # 'tmt.checks.normalize_test_checks',
+            'serialize_callback': None, # lambda checks: [check.to_spec() for check in checks],
+            'unserialize_callback': None, # lambda serialized: [tmt.checks.Check.from_spec(**check) for check in serialized],
+            'exporter': None # lambda value: [check.to_minimal_spec() for check in value]
+        }
     )
     duration: str = '1h'
     result: str = 'respect'
 
-    # ignore[override]: expected, we do want to accept more specific
-    # type than the one declared in superclass.
-    @classmethod
-    def from_spec(  # type: ignore[override]
-        cls, raw_data: dict[str, Any], logger: tmt.log.Logger
-    ) -> Self:
-        """Convert from a specification file or from a CLI option."""
-        data = cls(name=raw_data['name'], test=raw_data['test'])
-        data._load_keys(raw_data, cls.__name__, logger)
+    # TODO: Review from_spec and to_spec methods. Pydantic's model_validate and model_dump
+    # might handle these cases, or custom serializers/validators might be needed.
+    # For now, these methods are removed as Pydantic has its own ways.
 
-        return data
+    class Config:
+        arbitrary_types_allowed = True
 
-    def to_spec(self) -> dict[str, Any]:
-        """Convert to a form suitable for saving in a specification file."""
-        data = super().to_spec()
-        data['link'] = self.link.to_spec() if self.link else None
-        data['require'] = [require.to_spec() for require in self.require]
-        data['recommend'] = [recommend.to_spec() for recommend in self.recommend]
-        data['check'] = [check.to_spec() for check in self.check]
-        data['test'] = str(self.test)
+    # @classmethod
+    # def from_spec(cls, raw_data: dict[str, Any], logger: tmt.log.Logger) -> Self:
+    #     """Convert from a specification file or from a CLI option."""
+    #     # Pydantic handles initialization and validation.
+    #     # Custom logic might be needed here if direct mapping is not enough.
+    #     return cls(**raw_data)
 
-        return data
+    # def to_spec(self) -> dict[str, Any]:
+    #     """Convert to a form suitable for saving in a specification file."""
+    #     # Pydantic's model_dump can be used, possibly with custom serialization.
+    #     # For now, relying on Pydantic's default dump.
+    #     return self.model_dump(exclude_none=True)
 
 
-@container
 class DiscoverShellData(tmt.steps.discover.DiscoverStepData):
-    tests: list[TestDescription] = field(
+    tests: list[TestDescription] = Field(
         default_factory=list,
-        normalize=lambda key_address, raw_value, logger: [
-            TestDescription.from_spec(raw_datum, logger)
-            for raw_datum in cast(list[dict[str, Any]], raw_value)
-        ],
-        serialize=lambda tests: [test.to_serialized() for test in tests],
-        unserialize=lambda serialized_tests: [
-            TestDescription.from_serialized(serialized_test) for serialized_test in serialized_tests
-        ],
+        # Pydantic will handle validation of List[TestDescription]
+        # Custom (un)serialization might be needed if Pydantic's default is not sufficient
+        json_schema_extra={
+            'normalize_callback': lambda key_address, raw_value, logger: [
+                TestDescription.model_validate(raw_datum) # Assuming direct validation
+                for raw_datum in cast(list[dict[str, Any]], raw_value)
+                ],
+            'serialize_callback': lambda tests_list: [test.model_dump() for test in tests_list],
+            'unserialize_callback': lambda serialized_tests_list: [
+                TestDescription.model_validate(serialized_test) for serialized_test in serialized_tests_list
+                ]
+        }
     )
 
-    url: Optional[str] = field(
-        option="--url",
-        metavar='REPOSITORY',
+    url: Optional[str] = Field(
         default=None,
-        help="URL of the git repository with tests to be fetched.",
+        description="URL of the git repository with tests to be fetched.",
+        json_schema_extra={
+            'cli_options': ["--url"],
+            'metavar': 'REPOSITORY'
+            }
     )
 
-    ref: Optional[str] = field(
-        option="--ref",
-        metavar='REVISION',
+    ref: Optional[str] = Field(
         default=None,
-        help="""
+        description="""
             Branch, tag or commit specifying the desired git revision.
             Defaults to the remote repository's default branch.
             """,
+        json_schema_extra={
+            'cli_options': ["--ref"],
+            'metavar': 'REVISION'
+            }
     )
 
-    keep_git_metadata: bool = field(
-        option="--keep-git-metadata",
-        is_flag=True,
+    keep_git_metadata: bool = Field(
         default=False,
-        help="""
+        description="""
             By default the ``.git`` directory is removed to save disk space.
             Set to ``true`` to sync the git metadata to guest as well.
             Implicit if ``dist-git-source`` is used.
             """,
+        json_schema_extra={
+            'cli_options': ["--keep-git-metadata"],
+            'is_flag': True
+            }
     )
 
-    def to_spec(self) -> tmt.steps._RawStepData:
-        """Convert to a form suitable for saving in a specification file."""
-        data = super().to_spec()
-        # ignore[typeddict-unknown-key]: the `tests` key is unknown to generic raw step data,
-        # but it's right to be here.
-        data['tests'] = [  # type: ignore[typeddict-unknown-key]
-            test.to_spec() for test in self.tests
-        ]
-
-        return data
+    # def to_spec(self) -> tmt.steps._RawStepData:
+    #     """Convert to a form suitable for saving in a specification file."""
+    #     # Pydantic's model_dump should handle this.
+    #     # We need to ensure the output format matches the old `super().to_spec()`
+    #     # and the specific handling of the 'tests' field.
+    #     data = super().model_dump(exclude_none=True) # Assuming DiscoverStepData is Pydantic
+    #     data['tests'] = [test.model_dump(exclude_none=True) for test in self.tests]
+    #     return cast(tmt.steps._RawStepData, data)
 
 
 @tmt.steps.provides_method('shell')

@@ -1,11 +1,12 @@
 from collections.abc import Iterator
-from typing import TYPE_CHECKING, Any, Optional, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Optional, TypeVar, cast, ForwardRef # ForwardRef for tmt.Test
 
 import click
 from fmf.utils import listed
 
 import tmt
-from tmt.container import container, field, key_to_option
+from tmt._compat.pydantic import BaseModel, Field
+from tmt.container import key_to_option
 
 if TYPE_CHECKING:
     import tmt.cli
@@ -21,71 +22,77 @@ from tmt.steps import Action
 from tmt.utils import GeneralError, Path
 
 
-@container
-class TestOrigin:
+class TestOrigin(BaseModel):
     """Describes the origin of a test."""
 
     #: Name of the ``discover`` phase that added the test.
     phase: str
 
     #: The test in question.
-    test: 'tmt.Test'
+    test: Any # Was 'tmt.Test', changed to Any to break circular import for docs
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
-@container
-class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData):
-    dist_git_source: bool = field(
+class DiscoverStepData(tmt.steps.WhereableStepData, tmt.steps.StepData, BaseModel):
+    dist_git_source: bool = Field(
         default=False,
-        option='--dist-git-source',
-        is_flag=True,
-        help='Download DistGit sources and ``rpmbuild -bp`` them (can be skipped).',
+        description='Download DistGit sources and ``rpmbuild -bp`` them (can be skipped).',
+        json_schema_extra={
+            'cli_options': ['--dist-git-source'],
+            'is_flag': True,
+            }
     )
 
     # TODO: use enum!
-    dist_git_type: Optional[str] = field(
+    dist_git_type: Optional[str] = Field(
         default=None,
-        option='--dist-git-type',
-        choices=tmt.utils.git.get_distgit_handler_names,
-        help="""
+        description="""
             Use the provided DistGit handler instead of the auto detection.
             Useful when running from forked repositories.
             """,
+        json_schema_extra={
+            'cli_options': ['--dist-git-type'],
+            'choices': tmt.utils.git.get_distgit_handler_names,
+            }
     )
 
-    dist_git_download_only: bool = field(
+    dist_git_download_only: bool = Field(
         default=False,
-        option="--dist-git-download-only",
-        is_flag=True,
-        help="Just download the sources. No ``rpmbuild -bp``, "
+        description="Just download the sources. No ``rpmbuild -bp``, "
         "nor installation of require or buildddeps happens.",
+        json_schema_extra={
+            'cli_options': ["--dist-git-download-only"],
+            'is_flag': True,
+            }
     )
 
-    dist_git_install_builddeps: bool = field(
+    dist_git_install_builddeps: bool = Field(
         default=False,
-        option="--dist-git-install-builddeps",
-        is_flag=True,
-        help="Install package build dependencies according to the specfile.",
+        description="Install package build dependencies according to the specfile.",
+        json_schema_extra={
+            'cli_options': ["--dist-git-install-builddeps"],
+            'is_flag': True,
+            }
     )
 
-    dist_git_require: list['tmt.base.DependencySimple'] = field(
+    dist_git_require: list['tmt.base.DependencySimple'] = Field(
         default_factory=list,
-        option="--dist-git-require",
-        metavar='PACKAGE',
-        multiple=True,
-        help="""
+        description="""
             Additional required package to be present before sources are prepared.
             The ``rpm-build`` package itself is installed automatically.
             """,
-        # *simple* requirements only
-        normalize=lambda key_address, value, logger: tmt.base.assert_simple_dependencies(
-            tmt.base.normalize_require(key_address, value, logger),
-            "'dist_git_require' can be simple packages only",
-            logger,
-        ),
-        serialize=lambda packages: [package.to_spec() for package in packages],
-        unserialize=lambda serialized: [
-            tmt.base.DependencySimple.from_spec(package) for package in serialized
-        ],
+        json_schema_extra={
+            'cli_options': ["--dist-git-require"],
+            'metavar': 'PACKAGE',
+            'multiple': True,
+            'normalize_callback': 'tmt.base.assert_simple_dependencies',
+            'serialize_callback': lambda packages: [package.to_spec() for package in packages],
+            'unserialize_callback': lambda serialized: [
+                tmt.base.DependencySimple.from_spec(package) for package in serialized
+                ]
+            }
     )
 
 

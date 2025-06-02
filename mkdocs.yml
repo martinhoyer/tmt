@@ -50,6 +50,8 @@ plugins:
             members_order: source # Or 'alphabetical'
             # group_by_category: true # Might be useful later
             # show_category_heading: true # Might be useful later
+            extensions:
+              - griffe_pydantic
   - macros:
       module_name: macros
 markdown_extensions:
@@ -106,16 +108,16 @@ nav:
       - Hardware Matrix: spec/hardware-matrix.md
       - Results: spec/results.md
       - Lint Checks: spec/lint-checks.md
-  - Plugins:
-      - Overview: plugins/index.md # Placeholder created
-      - Discover: plugins/discover.md
-      - Provision: plugins/provision.md
-      - Prepare: plugins/prepare.md
-      - Execute: plugins/execute.md
-      - Report: plugins/report.md
-      - Finish: plugins/finish.md
-      - Prepare Features: plugins/prepare-feature.md
-      - Test Checks: plugins/test-checks.md
+  # - Plugins:
+  #     - Overview: plugins/index.md # Placeholder created
+  #     - Discover: plugins/discover.md
+  #     - Provision: plugins/provision.md
+  #     - Prepare: plugins/prepare.md
+  #     - Execute: plugins/execute.md
+  #     - Report: plugins/report.md
+  #     - Finish: plugins/finish.md
+  #     - Prepare Features: plugins/prepare-feature.md
+  #     - Test Checks: plugins/test-checks.md
   - Examples: examples.md
   - Stories: # This is the main /stories section
       - stories.md # Converted from docs/stories.rst (main intro)

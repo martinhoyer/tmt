@@ -18,7 +18,7 @@ import tmt.steps.discover
 import tmt.utils
 import tmt.utils.git
 from tmt.base import _RawAdjustRule
-from tmt.container import container, field
+from tmt._compat.pydantic import Field
 from tmt.steps.prepare.distgit import insert_to_prepare_step
 from tmt.utils import Command, Environment, EnvVarValue, Path
 
@@ -37,24 +37,23 @@ def normalize_ref(
     raise tmt.utils.NormalizationError(key_address, value, 'unset or a string')
 
 
-@container
 class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
     # Basic options
-    url: Optional[str] = field(
+    url: Optional[str] = Field(
         default=cast(Optional[str], None),
-        option=('-u', '--url'),
-        metavar='REPOSITORY',
-        help="""
+        description="""
             Git repository containing the metadata tree.
             Current git repository used by default.
             """,
+        json_schema_extra={
+            'cli_options': ('-u', '--url'),
+            'metavar': 'REPOSITORY'
+            }
     )
 
-    ref: Optional[str] = field(
+    ref: Optional[str] = Field(
         default=cast(Optional[str], None),
-        option=('-r', '--ref'),
-        metavar='REVISION',
-        help="""
+        description="""
             Branch, tag or commit specifying the desired git
             revision. Defaults to the remote repository's default
             branch if ``url`` was set or to the current ``HEAD``
@@ -69,41 +68,46 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             Dynamic ``ref`` assignment is enabled whenever a test plan
             reference has the format ``ref: @FILEPATH``.
             """,
-        normalize=normalize_ref,
+        json_schema_extra={
+            'cli_options': ('-r', '--ref'),
+            'metavar': 'REVISION',
+            'normalize_callback': 'normalize_ref'
+            }
     )
 
-    path: Optional[str] = field(
+    path: Optional[str] = Field(
         default=cast(Optional[str], None),
-        option=('-p', '--path'),
-        metavar='ROOT',
-        help="""
+        description="""
             Path to the metadata tree root. Must be relative to
             the git repository root if ``url`` was provided, absolute
             local filesystem path otherwise. By default ``.`` is used.
             """,
+        json_schema_extra={
+            'cli_options': ('-p', '--path'),
+            'metavar': 'ROOT'
+            }
     )
 
     # Selecting tests
-    test: list[str] = field(
+    test: list[str] = Field(
         default_factory=list,
-        option=('-t', '--test'),
-        metavar='NAMES',
-        multiple=True,
-        help="""
+        description="""
             List of test names or regular expressions used to
             select tests by name. Duplicate test names are allowed
             to enable repetitive test execution, preserving the
             listed test order.
             """,
-        normalize=tmt.utils.normalize_string_list,
+        json_schema_extra={
+            'cli_options': ('-t', '--test'),
+            'metavar': 'NAMES',
+            'multiple': True,
+            'normalize_callback': 'tmt.utils.normalize_string_list'
+            }
     )
 
-    link: list[str] = field(
+    link: list[str] = Field(
         default_factory=list,
-        option='--link',
-        metavar="RELATION:TARGET",
-        multiple=True,
-        help="""
+        description="""
             Select tests using the :ref:`/spec/core/link` keys.
             Values must be in the form of ``RELATION:TARGET``,
             tests containing at least one of them are selected.
@@ -111,135 +115,162 @@ class DiscoverFmfStepData(tmt.steps.discover.DiscoverStepData):
             and target. Relation part can be omitted to match all
             relations.
              """,
+        json_schema_extra={
+            'cli_options': ['--link'],
+            'metavar': "RELATION:TARGET",
+            'multiple': True
+            }
     )
 
-    filter: list[str] = field(
+    filter: list[str] = Field(
         default_factory=list,
-        option=('-F', '--filter'),
-        metavar='FILTERS',
-        multiple=True,
-        help="""
+        description="""
             Apply advanced filter based on test metadata attributes.
             See ``pydoc fmf.filter`` for more info.
             """,
-        normalize=tmt.utils.normalize_string_list,
+        json_schema_extra={
+            'cli_options': ('-F', '--filter'),
+            'metavar': 'FILTERS',
+            'multiple': True,
+            'normalize_callback': 'tmt.utils.normalize_string_list'
+            }
     )
-    exclude: list[str] = field(
+    exclude: list[str] = Field(
         default_factory=list,
-        option=('-x', '--exclude'),
-        metavar='REGEXP',
-        multiple=True,
-        help="Exclude tests matching given regular expression.",
-        normalize=tmt.utils.normalize_string_list,
+        description="Exclude tests matching given regular expression.",
+        json_schema_extra={
+            'cli_options': ('-x', '--exclude'),
+            'metavar': 'REGEXP',
+            'multiple': True,
+            'normalize_callback': 'tmt.utils.normalize_string_list'
+            }
     )
 
     # Modified only
-    modified_only: bool = field(
+    modified_only: bool = Field(
         default=False,
-        option=('-m', '--modified-only'),
-        is_flag=True,
-        help="""
+        description="""
             Set to ``true`` if you want to filter modified tests
             only. The test is modified if its name starts with
             the name of any directory modified since ``modified-ref``.
             """,
+        json_schema_extra={
+            'cli_options': ('-m', '--modified-only'),
+            'is_flag': True
+            }
     )
 
-    modified_url: Optional[str] = field(
+    modified_url: Optional[str] = Field(
         default=cast(Optional[str], None),
-        option='--modified-url',
-        metavar='REPOSITORY',
-        help="""
+        description="""
             An additional remote repository to be used as the
             reference for comparison. Will be fetched as a
             reference remote in the test dir.
             """,
+        json_schema_extra={
+            'cli_options': ['--modified-url'],
+            'metavar': 'REPOSITORY'
+            }
     )
 
-    modified_ref: Optional[str] = field(
+    modified_ref: Optional[str] = Field(
         default=cast(Optional[str], None),
-        option='--modified-ref',
-        metavar='REVISION',
-        help="""
+        description="""
             The branch, tag or commit specifying the reference git revision (if not provided, the
             default branch is used). Note that you need to specify ``reference/<branch>`` to
             compare to a branch from the repository specified in ``modified-url``.
             """,
+        json_schema_extra={
+            'cli_options': ['--modified-ref'],
+            'metavar': 'REVISION'
+            }
     )
 
     # Dist git integration
-    dist_git_init: bool = field(
+    dist_git_init: bool = Field(
         default=False,
-        option='--dist-git-init',
-        is_flag=True,
-        help="""
+        description="""
              Set to ``true`` to initialize fmf root inside extracted sources at
              ``dist-git-extract`` location or top directory. To be used when the
              sources contain fmf files (for example tests) but do not have an
              associated fmf root.
              """,
+        json_schema_extra={
+            'cli_options': ['--dist-git-init'],
+            'is_flag': True
+            }
     )
-    dist_git_remove_fmf_root: bool = field(
+    dist_git_remove_fmf_root: bool = Field(
         default=False,
-        option='--dist-git-remove-fmf-root',
-        is_flag=True,
-        help="""
+        description="""
              Remove fmf root from extracted source (top one or selected by copy-path, happens
              before dist-git-extract.
              """,
+        json_schema_extra={
+            'cli_options': ['--dist-git-remove-fmf-root'],
+            'is_flag': True
+            }
     )
-    dist_git_merge: bool = field(
+    dist_git_merge: bool = Field(
         default=False,
-        option='--dist-git-merge',
-        is_flag=True,
-        help="""
+        description="""
             Set to ``true`` to combine fmf root from the sources and fmf root from the plan.
             It allows to have plans and tests defined in the DistGit repo which use tests
             and other resources from the downloaded sources. Any plans in extracted sources
             will not be processed.
             """,
+        json_schema_extra={
+            'cli_options': ['--dist-git-merge'],
+            'is_flag': True
+            }
     )
-    dist_git_extract: Optional[str] = field(
+    dist_git_extract: Optional[str] = Field(
         default=cast(Optional[str], None),
-        option='--dist-git-extract',
-        help="""
+        description="""
              What to copy from extracted sources, globbing is supported. Defaults to the top fmf
              root if it is present, otherwise top directory (shortcut "/").
              """,
+        json_schema_extra={'cli_options': ['--dist-git-extract']}
     )
 
     # Special options
-    sync_repo: bool = field(
+    sync_repo: bool = Field(
         default=False,
-        option='--sync-repo',
-        is_flag=True,
-        help="""
+        description="""
              Force the sync of the whole git repo. By default, the repo is copied only if the used
              options require it.
              """,
+        json_schema_extra={
+            'cli_options': ['--sync-repo'],
+            'is_flag': True
+            }
     )
-    fmf_id: bool = field(
+    fmf_id: bool = Field(
         default=False,
-        option='--fmf-id',
-        is_flag=True,
-        help='Only print fmf identifiers of discovered tests to the standard output and exit.',
+        description='Only print fmf identifiers of discovered tests to the standard output and exit.',
+        json_schema_extra={
+            'cli_options': ['--fmf-id'],
+            'is_flag': True
+            }
     )
-    prune: bool = field(
+    prune: bool = Field(
         default=False,
-        option=('--prune / --no-prune'),
-        is_flag=True,
-        show_default=True,
-        help="Copy only immediate directories of executed tests and their required files.",
+        description="Copy only immediate directories of executed tests and their required files.",
+        json_schema_extra={
+            'cli_options': ('--prune / --no-prune'),
+            'is_flag': True,
+            'show_default': True
+            }
     )
 
     # Edit discovered tests
-    adjust_tests: Optional[list[_RawAdjustRule]] = field(
+    adjust_tests: Optional[list[_RawAdjustRule]] = Field(
         default_factory=list,
-        normalize=tmt.utils.normalize_adjust,
-        help="""
+        description="""
              Modify metadata of discovered tests from the plan itself. Use the
              same format as for adjust rules.
              """,
+        json_schema_extra={'normalize_callback': 'tmt.utils.normalize_adjust'}
     )
 
     # Upgrade plan path so the plan is not pruned
