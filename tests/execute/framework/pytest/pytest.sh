@@ -1,5 +1,5 @@
 #!/bin/bash
-. ../../utils.sh
+. /usr/share/beakerlib/beakerlib.sh || exit 1
 
 # Plan name can be overriden by the first argument
 PLAN=${1:-/tests/execute/framework/pytest} # Default to the path-derived plan name
@@ -15,7 +15,7 @@ rlPhaseStartTest "PytestFramework-$PLAN"
 
     # The plan name is $PLAN. Remove leading '/' for path construction.
     PLAN_PATH_COMP=$(echo $PLAN | sed 's|^/||')
-    rlLog "PLAN_PATH_COMP is $PLAN_PATH_COMP"
+    #rlLog "PLAN_PATH_COMP is $PLAN_PATH_COMP"
 
     # Expected number of JUnit files for the three tests (pass, fail, no_tests_found)
     EXPECTED_JUNIT_FILES=3

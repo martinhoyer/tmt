@@ -1,5 +1,5 @@
 #!/bin/bash
-. ../../utils.sh
+. /usr/share/beakerlib/beakerlib.sh || exit 1
 
 # Plan name can be overriden by the first argument
 PLAN=${1:-smoke}
