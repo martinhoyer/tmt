@@ -2,13 +2,33 @@
 . ../../utils.sh
 
 # Plan name can be overriden by the first argument
-PLAN=${1:-smoke} # Assuming 'smoke' is the plan name in plans.fmf
+PLAN=${1:-/tests/execute/framework/pytest} # Default to the path-derived plan name
 
 rlPhaseStartTest "PytestFramework-$PLAN"
     # Run all tests tagged with pytest-smoke under the specified plan
     # The plan itself in plans.fmf also filters for "tag: pytest-smoke"
     # Using -v for verbosity to ensure pytest output is in the log
-    rlRun "tmt run -avvv provision -h container execute -h tmt discover -h fmf --force plans --name $PLAN"
+    # The -dddvvv should be enough to get workdir info.
+    rlRun "tmt run -adddvvv provision -h container execute -h tmt discover -h fmf --force plans --name \"$PLAN\""
+    RUNDIR=$(grep 'workdir' $rlRun_LOG | awk '{print $2}' | tail -1)
+    rlLog "RUNDIR is $RUNDIR"
+
+    # The plan name is $PLAN. Remove leading '/' for path construction.
+    PLAN_PATH_COMP=$(echo $PLAN | sed 's|^/||')
+    rlLog "PLAN_PATH_COMP is $PLAN_PATH_COMP"
+
+    # Expected number of JUnit files for the three tests (pass, fail, no_tests_found)
+    EXPECTED_JUNIT_FILES=3
+    # Search for junit-report.xml files within the specific plan's execution path.
+    # The structure can be $RUNDIR/plan_path_comp/test_name_and_serial/execute/data/junit-report.xml
+    # or slightly different depending on tmt version (e.g. without execute/data).
+    # Using a find that is somewhat robust.
+    JUNIT_FILES_FOUND=$(find "$RUNDIR/$PLAN_PATH_COMP" -path '*/data/junit-report.xml' -type f | wc -l)
+    if [ "$JUNIT_FILES_FOUND" -eq 0 ]; then
+        # Fallback for older tmt versions or different structures
+        JUNIT_FILES_FOUND=$(find "$RUNDIR/$PLAN_PATH_COMP" -name 'junit-report.xml' -type f | wc -l)
+    fi
+    rlAssertEquals "Number of JUnit XML files found" "$EXPECTED_JUNIT_FILES" "$JUNIT_FILES_FOUND"
 
     # Check for the overall summary from tmt, which should reflect the individual test outcomes
     # These will depend on how tests are named and if they are all run together.
@@ -27,10 +47,10 @@ rlPhaseStartTest "PytestFramework-$PLAN"
 
     # General check for pytest's output for a failing test
     rlAssertGrep "1 failed" "$rlRun_LOG"
-    
+
     # General check for pytest's output when no tests are collected
     rlAssertGrep "collected 0 items" "$rlRun_LOG"
-    
+
     # Check tmt's result summary (example, adjust based on actual tmt output format)
     # This assumes tmt summarizes results like this.
     rlAssertGrep "1 test passed" "$rlRun_LOG"
@@ -49,4 +69,3 @@ rlPhaseStartTest "PytestFramework-$PLAN"
     # This is deferred for simplicity in this shell script.
 
 rlPhaseEnd
-make_executable tests/execute/framework/pytest/pytest.sh

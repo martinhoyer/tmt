@@ -4,22 +4,6 @@
     Releases
 ======================
 
-tmt-1.50.0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It is now possible to use ``extra-*`` metadata keys in tests, plans
-and stories for arbitrary user-defined data, within the limits of
-what YAML allows. These keys are always ignored by ``tmt lint``.
-See the :ref:`/spec/core/extra` key specification for details and
-examples.
-
-Added ``--dry`` option for the :ref:`/plugins/provision/bootc` plugin.
-
-Added a specification for :ref:`policies </spec/policy>` that allow CI
-system and CI workflow maintainers to modify tests and plans to include
-mandatory checks and phases as required by their testing process.
-
-
 tmt-1.49.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

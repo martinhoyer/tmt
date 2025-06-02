@@ -274,7 +274,7 @@ process.
 You can specify additional `pytest plugins <https://docs.pytest.org/en/latest/plugins.html>`_
 to be installed alongside ``pytest``. This is done using the ``pytest-plugins``
 key within the ``execute`` step of your plan. TMT will use ``uv`` to install
-these plugins.
+these plugins using its ``--with`` flag.
 
 .. code-block:: yaml
 
@@ -286,14 +286,28 @@ these plugins.
         - requests-mock
         # - other-plugin
 
-Currently, the result of the test execution is determined by the exit code
-of the ``pytest`` command (as executed by ``uvx``):
+**Result Determination**
+
+TMT configures ``pytest`` (via ``uvx``) to generate a JUnit XML report
+(named ``junit-report.xml`` within the test's working directory).
+This XML report is then parsed by TMT to obtain detailed results for each
+individual test case discovered and run by ``pytest``. These individual
+test cases are represented as sub-results in the overall TMT result for
+the test invocation.
+
+The overall result of the test invocation is determined by the aggregate
+of these sub-results (e.g., if any pytest test case fails, the overall TMT
+result will be fail).
+
+If the JUnit XML report is not found or cannot be parsed, TMT will fall
+back to determining a single result for the entire ``pytest`` run based on
+its exit code:
 * ``0``: pass
 * ``5``: info (no tests found)
 * Other non-zero: fail
 
-Future enhancements will include richer result parsing, potentially from
-pytest's JUnit XML output.
+Future enhancements may include providing options to customize the JUnit XML
+report name or path if needed.
 
 
 Stories

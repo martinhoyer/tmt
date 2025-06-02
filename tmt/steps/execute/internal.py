@@ -335,8 +335,8 @@ class ExecuteInternalData(tmt.steps.execute.ExecuteStepData):
         default_factory=list,
         option='--pytest-plugin',
         multiple=True,
-        help='Specify pytest plugin to install with uv.',
-    )
+        help='Specify pytest plugin to install with uv.'
+        )
 
     # ignore[override] & cast: two base classes define to_spec(), with conflicting
     # formal types.

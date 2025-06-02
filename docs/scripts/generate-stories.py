@@ -37,7 +37,6 @@ AREA_TITLES = {
     '/spec/plans': 'Plans',
     '/spec/stories': 'Stories',
     '/spec/context': 'Context',
-    '/spec/policy': 'Policy',
     '/spec/hardware': 'Hardware',
     '/spec/results': 'Results',
 }

@@ -144,9 +144,9 @@ properties:
   tier:
     $ref: "/schemas/core#/definitions/tier"
 
-# User-defined metadata
 patternProperties:
-  ^extra-: {}
+  ^extra-:
+    type: string
 
 required:
   - test

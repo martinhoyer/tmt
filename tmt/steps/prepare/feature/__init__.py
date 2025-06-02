@@ -155,11 +155,7 @@ def find_plugin(name: str) -> 'FeatureClass':
 
 @container
 class PrepareFeatureData(tmt.steps.prepare.PrepareStepData):
-    # PrepareFeatureData alone is **not** usable for unserialization.
-    # We need to provide the actual, composed class.
-    @classmethod
-    def unserialize_class(cls) -> Any:
-        return PrepareFeature.get_data_class()
+    pass
 
 
 class FeatureBase(tmt.utils.Common):
@@ -331,14 +327,6 @@ class PrepareFeature(tmt.steps.prepare.PreparePlugin[PrepareFeatureData]):
                     bases=(PrepareFeatureData,),
                 ),
             )
-
-            # Fix possibly misleading info: it was observed on CentOS
-            # Stream 9 where Python & Pydantic set `__module__` to be
-            # `types`, resulting in impossible unserialization.
-            # `make_dataclass()` offers `module` parameter, but only
-            # in newer Python versions.
-            cls._data_class.__module__ = cls.__module__
-            cls._data_class.__name__ = 'PrepareFeatureData'
 
         return cls._data_class
 
