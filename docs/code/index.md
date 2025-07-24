@@ -8,7 +8,7 @@ information about individual classes, modules and packages inspect
 the documentation generated from sources linked below.
 
 * [Class Overview](classes.md)
-* [Template Extensions](template-extensions.md)
+* [Template Extensions](./template-extensions.md)
 * [Plugin Introduction](plugin-introduction.md)
 * [tmt](tmt.md)
 * [tmt.steps](tmt.steps.md)

@@ -174,19 +174,19 @@ The following tags can be used to enable given test under the
 respective provision method plan:
 
 provision-artemis
-    For tests checking the [artemis plugin](../plugins/provision/artemis.md) functionality.
+    For tests checking the [artemis plugin](./plugins/provision.md#artemis) functionality.
 
 provision-beaker
-    For tests checking the [beaker plugin](../plugins/provision/beaker.md) functionality using the `mrack` plugin.
+    For tests checking the [beaker plugin](./plugins/provision.md#beaker) functionality using the `mrack` plugin.
 
 provision-connect
-    For tests checking the [connect plugin](../plugins/provision/connect.md) functionality.
+    For tests checking the [connect plugin](./plugins/provision.md#connect) functionality.
 
 provision-container
-    For tests checking the [container provision method](../plugins/provision/container.md) using the `podman` plugin.
+    For tests checking the [container provision method](./plugins/provision.md#container) using the `podman` plugin.
 
 provision-virtual
-    For tests checking the [virtual.testcloud provision method](../plugins/provision/virtual.testcloud.md) using the `testcloud` plugin.
+    For tests checking the [virtual.testcloud provision method](./plugins/provision.md#virtual) using the `testcloud` plugin.
 
 provision-ssh
     Tests which are not tied to a specific provision method but
@@ -216,7 +216,7 @@ integration
 
 ### Images
 
-Tests which exercise the [container provisioning plugin](../plugins/provision/container.md)
+Tests which exercise the [container provisioning plugin](./plugins/provision.md#container)
 with various guest environments should use the
 custom-built set of container images rather than using the upstream ones
 directly. We built custom images to have better control over the initial

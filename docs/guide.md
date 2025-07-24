@@ -11,7 +11,7 @@ life smarter, brighter and more joyful. Let's go, follow me...
 ## The First Steps
 
 Installing the main package with the core functionality is quite
-straightforward. No worry, the [minimal install](../stories/install.md#minimal)
+straightforward. No worry, the [minimal install](./stories/install.md#minimal)
 package has just a few dependencies:
 
 ```shell
@@ -57,7 +57,7 @@ tmt --feeling-safe run --all provision --how local
 ```
 
 Note that the extra `--feeling-safe` option is needed for the
-[local provision plugin](../plugins/provision/local.md) as it can be
+[local provision plugin](./plugins/provision.md#local) as it can be
 dangerous to execute unknown code directly on your system. If
 you're afraid that the test could break your machine or just want
 to keep your environment clean, run it in a container instead:
@@ -78,7 +78,7 @@ tmt run -a provision -h virtual
 ```
 
 Don't care about the disk space? Simply install `tmt+all` and
-you'll get [all available functionality](../stories/install.md#all) at
+you'll get [all available functionality](./stories/install.md#all) at
 hand. Check the help to list all supported provision methods:
 
 ```shell
@@ -148,11 +148,11 @@ started:
 tmt init -t mini
 ```
 
-[Plans](../spec/plans.md) are used to enable testing and group relevant
-tests together. They describe how to [discover tests](../spec/plans.md#discover)
-for execution, how to [provision the environment](../spec/plans.md#provision), how to [prepare it](../spec/plans.md#prepare) for testing, how
-to [execute tests](../spec/plans.md#execute), [report results](../spec/plans.md#report)
-and finally how to [finish](../spec/plans.md#finish) the test job.
+[Plans](./spec/plans.md) are used to enable testing and group relevant
+tests together. They describe how to [discover tests](./spec/plans.md#discover)
+for execution, how to [provision the environment](./spec/plans.md#provision), how to [prepare it](./spec/plans.md#prepare) for testing, how
+to [execute tests](./spec/plans.md#execute), [report results](./spec/plans.md#report)
+and finally how to [finish](./spec/plans.md#finish) the test job.
 
 Here's an example of a slightly more complex plan which changes
 the default provision method to container to speed up the testing
@@ -175,9 +175,9 @@ Note that each of the steps above uses the `how` keyword to
 choose the desired method which should be applied. Steps can
 provide multiple implementations which enables you to choose the
 best one for your use case. For example to prepare the guest it's
-possible to use the [install plugin](../plugins/prepare/install.md) for
-simple package installations, [ansible plugin](../plugins/prepare/ansible.md)
-for more complex system setup or [shell plugin](../plugins/prepare/shell.md)
+possible to use the [install plugin](./plugins/prepare.md#install) for
+simple package installations, [ansible plugin](./plugins/prepare.md#ansible)
+for more complex system setup or [shell plugin](./plugins/prepare.md#shell)
 for arbitrary shell commands.
 
 ### Tests
@@ -195,13 +195,13 @@ execute:
     how: tmt
 ```
 
-[Tests](../spec/tests.md), identified by the required key `test`,
+[Tests](./spec/tests.md), identified by the required key `test`,
 define attributes which are closely related to individual test
-cases such as the [test script](../spec/tests.md#test),
-[framework](../spec/tests.md#framework), directory [path](../spec/tests.md#path)
+cases such as the [test script](./spec/tests.md#test),
+[framework](./spec/tests.md#framework), directory [path](./spec/tests.md#path)
 where the test should be executed, maximum test
-[duration](../spec/tests.md#duration) or packages
-[required](../spec/tests.md#require) to run the test. Here's an
+[duration](./spec/tests.md#duration) or packages
+[required](./spec/tests.md#require) to run the test. Here's an
 example of test metadata:
 
 ```yaml
@@ -231,7 +231,7 @@ unnecessary data duplication.
 
 It's always good to start with a "why". Or, even better, with a
 story which can describe more context behind the motivation.
-[Stories](../spec/stories.md) can be used to track implementation, test and
+[Stories](./spec/stories.md) can be used to track implementation, test and
 documentation coverage for individual features or requirements.
 Thanks to this you can track everything in one place, including
 the project implementation progress. Stories are identified by the
@@ -260,11 +260,11 @@ tmt init -t full
 ### Core
 
 Finally, there are certain metadata keys which can be used across
-all levels. [Core attributes](../spec/core.md) cover general metadata
-such as [summary](../spec/core.md#summary) or [description](../spec/core.md#description)
-for describing the content, the [enabled attribute](../spec/core.md#enabled)
+all levels. [Core attributes](./spec/core.md) cover general metadata
+such as [summary](./spec/core.md#summary) or [description](./spec/core.md#description)
+for describing the content, the [enabled attribute](./spec/core.md#enabled)
 for disabling and enabling tests, plans and stories and
-the [link key](../spec/core.md#link) which can be used for tracking
+the [link key](./spec/core.md#link) which can be used for tracking
 relations between objects.
 
 Here's how the story above could be extended with the core
@@ -280,15 +280,15 @@ link:
   - verified-by: /tests/core/dry
 ```
 
-Last but not least, the core attribute [adjust](../spec/core.md#adjust)
+Last but not least, the core attribute [adjust](./spec/core.md#adjust)
 provides a flexible way to adjust metadata based on the
-[context](../spec/context.md). But this is rather a large topic, so let's
+[context](./spec/context.md). But this is rather a large topic, so let's
 keep it for another time.
 
 ## Organize Data
 
-In the previous chapter we've learned what [tests](../spec/tests.md),
-[plans](../spec/plans.md) and [stories](../spec/stories.md) are used for. Now the
+In the previous chapter we've learned what [tests](./spec/tests.md),
+[plans](./spec/plans.md) and [stories](./spec/stories.md) are used for. Now the
 time has come to learn how to efficiently organize them in your
 repository. First we'll describe how to easily [create](#create) new
 tests, plans and stories, how to use [lint](#lint) to verify that
@@ -441,7 +441,7 @@ tmt tests create \
 
 It is easy to introduce a syntax error to one of the fmf files and
 make the whole tree broken. The `tmt lint` command performs a
-set of [lint checks](stories.md#lint-checks) which compare the stored metadata
+set of [lint checks](./stories.md#lint-checks) which compare the stored metadata
 against the specification and reports anything suspicious:
 
 ```shell
@@ -475,7 +475,7 @@ tmt plans lint /plans/features
 tmt lint --enable-check T001 --disable-check C002
 ```
 
-See the [lint-checks page](stories.md#lint-checks) for the list of available checks
+See the [lint-checks page](./stories.md#lint-checks) for the list of available checks
 or use the `--list-checks` option. For the full list of options,
 see `tmt lint --help`.
 
@@ -820,12 +820,12 @@ discover:
 
 Sometimes, the plan is expected to cover a broad set of environments;
 however, some step configurations may not be applicable everywhere.
-While [adjust](../spec/core.md#adjust) can be used to construct the plan
+While [adjust](./spec/core.md#adjust) can be used to construct the plan
 in this way, it soon becomes difficult to read.
 
 Using the `when` key makes it easier to restrict a step configuration
 to run only if any of the specified rules matches.
-The syntax is the same as in `adjust` and [context](../spec/context.md).
+The syntax is the same as in `adjust` and [context](./spec/context.md).
 
 ```yaml
 prepare:
@@ -854,11 +854,11 @@ The `prepare`, `execute`, and `finish` steps are able to run a
 given task (test, preparation script, ansible playbook, etc.) on
 several guests at once. Tasks are assigned to provisioned guests by
 matching the `where` key from
-[discover](../spec/plans.md#discover-where),
-[prepare](../spec/plans.md#prepare-where) and
-[finish](../spec/plans.md#finish-where)
+[discover](./spec/plans.md#discover-where),
+[prepare](./spec/plans.md#prepare-where) and
+[finish](./spec/plans.md#finish-where)
 phases with corresponding guests by their
-[key and role keys](../spec/plans.md#provision-multihost).
+[key and role keys](./spec/plans.md#provision-multihost).
 Essentially, plan author tells tmt on which guest(s) a test or
 script should run by listing guest name(s) or guest role(s).
 
@@ -899,13 +899,13 @@ be running on `server` when `/tests/C` is already completed on
 
 tmt exposes information about guests and roles to all three steps in
 the form of files tests and scripts can parse or import.
-See the [guest topology specification](../spec/plans.md#guest-topology) for details. Information
+See the [guest topology specification](./spec/plans.md#guest-topology) for details. Information
 from these files can be then used to contact other guests, connect
 to their services, synchronization, etc.
 
 tmt fully supports one test being executed multiple times. This is
 especially visible in the format of results, see
-[results specification](../spec/results.md). Every test is assigned a "serial
+[results specification](./spec/results.md). Every test is assigned a "serial
 number", if the same test appears in multiple discover phases, each
 instance would be given a different serial number. The serial number
 and the guest from which a result comes from are then saved for each
@@ -990,16 +990,16 @@ For developing tests users install the `tmt` package on their
 system so that they can easily create new tests or quickly run
 locally modified code to debug test failures.
 
-By default the [virtual.testcloud plugin](../plugins/provision/virtual.testcloud.md)
+By default the [virtual.testcloud plugin](./plugins/provision.md#virtual)
 is used to provision a full virtual machine so that tests can use
 the full features of a virtualized guest, safely without affecting
 user system. If the full virtualization is not needed you can
-consider using the [container plugin](../plugins/provision/container.md) and
+consider using the [container plugin](./plugins/provision.md#container) and
 execute test faster in a container. To execute tests directly on
-the test runner use the [local provision plugin](../plugins/provision/local.md).
+the test runner use the [local provision plugin](./plugins/provision.md#local).
 This can be much faster but also dangerous, be sure that
 you trust the project before executing tests on your system. See
-also the [feeling-safe section](../stories/features.md#feeling-safe).
+also the [feeling-safe section](./stories/features.md#feeling-safe).
 
 ### Testing Farm
 
@@ -1023,5 +1023,5 @@ and other details. Note that when executing tests in the Testing Farm,
 [selected ansible collections](https://docs.testing-farm.io/Testing%20Farm/0.1/test-runner.html#_supported_ansible_collections)
 are available on the test runner and can be used in user playbooks.
 
-For details on guest compatibility, see the [Test Runner Guest Compatibility Matrix](test-runner-guest-compatibility-matrix.md).
+For details on guest compatibility, see the [Test Runner Guest Compatibility Matrix](guide/test-runner-guest-compatibility-matrix.md).
 <!-- End of included content from docs/guide/test-runner.inc.rst -->

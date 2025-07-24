@@ -184,7 +184,7 @@ python = ["3.9", "3.12", "3.13"]
 dependencies = [
     "mkdocs",
     "mkdocs-material",
-    "mkdocstrings-python",
+    "mkdocstrings[python]",
     "pymdown-extensions",
     "markdown",
     "Pygments",
@@ -194,6 +194,7 @@ dependencies = [
     "griffe-typingdoc",
     "griffe-warnings-deprecated",
     "griffe-fieldz",  # attrs, etc
+    "ruff",
     ]
 
 [tool.hatch.envs.docs.scripts]

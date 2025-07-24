@@ -35,13 +35,13 @@ once `pip install` succeeds.
 
 On the other hand - when tmt is used to execute tests on
 provisioned guest it depends if the plan will try to install any
-packages (either by test [`require`](../spec/tests.md#require),
-[`recommend`](../spec/tests.md#recommend) or using prepare
-[`install` plugin](../plugins/prepare/install.md)) it will fail as tmt
+packages (either by test [`require`](./spec/tests.md#require),
+[`recommend`](./spec/tests.md#recommend) or using prepare
+[`install` plugin](./plugins/prepare.md#install)) it will fail as tmt
 currently doesn't work with other package management tools. This
 can be worked around by installing the test dependencies (as well
-as the `rsync` command) using [`ansible` plugin](../plugins/prepare/ansible.md)
-or [`shell` plugin](../plugins/prepare/shell.md) prepare plugins.
+as the `rsync` command) using [`ansible` plugin](./plugins/prepare.md#ansible)
+or [`shell` plugin](./plugins/prepare.md#shell) prepare plugins.
 
 ## Virtualization Tips
 
@@ -145,10 +145,10 @@ For backward-compatibility `tmt` provides selected commands
 of the [restraint](https://restraint.readthedocs.io/) framework so that existing tests can be more
 easily migrated. Currently the following scripts are supported:
 
-* `rhts-abort` and `rstrnt-abort` — [abort feature](../stories/features.md#abort)
-* `rhts-reboot` and `rstrnt-reboot` — [reboot feature](../stories/features.md#reboot)
-* `rhts-submit-log` and `rstrnt-report-log` — [report-log feature](../stories/features.md#report-log)
-* `rhts-report-result` and `rstrnt-report-result` — [report-result feature](../stories/features.md#report-result)
+* `rhts-abort` and `rstrnt-abort` — [abort feature](./stories/features.md#abort)
+* `rhts-reboot` and `rstrnt-reboot` — [reboot feature](./stories/features.md#reboot)
+* `rhts-submit-log` and `rstrnt-report-log` — [report-log feature](./stories/features.md#report-log)
+* `rhts-report-result` and `rstrnt-report-result` — [report-result feature](./stories/features.md#report-result)
 
 Note that these scripts cover only the common use cases and some
 of their irrelevant options, such as `--server` used for the
@@ -159,7 +159,7 @@ restraint server, are ignored.
     Currently this functionality is enabled by default. If your
     tests depend on these compatibility scripts, please ensure
     that the `restraint-compatible` option is enabled under the
-    [`tmt` execute plugin](../plugins/execute/tmt.md) execute step. In the future these
+    [`tmt` execute plugin](./plugins/execute.md#tmt) execute step. In the future these
     scripts will be available on the guest only if this option is
     enabled.
 
@@ -181,7 +181,7 @@ environment variables to get the information about the guests
 involved in the multihost testing. In order to provide these
 variables to all tests in a tmt plan it is possible to use the
 `TMT_PLAN_ENVIRONMENT_FILE` variable and set them based on the
-[guest topology information](../spec/plans.md#guest-topology). The example below demonstrates
+[guest topology information](./spec/plans.md#guest-topology). The example below demonstrates
 the usage on a simple tmt plan:
 
 ```yaml
@@ -214,7 +214,7 @@ When exporting `tmt` test metadata using `tmt tests export` to
 other test case management systems, a unique `id` is created in
 order to provide a persistent way to identify the test even if it
 is renamed, moved across the directory structure or into a
-different repository. See the [`id` key specification](../spec/core.md#id) for more details.
+different repository. See the [`id` key specification](./spec/core.md#id) for more details.
 
 ## How can I integrate tmt tests with other tools?
 
@@ -445,7 +445,7 @@ discover:
     dist-git-source: true
 ```
 
-See the [`dist-git-source` documentation](../spec/plans.md#discover-dist-git-source) for
+See the [`dist-git-source` documentation](./spec/plans.md#discover-dist-git-source) for
 more details.
 
 ### Migrating provision.fmf
@@ -478,7 +478,7 @@ provision:
             - size: ">10GiB"
 ```
 
-See the [disk hardware](../spec/hardware.md#disk) and [network hardware](../spec/hardware.md#network)
+See the [disk hardware](./spec/hardware.md#disk) and [network hardware](./spec/hardware.md#network)
 documentation for more details about these hardware specifications
 in tmt plans.
 

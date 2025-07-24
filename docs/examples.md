@@ -6,7 +6,7 @@ You can obtain detailed list of available options for each command
 by invoking it with `--help`. In order to control the verbosity
 of the output use `--verbose` and `--quiet``. To display
 implementation details for debugging use the `--debug`` option.
-See [common CLI options](../stories/cli.md#common) for details.
+See [common CLI options](./stories/cli.md#common) for details.
 
 Simply run `tmt` to get started with exploring your working
 directory:
@@ -370,7 +370,7 @@ Those changes have to be committed and pushed manually.
 
 To include nitrate test case in general plans use `--general`.
 Set of general plans to which the test case will be linked is
-detected from the [component key](../spec/tests.md#component). Any additional
+detected from the [component key](./spec/tests.md#component). Any additional
 general plan will be removed.
 
 For newly created nitrate test case it can be useful to add it
@@ -379,7 +379,7 @@ done using the `--link-runs` option.
 
 Use the `--bugzilla` option together with `--how nitrate` or
 `--how polarion` to link bugs marked as `verifies`
-in the [link attribute](../spec/core.md#link) with the corresponding
+in the [link attribute](./spec/core.md#link) with the corresponding
 Nitrate/Polarion test case.
 
 Almost all important attributes should be pulled from fmf metadata
@@ -403,8 +403,8 @@ at https://github.com/RedHatQE/pylero
 In order to prevent unnecessary test code duplication it makes
 sense to use a test library which implements frequently repeated
 actions. Currently beakerlib libraries are supported. They can be
-defined in the [require attribute](../spec/tests.md#require) and are
-fetched during the [discover step](../spec/plans.md#discover).
+defined in the [require attribute](./spec/tests.md#require) and are
+fetched during the [discover step](./spec/plans.md#discover).
 
 Use the short backward-compatible syntax to fetch libraries from
 the [default repository](https://github.com/beakerlib/):
@@ -422,7 +422,7 @@ require:
     name: /certgen
 ```
 
-See the [require attribute specification](../spec/tests.md#require) for
+See the [require attribute specification](./spec/tests.md#require) for
 detailed description of the syntax and available keys.
 
 ## Plans
@@ -479,7 +479,7 @@ See [Explore Tests](#explore-tests) and [Filter Tests](#filter-tests) for more e
 
 Step can contain multiple configurations. In this case provide
 each config with a unique name. Applying ansible playbook and
-executing custom script in a single [prepare step](../spec/plans.md#prepare)
+executing custom script in a single [prepare step](./spec/plans.md#prepare)
 could look like this:
 
 ```yaml
@@ -494,7 +494,7 @@ prepare:
 
 Another common use case which can be easily covered by multiple
 configs can be fetching tests from multiple repositories during
-the [discover step](../spec/plans.md#discover):
+the [discover step](./spec/plans.md#discover):
 
 ```yaml
 discover:
@@ -529,7 +529,7 @@ prepare+:
     package: python3-pytest
 ```
 
-Eventually, use [adjust](../spec/core.md#adjust) to extend the step
+Eventually, use [adjust](./spec/core.md#adjust) to extend the step
 conditionally:
 
 ```yaml
@@ -547,7 +547,7 @@ It is possible to parametrize plans using environment variables and
 context. This may be useful to reduce duplication, for example in
 CI systems.
 
-For [environment variables](../spec/plans.md#environment) the syntax is
+For [environment variables](./spec/plans.md#environment) the syntax is
 standard, both `$var` and `${var}` may be used. The values of
 variables are taken from the `--environment` command line option
 and the `environment` plan attribute. If a variable is defined
@@ -582,7 +582,7 @@ discover:
 $ tmt run -e PICK_TMT='^/tests/core/ls$' -e PICK_FMF='^/tests/(unit|basic/ls)$'
 ```
 
-For [context parametrization](../spec/context.md) the syntax is
+For [context parametrization](./spec/context.md) the syntax is
 `$@dimension` or `$@{dimension}`. The values are set according
 to the defined context specified using `--context` command line
 option and the `context` plan attribute:
@@ -603,8 +603,8 @@ $ tmt -c branch=tmt run
 ### Dynamic `ref` Evaluation
 
 When using test branching for test maintenance it becomes handy to
-be able to set [ref](../plugins/discover/fmf.md#ref) dynamically
-depending on the provided [context](../spec/context.md). This is possible
+be able to set [ref](./plugins/discover.md#fmf) dynamically
+depending on the provided [context](./spec/context.md). This is possible
 using a special file in tmt format stored in a default branch of a
 tests repository. That special file should contain rules assigning
 attribute `ref` in an `adjust` block depending on the context.
@@ -779,9 +779,9 @@ $ tmt run
             summary: 0 tasks completed
 ```
 
-Even if there are no [plans defined](../spec/plans.md) it is still
+Even if there are no [plans defined](./spec/plans.md) it is still
 possible to execute tests and custom scripts. See the default
-[default plan story](../stories/cli.md#default-plan) for details.
+[default plan story](./stories/cli.md#default-plan) for details.
 
 Dry run mode is enabled with the `--dry` option:
 
@@ -1262,7 +1262,7 @@ as well? It might save you some typing:
 tmt run pro log fin
 ```
 
-See the [login user stories](../stories/cli.md#login) for more
+See the [login user stories](./stories/cli.md#login) for more
 details and examples.
 
 ## Status
